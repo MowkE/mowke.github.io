@@ -1,0 +1,264 @@
+/* mowke.github.io: the celestial atlas.
+   Deep indigo chart paper, ivory engraving ink, and no accent of its own:
+   the projects supply the color, each body wearing the hue of the site it
+   opens. Marcellus for the engraved capitals, Fragment Mono for chart
+   labels and readouts, the system face for sentences. The signature is
+   the orrery: a real gravitational simulation used as navigation, with a
+   Kepler receipt printed in the footer. */
+
+:root {
+  --paper: #11131d;
+  --field: #171a26;
+  --ink: #ece6d8;
+  --ink-2: #a9a394;
+  --ink-3: #6e6a5f;
+  --rule: rgba(236, 230, 216, 0.14);
+  --rule-2: rgba(236, 230, 216, 0.3);
+  --display: 'Marcellus', 'Iowan Old Style', Georgia, serif;
+  --mono: 'Fragment Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+  --spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.55 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  max-width: 1180px;
+  padding: 0 28px;
+  margin-inline: auto;
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
+
+.mono { font-family: var(--mono); }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.eyebrow i { font-style: normal; color: var(--ink-3); padding: 0 0.45em; opacity: 0.7; }
+.eyebrow.link:hover { color: var(--ink); }
+
+/* ── masthead ─────────────────────────────────────────────── */
+.mast {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 22px 0 16px;
+  box-shadow: inset 0 -1px 0 var(--rule);
+}
+
+/* ── the sky ──────────────────────────────────────────────── */
+.sky {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  height: clamp(540px, 74vh, 780px);
+  margin: 0 -28px;
+}
+#orrery {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.sky-copy {
+  position: absolute;
+  left: 28px;
+  bottom: 40px;
+  max-width: 480px;
+  pointer-events: none;
+}
+.sky-copy h1, .sky-copy p { pointer-events: auto; }
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(46px, 7.2vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.012em;
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+.lede {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 15.5px;
+  max-width: 44ch;
+  text-wrap: pretty;
+}
+
+/* the instrument readouts in the sky's corners */
+.sky-hud, .sky-keys {
+  position: absolute;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.sky-hud { top: 20px; right: 28px; display: flex; align-items: baseline; }
+.sky-hud i, .sky-keys i { font-style: normal; padding: 0 0.5em; opacity: 0.6; }
+.sky-hud #tm, .sky-hud #rate { color: var(--ink-2); font-variant-numeric: tabular-nums; min-width: 8ch; }
+.sky-hud button {
+  pointer-events: auto;
+  font: inherit; letter-spacing: inherit; text-transform: inherit;
+  color: var(--ink-2); background: none; border: 0; padding: 2px 0; cursor: pointer;
+  box-shadow: inset 0 -1px 0 var(--rule-2);
+}
+.sky-hud button:hover, .sky-hud button.on { color: var(--ink); box-shadow: inset 0 -1px 0 var(--ink); }
+.sky-keys { right: 28px; bottom: 40px; max-width: 46ch; text-align: right; line-height: 1.7; animation: hint 2.6s ease-in-out 1.4s 3; }
+@keyframes hint { 50% { color: var(--ink-2); } }
+
+/* as you scroll, the chart recedes and the catalogue sheet rises over it */
+.catalogue, .foot { position: relative; z-index: 1; background: var(--paper); }
+.catalogue { box-shadow: 0 -1px 0 var(--rule-2); }
+@supports (animation-timeline: scroll()) {
+  #orrery, .sky-copy, .sky-hud, #tip {
+    animation: recede linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 72vh;
+  }
+  .sky-keys {
+    animation: hint 2.6s ease-in-out 1.4s 3, recede linear both;
+    animation-timeline: auto, scroll(root);
+    animation-range: normal, 0 72vh;
+  }
+  @keyframes recede { from { opacity: 1; transform: none; } to { opacity: 0.18; transform: translateY(-5vh); } }
+}
+
+/* falling into a body: its color swells to fill the screen, then the page changes */
+#fly {
+  position: fixed; z-index: 50; pointer-events: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+#fly.go { transition: transform 620ms cubic-bezier(0.32, 0.72, 0, 1), opacity 120ms linear; opacity: 1; }
+
+/* hover readout, positioned by the script beside the body */
+.tip[hidden] { display: none; }
+.tip {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 11px 10px;
+  background: var(--field);
+  box-shadow: inset 0 0 0 1px var(--rule-2);
+  border-radius: 6px;
+  max-width: 280px;
+  transform: translate(14px, -50%);
+}
+.tip-name { font-family: var(--display); font-size: 17px; letter-spacing: 0.01em; }
+.tip-line { font-size: 12.5px; color: var(--ink-2); line-height: 1.4; }
+.tip-orbit { font-size: 10.5px; color: var(--ink-3); letter-spacing: 0.04em; margin-top: 2px; }
+
+/* ── catalogue ────────────────────────────────────────────── */
+.catalogue { margin-top: 8px; }
+.cat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 0 12px;
+  box-shadow: inset 0 -1px 0 var(--rule-2);
+}
+#rows { list-style: none; margin: 0; padding: 0; }
+#rows li { animation: row-in 520ms var(--spring) both; }
+#rows li:nth-child(1) { animation-delay: 60ms }
+#rows li:nth-child(2) { animation-delay: 100ms }
+#rows li:nth-child(3) { animation-delay: 140ms }
+#rows li:nth-child(4) { animation-delay: 180ms }
+#rows li:nth-child(5) { animation-delay: 220ms }
+#rows li:nth-child(6) { animation-delay: 260ms }
+#rows li:nth-child(7) { animation-delay: 300ms }
+#rows li:nth-child(8) { animation-delay: 340ms }
+#rows li:nth-child(9) { animation-delay: 380ms }
+@keyframes row-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+#rows a {
+  display: grid;
+  grid-template-columns: 30px 12px 168px 132px minmax(0, 1fr) auto 18px;
+  grid-template-areas: 'idx sw name tag line rec go';
+  gap: 18px;
+  align-items: baseline;
+  padding: 19px 12px;
+  margin: 0 -12px;
+  border-radius: 8px;
+  box-shadow: inset 0 -1px 0 var(--rule);
+  transition: background 160ms ease, transform 200ms var(--spring);
+}
+#rows a:hover, #rows a.hot { background: var(--field); }
+#rows a:active { transform: scale(0.995); }
+
+.idx { grid-area: idx; font-size: 11px; color: var(--ink-3); letter-spacing: 0.08em; }
+.swatch {
+  grid-area: sw;
+  width: 10px; height: 10px; border-radius: 50%;
+  align-self: start;
+  margin-top: 6px;
+  background: var(--c, var(--ink-3));
+  box-shadow: 0 0 0 1px rgba(236, 230, 216, 0.18);
+}
+.swatch-spectrum { background: conic-gradient(#ff5a5a, #ffb000, #7fe06f, #4cc9f0, #8f77ef, #ff5a5a); }
+.name { grid-area: name; font-family: var(--display); font-size: 22px; letter-spacing: 0.01em; line-height: 1; }
+.tag { grid-area: tag; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.line { grid-area: line; color: var(--ink-2); font-size: 14px; min-width: 0; }
+.receipt { grid-area: rec; font-size: 12px; color: var(--ink); white-space: nowrap; letter-spacing: 0.01em; }
+.go { grid-area: go; color: var(--ink-3); transition: color 160ms ease, transform 200ms var(--spring); justify-self: end; }
+#rows a:hover .go, #rows a.hot .go { color: var(--ink); transform: translate(2px, -2px); }
+
+/* ── foot ─────────────────────────────────────────────────── */
+.foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 26px 0 52px;
+}
+.foot b { font-weight: 400; color: var(--ink); }
+
+/* ── small screens ────────────────────────────────────────── */
+@media (max-width: 860px) {
+  body { padding: 0 18px; }
+  .sky { position: relative; height: auto; margin: 0 -18px; display: flex; flex-direction: column; }
+  .sky-keys { display: none; }
+  .sky-hud { position: static; order: 3; padding: 10px 18px 0; justify-content: center; }
+  #orrery { position: relative; height: min(88vw, 520px); order: 2; }
+  .sky-copy { position: static; padding: 30px 18px 8px; max-width: none; order: 1; }
+  #rows a {
+    grid-template-columns: 30px 12px 1fr 18px;
+    grid-template-areas:
+      'idx sw name go'
+      'idx sw tag go'
+      'idx sw line line'
+      'idx sw rec rec';
+    gap: 6px 14px;
+    padding: 16px 8px;
+    margin: 0 -8px;
+  }
+  .name { font-size: 20px; }
+  .receipt { white-space: normal; }
+  .cat-head .mono { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #orrery, #rows li, .sky-copy, .sky-hud, .sky-keys, #tip { animation: none !important; opacity: 1; transform: none; }
+  #fly.go { transition: none; }
+  #rows a, .go { transition: none; }
+}
