@@ -4,18 +4,19 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Samahith Thellakal</title>
-<meta name="description" content="Nine browser instruments: simulations of geometry, light, matter, gravity and life that prove their own numbers. Grab a planet." />
+<meta name="description" content="Nine browser instruments exploring geometry, light, matter, gravity and life that prove their own numbers. Grab a planet." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23ece6d8'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23ece6d8' stroke-width='1.2' opacity='.55'/%3E%3Ccircle cx='27' cy='16' r='2.2' fill='%23ffb000'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="observatory/entry.css" />
 </head>
 <body>
 
 <header class="mast">
   <span class="eyebrow">Samahith Thellakal <i>·</i> projects</span>
-  <a class="eyebrow link" href="https://github.com/MowkE">github.com/MowkE</a>
+  <nav class="mast-links" aria-label="Portfolio navigation"><a class="eyebrow observatory-nav" href="observatory/">Enter the observatory <span aria-hidden="true">↗</span></a><a class="eyebrow link" href="https://github.com/MowkE">github.com/MowkE</a></nav>
 </header>
 
 <section class="sky" aria-label="An orrery of the projects">
@@ -26,15 +27,21 @@
     <span class="tip-orbit mono"></span>
   </div>
   <div class="sky-hud mono" aria-live="polite">
-    <span id="tm">t = 0.0 s</span><i>·</i><span id="rate">×1.0</span><i>·</i><button id="harm" type="button" title="Harmony of the spheres: every body plays the note of its period (H)">♪ harmony off</button>
+    <span id="tm">t = 0.0 s</span><i>·</i><span id="rate">×1.0</span><i>·</i><button id="harm" type="button" title="Harmony of the spheres. Every body plays the note of its period (H)">♪ harmony off</button>
   </div>
-  <div class="sky-keys mono" aria-hidden="true">drag a body: throw it <i>·</i> tap empty sky: fire a test particle <i>·</i> drag empty sky: scrub time, even backward <i>·</i> drag the sun: everything lurches <i>·</i> your cursor has gravity <i>·</i> ← → ↵ R H space</div>
+  <div class="sky-keys mono" aria-hidden="true">drag a body to throw it <i>·</i> tap empty sky to fire a test particle <i>·</i> drag empty sky to scrub time, even backward <i>·</i> drag the sun and everything lurches <i>·</i> your cursor has gravity <i>·</i> ← → ↵ R H space</div>
   <div class="sky-copy">
     <h1>Nine instruments</h1>
-    <p class="lede">Small simulations that measure something real and print the number beside what the textbook says. No frameworks, no build step, nothing hidden. Every body above is on a live gravitational orbit. Grab one and throw it; click one and fall in.</p>
+    <p class="lede">Small simulations that measure something real and print the number beside what the textbook says. No frameworks, no build step, nothing hidden. Every body above is on a live gravitational orbit. Grab one and throw it. Click one and fall in.</p>
   </div>
 </section>
 <div id="fly" aria-hidden="true"></div>
+
+<a class="observatory-entry" href="observatory/" aria-label="Enter the Ninth Observatory, an interactive 3D museum of all nine projects">
+  <div class="entry-instrument" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+  <div class="entry-copy"><span class="entry-eyebrow">Another way to explore <span>·</span> an interactive world</span><h2>The Ninth Observatory</h2><p>Nine instruments. A museum under the stars. Come look a little closer.</p></div>
+  <span class="entry-invitation">Step inside <span aria-hidden="true">↗</span></span>
+</a>
 
 <section class="catalogue" aria-label="Catalogue">
   <div class="cat-head">
@@ -64,7 +71,7 @@
 </section>
 
 <footer class="foot">
-  <span class="eyebrow">Orbits are integrated live with leapfrog; hover a body for its period. Throw one and it climbs a real ellipse; turn on harmony and each body sings the note of its period, a fifth lower for every doubling.</span>
+  <span class="eyebrow">Orbits are integrated live with leapfrog. Hover a body for its period. Throw one and it climbs a real ellipse. Turn on harmony and each body sings the note of its period, a fifth lower for every doubling.</span>
   <span class="eyebrow mono" id="receipt">T² / a³ = <b id="kepler">…</b> for every body</span>
 </footer>
 

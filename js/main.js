@@ -504,7 +504,7 @@ function kepler() {
   const measured = n ? sum / n : NaN, predicted = (4 * Math.PI * Math.PI) / GM;
   keplerOut.textContent = `${measured.toFixed(1)}  (4π²/GM = ${predicted.toFixed(1)})`;
   for (const b of bodies) {
-    if (b.liveRow) { const { a, T } = elements(b); b.receipt.textContent = isFinite(T) ? `live: a = ${a.toFixed(2)} · T = ${T.toFixed(1)} s` : 'live: unbound'; }
+    if (b.liveRow) { const { a, T } = elements(b); b.receipt.textContent = isFinite(T) ? `live · a = ${a.toFixed(2)} · T = ${T.toFixed(1)} s` : 'live · unbound'; }
   }
 }
 

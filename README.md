@@ -1,10 +1,10 @@
 # mowke.github.io
 
-**Live: [mowke.github.io](https://mowke.github.io/)**
+**Live at [mowke.github.io](https://mowke.github.io/)**
 
-The front door to nine browser instruments: small simulations of geometry, light, matter, gravity and life that measure something real and print the number beside what the textbook says.
+The front door to nine browser instruments. These small simulations of geometry, light, matter, gravity and life measure something real and print the number beside what the textbook says.
 
-The page is itself one of them. Every project is a body on a live gravitational orbit around the center, integrated with leapfrog each frame. Hover a body for its semi-major axis and period; grab one and throw it and it climbs onto a real ellipse. The footer reports Kepler's third law, T² / a³, measured across all nine bodies against 4π² / GM. No frameworks, no build step.
+The page is itself one of them. Every project is a body on a live gravitational orbit around the center, integrated with leapfrog each frame. Hover a body for its semi-major axis and period. Grab one and throw it and it climbs onto a real ellipse. The footer reports Kepler's third law, T² / a³, measured across all nine bodies against 4π² / GM. No frameworks, no build step.
 
 ## The instruments
 

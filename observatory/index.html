@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071614">
+  <title>The Ninth Observatory by Samahith Thellakal</title>
+  <meta name="description" content="A museum under the stars. Explore nine interactive instruments of geometry, light, matter, gravity, and life in Samahith Thellakal’s walkable observatory.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Fragment+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="observatory.css">
+</head>
+<body>
+  <div id="world" role="region" aria-label="Interactive three-dimensional observatory"></div>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <div class="frame" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <a class="wordmark" href="../" aria-label="Samahith Thellakal, return to portfolio">
+      <span class="seal" aria-hidden="true"><i></i></span>
+      <span>THE NINTH<br><b>OBSERVATORY</b></span>
+    </a>
+    <div class="mast-middle"><span class="status-dot"></span> A COLLECTION BY SAMAHITH THELLAKAL</div>
+    <nav class="top-actions" aria-label="Observatory navigation">
+      <button id="directory-open" class="text-button" type="button"><span class="menu-icon" aria-hidden="true">☷</span> <span>Exhibit index</span></button>
+      <a class="exit-link" href="../" aria-label="Return to portfolio">Exit <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="introduction" id="introduction" aria-labelledby="intro-title">
+      <p class="overline"><span class="tiny-star" aria-hidden="true">✳</span> NINE INSTRUMENTS. ONE OPEN UNIVERSE.</p>
+      <h1 id="intro-title">A place for<br>impossible<br><em>things.</em></h1>
+      <p class="intro-description">A museum under the stars.<br>For the dimensions we can’t see.<br>The laws we can. And the joy of finding out.</p>
+      <div class="intro-actions">
+        <button type="button" id="begin" class="primary-button" disabled>Opening the observatory <span class="loading-dot">·</span></button>
+        <button type="button" id="intro-walk" class="quiet-button" disabled>or walk the floor <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="intro-caption"><span>EST. 2026</span><span>BUILT FROM CURIOSITY</span></div>
+    </section>
+
+    <div id="labels" aria-label="Exhibits in the observatory"></div>
+
+    <section class="exhibit-card" id="exhibit-card" aria-labelledby="exhibit-title" hidden>
+      <div class="card-top"><span id="exhibit-field" class="overline"></span><button id="exhibit-close" class="icon-button" type="button" aria-label="Return to room overview">×</button></div>
+      <p class="exhibit-name" id="exhibit-name"></p>
+      <h2 id="exhibit-title"></h2>
+      <p class="exhibit-description" id="exhibit-description"></p>
+      <p class="exhibit-detail" id="exhibit-detail"></p>
+      <div class="card-actions"><a id="project-open" class="primary-button" target="_blank" rel="noopener">Open instrument <span aria-hidden="true">↗</span></a><button id="next-exhibit" class="next-button" type="button" aria-label="Visit next exhibit">→</button></div>
+      <p class="external-note">The full experiment opens in a new tab.</p>
+    </section>
+
+    <div class="walk-prompt" id="walk-prompt" hidden><button id="inspect" type="button"><kbd>E</kbd><span>Discover <b id="nearby-name"></b></span><span aria-hidden="true">↗</span></button></div>
+    <div class="crosshair" id="crosshair" aria-hidden="true" hidden></div>
+    <div id="walk-pad" aria-label="Walk controls" hidden><button data-move="forward" aria-label="Walk forward">↑</button><div><button data-move="left" aria-label="Step left">←</button><button data-move="back" aria-label="Walk backward">↓</button><button data-move="right" aria-label="Step right">→</button></div></div>
+
+    <section class="fallback" id="fallback" hidden aria-labelledby="fallback-title"><p class="overline">THE COLLECTION IS STILL OPEN</p><h2 id="fallback-title">A different way in.</h2><p id="fallback-message">The 3D room couldn’t open on this device. All nine instruments are available in the exhibit index.</p><button class="primary-button" id="fallback-index" type="button">Browse nine instruments <span aria-hidden="true">→</span></button><a href="../">Return to portfolio</a></section>
+  </main>
+
+  <footer class="hud" id="hud">
+    <div class="location"><span class="location-cross" aria-hidden="true">⌖</span><div><span class="overline" id="location-title">THE GRAND ROTUNDA</span><span id="location-subtitle">An invitation to look closer</span></div></div>
+    <div class="room-controls" id="room-controls" hidden><button id="overview" type="button" class="control-button active" aria-pressed="true">Overview</button><button id="walk" type="button" class="control-button" aria-pressed="false">Walk</button><span class="control-divider"></span><button id="prev" class="arrow-button" type="button" aria-label="Previous exhibit">←</button><span class="position-count" id="position-count">00 / 09</span><button id="next" class="arrow-button" type="button" aria-label="Next exhibit">→</button></div>
+    <div class="utilities"><button id="motion" class="utility-button" type="button" aria-pressed="false" aria-label="Pause sculpture motion">Ⅱ</button><button id="sound" class="utility-button" type="button" aria-pressed="false" aria-label="Enable ambient sound">Sound off</button><button id="help-open" class="utility-button help-button" type="button" aria-label="How to explore">?</button></div>
+  </footer>
+  <p class="interaction-hint" id="interaction-hint">DRAG TO ORBIT <span>·</span> SCROLL TO LOOK CLOSER</p>
+  <div class="announcement" id="announcement" role="status" aria-live="polite"></div>
+
+  <dialog id="directory" aria-labelledby="directory-title">
+    <div class="dialog-heading"><span class="overline">FIELD GUIDE / NINE EXHIBITS</span><button id="directory-close" class="icon-button" type="button" aria-label="Close exhibit index">×</button></div>
+    <h2 id="directory-title">Follow your curiosity.</h2><p class="dialog-description">Nine small windows into a much larger world.</p>
+    <ol id="directory-list"></ol>
+    <div class="directory-foot"><span>EVERY INSTRUMENT IS INTERACTIVE</span><a href="../">Back to the portfolio ↗</a></div>
+  </dialog>
+  <dialog id="help" aria-labelledby="help-title"><div class="dialog-heading"><span class="overline">A FEW BEARINGS</span><button id="help-close" class="icon-button" type="button" aria-label="Close help">×</button></div><h2 id="help-title">Make yourself at home.</h2><dl><dt>Look around</dt><dd>Drag to orbit the room. Scroll or pinch to move closer. Tap any numbered marker to visit an exhibit.</dd><dt>Follow the collection</dt><dd>Use the arrows below, keys 1–9, or the exhibit index to move between instruments.</dd><dt>Walk the floor</dt><dd>Choose Walk. Use W A S D or the arrow keys to move, and drag to look. Hold Shift to move faster. On a phone, use the direction pad. Press E or tap the prompt near an exhibit.</dd><dt>Take a breath</dt><dd>Escape returns to the room overview. Pause stops sculpture motion. Sound is optional.</dd></dl><button id="help-done" class="primary-button" type="button">I’m ready <span aria-hidden="true">→</span></button></dialog>
+  <noscript><div class="noscript">This observatory uses JavaScript. <a href="../">View all nine projects in the portfolio →</a></div></noscript>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
