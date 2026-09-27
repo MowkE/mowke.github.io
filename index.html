@@ -4,77 +4,123 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Samahith Thellakal</title>
-<meta name="description" content="Nine browser instruments exploring geometry, light, matter, gravity and life that prove their own numbers. Grab a planet." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23ece6d8'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23ece6d8' stroke-width='1.2' opacity='.55'/%3E%3Ccircle cx='27' cy='16' r='2.2' fill='%23ffb000'/%3E%3C/svg%3E" />
+<meta name="description" content="Samahith Thellakal: biology, hardware, software. I like to learn new things." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235a613a'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='16' fill='%23f3f1ea'%3E@%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css" />
-<link rel="stylesheet" href="observatory/entry.css" />
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/site.css" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
 </head>
 <body>
 
-<header class="mast">
-  <span class="eyebrow">Samahith Thellakal <i>·</i> projects</span>
-  <nav class="mast-links" aria-label="Portfolio navigation"><a class="eyebrow observatory-nav" href="observatory/">Enter the observatory <span aria-hidden="true">↗</span></a><a class="eyebrow link" href="https://github.com/MowkE">github.com/MowkE</a></nav>
+<nav class="nav mono">
+  <a href="#top" class="nav-home">samahith</a>
+  <span class="nav-links">
+    <a href="#bio" data-c="bio"><i></i>bio</a>
+    <a href="#hardware" data-c="hw"><i></i>hardware</a>
+    <a href="#software" data-c="sw"><i></i>software</a>
+  </span>
+</nav>
+
+<!-- ───────────────────────────── home ───────────────────────────── -->
+<header id="top" class="hero">
+  <div class="hero-text">
+    <p class="kicker mono">hi, i'm</p>
+    <h1 id="name" aria-label="Samahith Thellakal"><span class="line" data-word="Samahith">Samahith</span><span class="line" data-word="Thellakal">Thellakal</span></h1>
+    <p class="about">I like to learn new things. Mostly that means building them: cells that grow in software, robots that shoot, and small simulations that check their own math.</p>
+    <div class="links">
+      <a class="pill" href="https://github.com/MowkE" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>github</a>
+      <a class="pill" id="linkedin" href="https://www.linkedin.com/search/results/all/?keywords=Samahith%20Thellakal" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M0 1.15C0 .52.52 0 1.15 0h13.7C15.48 0 16 .52 16 1.15v13.7c0 .63-.52 1.15-1.15 1.15H1.15C.52 16 0 15.48 0 14.85V1.15zm4.94 12.24V6.17H2.54v7.22h2.4zM3.74 5.18c.84 0 1.36-.55 1.36-1.25-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .7.52 1.25 1.33 1.25h.01zm4.91 8.21V9.36c0-.22.02-.43.08-.59.17-.43.57-.88 1.23-.88.87 0 1.21.66 1.21 1.63v3.87h2.4V9.25c0-2.22-1.18-3.25-2.76-3.25-1.28 0-1.84.7-2.16 1.2v.03h-.02l.02-.03V6.17h-2.4c.03.68 0 7.22 0 7.22h2.4z"/></svg>linkedin</a>
+      <a class="pill ghost" href="sims/">the sims ↗</a>
+    </div>
+  </div>
+
+  <div class="term" id="term">
+    <div class="term-bar mono"><i></i><i></i><i></i><span>~/snoopy.gif</span></div>
+    <img src="assets/snoopy.gif" alt="ASCII art Snoopy dancing" width="832" height="735" />
+    <div class="term-foot mono"><span>$ my brain is shifting</span><span class="caret">▍</span></div>
+  </div>
+
+  <div class="doors">
+    <a href="#bio" class="door" data-c="bio"><span class="mono">01</span><b>bio</b><em>cells, genes, the wet stuff</em></a>
+    <a href="#hardware" class="door" data-c="hw"><span class="mono">02</span><b>hardware</b><em>robots, CAD, things that move</em></a>
+    <a href="#software" class="door" data-c="sw"><span class="mono">03</span><b>software</b><em>sims, tools, the code</em></a>
+  </div>
 </header>
 
-<section class="sky" aria-label="An orrery of the projects">
-  <canvas id="orrery" aria-hidden="true"></canvas>
-  <div id="tip" class="tip" hidden>
-    <span class="tip-name"></span>
-    <span class="tip-line"></span>
-    <span class="tip-orbit mono"></span>
+<!-- ───────────────────────────── bio ───────────────────────────── -->
+<section id="bio" class="chapter bio">
+  <canvas id="cells" aria-hidden="true"></canvas>
+  <div class="chapter-head">
+    <p class="kicker mono">01 · bio</p>
+    <h2>Life is just<br />soft machinery.</h2>
+    <p class="blurb">These cells are living in your browser. They drift, bump, and divide on their own. Push them around with your cursor; click to seed a new one and watch it split.</p>
+    <p class="hint mono">move to push · click to seed · <span id="cell-count">0</span> cells</p>
   </div>
-  <div class="sky-hud mono" aria-live="polite">
-    <span id="tm">t = 0.0 s</span><i>·</i><span id="rate">×1.0</span><i>·</i><button id="harm" type="button" title="Harmony of the spheres. Every body plays the note of its period (H)">♪ harmony off</button>
-  </div>
-  <div class="sky-keys mono" aria-hidden="true">drag a body to throw it <i>·</i> tap empty sky to fire a test particle <i>·</i> drag empty sky to scrub time, even backward <i>·</i> drag the sun and everything lurches <i>·</i> your cursor has gravity <i>·</i> ← → ↵ R H space</div>
-  <div class="sky-copy">
-    <h1>Nine instruments</h1>
-    <p class="lede">Small simulations that measure something real and print the number beside what the textbook says. No frameworks, no build step, nothing hidden. Every body above is on a live gravitational orbit. Grab one and throw it. Click one and fall in.</p>
-  </div>
-</section>
-<div id="fly" aria-hidden="true"></div>
-
-<a class="observatory-entry" href="observatory/" aria-label="Enter the Ninth Observatory, an interactive 3D museum of all nine projects">
-  <div class="entry-instrument" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
-  <div class="entry-copy"><span class="entry-eyebrow">Another way to explore <span>·</span> an interactive world</span><h2>The Ninth Observatory</h2><p>Nine instruments. A museum under the stars. Come look a little closer.</p></div>
-  <span class="entry-invitation">Step inside <span aria-hidden="true">↗</span></span>
-</a>
-
-<section class="catalogue" aria-label="Catalogue">
-  <div class="cat-head">
-    <span class="eyebrow">Catalogue <i>·</i> nine instruments</span>
-    <span class="eyebrow mono">the number each one proves</span>
-  </div>
-  <ol id="rows">
-    <li><a href="https://mowke.github.io/HYPERSHAPE/" data-color="#ffb000" data-tag="geometry" data-receipt="6 rotation planes" data-line="Rotate four-dimensional shapes, with the fourth axis shown as color.">
-      <span class="idx mono">01</span><span class="swatch"></span><span class="name">HYPERSHAPE</span><span class="tag mono">geometry</span><span class="line">Rotate four-dimensional shapes, with the fourth axis shown as color.</span><span class="receipt mono">6 rotation planes</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/LUMA/" data-color="spectrum" data-tag="color" data-receipt="6 experiments" data-line="Six experiments on the gap between color models and human eyes.">
-      <span class="idx mono">02</span><span class="swatch swatch-spectrum"></span><span class="name">LUMA</span><span class="tag mono">color</span><span class="line">Six experiments on the gap between color models and human eyes.</span><span class="receipt mono">6 experiments</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/LUMASHAPE/" data-color="#b3a5ff" data-tag="color × geometry" data-receipt="4,096 receptor states" data-line="A bird's four-cone color space, a tesseract you can rotate into ultraviolet.">
-      <span class="idx mono">03</span><span class="swatch"></span><span class="name">LUMASHAPE</span><span class="tag mono">color × geometry</span><span class="line">A bird's four-cone color space, a tesseract you can rotate into ultraviolet.</span><span class="receipt mono">4,096 receptor states</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/APSIS/" data-color="#a9c8ea" data-tag="gravity" data-receipt="photon ring b = 3√3 M" data-line="Light raymarched along real Schwarzschild geodesics around a black hole.">
-      <span class="idx mono">04</span><span class="swatch"></span><span class="name">APSIS</span><span class="tag mono">gravity</span><span class="line">Light raymarched along real Schwarzschild geodesics around a black hole.</span><span class="receipt mono">photon ring b = 3√3 M</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/GOLDILOCKS/" data-color="#3fd9a4" data-tag="astrobiology" data-receipt="Earth 255 K + 33 K = 288 K" data-line="Build a star, place a planet, and find out whether its water stays liquid.">
-      <span class="idx mono">05</span><span class="swatch"></span><span class="name">GOLDILOCKS</span><span class="tag mono">astrobiology</span><span class="line">Build a star, place a planet, and find out whether its water stays liquid.</span><span class="receipt mono">Earth 255 K + 33 K = 288 K</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/QUASI/" data-color="#d4a545" data-tag="materials" data-receipt="10 spots at 36.00°" data-line="Quasicrystals cut from five dimensions, with a live diffraction plate.">
-      <span class="idx mono">06</span><span class="swatch"></span><span class="name">QUASI</span><span class="tag mono">materials</span><span class="line">Quasicrystals cut from five dimensions, with a live diffraction plate.</span><span class="receipt mono">10 spots at 36.00°</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/DIFFUSE/" data-color="#5b84e0" data-tag="diffusion" data-receipt="D measured, off by 0.4%" data-line="Random walkers discover Fick's laws, and two chemicals paint a leopard.">
-      <span class="idx mono">07</span><span class="swatch"></span><span class="name">DIFFUSE</span><span class="tag mono">diffusion</span><span class="line">Random walkers discover Fick's laws, and two chemicals paint a leopard.</span><span class="receipt mono">D measured, off by 0.4%</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/META/" data-color="#58c6e8" data-tag="materials" data-receipt="ν = −1.02 against −1" data-line="Cell geometry, not chemistry, decides how a material behaves.">
-      <span class="idx mono">08</span><span class="swatch"></span><span class="name">META</span><span class="tag mono">materials</span><span class="line">Cell geometry, not chemistry, decides how a material behaves.</span><span class="receipt mono">ν = −1.02 against −1</span><span class="go" aria-hidden="true">↗</span></a></li>
-    <li><a href="https://mowke.github.io/VALENCE/" data-color="#e8d27a" data-tag="chemistry" data-receipt="5-cell angle 104.48°" data-line="Hydrogen orbitals raymarched from the Schrödinger equation, and molecules in four dimensions.">
-      <span class="idx mono">09</span><span class="swatch"></span><span class="name">VALENCE</span><span class="tag mono">chemistry</span><span class="line">Hydrogen orbitals raymarched from the Schrödinger equation, and molecules in four dimensions.</span><span class="receipt mono">5-cell angle 104.48°</span><span class="go" aria-hidden="true">↗</span></a></li>
-  </ol>
+  <div class="shelf" data-empty="Biology projects are on their way in."></div>
 </section>
 
-<footer class="foot">
-  <span class="eyebrow">Orbits are integrated live with leapfrog. Hover a body for its period. Throw one and it climbs a real ellipse. Turn on harmony and each body sings the note of its period, a fifth lower for every doubling.</span>
-  <span class="eyebrow mono" id="receipt">T² / a³ = <b id="kepler">…</b> for every body</span>
+<!-- ───────────────────────────── hardware ───────────────────────────── -->
+<section id="hardware" class="chapter hw">
+  <div class="build" id="build">
+    <div class="build-stage">
+      <canvas id="robot" aria-hidden="true"></canvas>
+      <div class="build-copy">
+        <p class="kicker mono">02 · hardware</p>
+        <h2>HighTide</h2>
+        <p class="blurb">FRC team 4414's 2026 robot. Scroll and it builds itself, one subsystem at a time.</p>
+        <div class="stage-card">
+          <span class="mono stage-n" id="stage-n">00 / 06</span>
+          <b id="stage-name">Scroll to build</b>
+          <em id="stage-note">The frame comes first.</em>
+        </div>
+      </div>
+      <div class="progress" aria-hidden="true"><i id="build-bar"></i></div>
+      <div class="subnav mono" id="subnav">
+        <button data-s="6">full robot</button>
+        <button data-s="0">drivetrain</button>
+        <button data-s="1">bumpers</button>
+        <button data-s="2">dye rotor</button>
+        <button data-s="3">intake</button>
+        <button data-s="4">turret</button>
+        <button data-s="5">shooter</button>
+      </div>
+    </div>
+  </div>
+  <div class="shelf" data-empty="More hardware lands here soon."></div>
+</section>
+
+<!-- ───────────────────────────── software ───────────────────────────── -->
+<section id="software" class="chapter sw">
+  <canvas id="code" aria-hidden="true"></canvas>
+  <div class="chapter-head">
+    <p class="kicker mono">03 · software</p>
+    <h2>A sea of<br />source.</h2>
+    <p class="blurb">Every glyph out there is a character from my own code. Drag across it to make waves; it remembers where you touched.</p>
+  </div>
+  <div class="shelf">
+    <a class="card" href="sims/">
+      <span class="mono card-k">nine sims</span>
+      <b>The instruments</b>
+      <em>Gravity, light, color, matter, and life, each simulation checking its own numbers. Throw the planets around.</em>
+      <span class="card-go">open ↗</span>
+    </a>
+    <div class="card empty"><span class="mono card-k">soon</span><b>More software</b><em>Projects land here next.</em></div>
+  </div>
+</section>
+
+<footer class="foot mono">
+  <span>Samahith Thellakal</span>
+  <span>built by hand · three.js · no build step</span>
+  <a href="#top">back to top ↑</a>
 </footer>
 
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/site.js"></script>
 </body>
 </html>

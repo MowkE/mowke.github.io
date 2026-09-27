@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Samahith Thellakal</title>
+<meta name="description" content="Nine browser instruments exploring geometry, light, matter, gravity and life that prove their own numbers. Grab a planet." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23ece6d8'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23ece6d8' stroke-width='1.2' opacity='.55'/%3E%3Ccircle cx='27' cy='16' r='2.2' fill='%23ffb000'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="observatory/entry.css" />
+</head>
+<body>
+
+<header class="mast">
+  <a class="eyebrow link" href="../">← Samahith Thellakal <i>·</i> sims</a>
+  <nav class="mast-links" aria-label="Portfolio navigation"><a class="eyebrow observatory-nav" href="observatory/">Enter the observatory <span aria-hidden="true">↗</span></a><a class="eyebrow link" href="https://github.com/MowkE">github.com/MowkE</a></nav>
+</header>
+
+<section class="sky" aria-label="An orrery of the projects">
+  <canvas id="orrery" aria-hidden="true"></canvas>
+  <div id="tip" class="tip" hidden>
+    <span class="tip-name"></span>
+    <span class="tip-line"></span>
+    <span class="tip-orbit mono"></span>
+  </div>
+  <div class="sky-hud mono" aria-live="polite">
+    <span id="tm">t = 0.0 s</span><i>·</i><span id="rate">×1.0</span><i>·</i><button id="harm" type="button" title="Harmony of the spheres. Every body plays the note of its period (H)">♪ harmony off</button>
+  </div>
+  <div class="sky-keys mono" aria-hidden="true">drag a body to throw it <i>·</i> tap empty sky to fire a test particle <i>·</i> drag empty sky to scrub time, even backward <i>·</i> drag the sun and everything lurches <i>·</i> your cursor has gravity <i>·</i> ← → ↵ R H space</div>
+  <div class="sky-copy">
+    <h1>Nine instruments</h1>
+    <p class="lede">Small simulations that measure something real and print the number beside what the textbook says. No frameworks, no build step, nothing hidden. Every body above is on a live gravitational orbit. Grab one and throw it. Click one and fall in.</p>
+  </div>
+</section>
+<div id="fly" aria-hidden="true"></div>
+
+<a class="observatory-entry" href="observatory/" aria-label="Enter the Ninth Observatory, an interactive 3D museum of all nine projects">
+  <div class="entry-instrument" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+  <div class="entry-copy"><span class="entry-eyebrow">Another way to explore <span>·</span> an interactive world</span><h2>The Ninth Observatory</h2><p>Nine instruments. A museum under the stars. Come look a little closer.</p></div>
+  <span class="entry-invitation">Step inside <span aria-hidden="true">↗</span></span>
+</a>
+
+<section class="catalogue" aria-label="Catalogue">
+  <div class="cat-head">
+    <span class="eyebrow">Catalogue <i>·</i> nine instruments</span>
+    <span class="eyebrow mono">the number each one proves</span>
+  </div>
+  <ol id="rows">
+    <li><a href="https://mowke.github.io/HYPERSHAPE/" data-color="#ffb000" data-tag="geometry" data-receipt="6 rotation planes" data-line="Rotate four-dimensional shapes, with the fourth axis shown as color.">
+      <span class="idx mono">01</span><span class="swatch"></span><span class="name">HYPERSHAPE</span><span class="tag mono">geometry</span><span class="line">Rotate four-dimensional shapes, with the fourth axis shown as color.</span><span class="receipt mono">6 rotation planes</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/LUMA/" data-color="spectrum" data-tag="color" data-receipt="6 experiments" data-line="Six experiments on the gap between color models and human eyes.">
+      <span class="idx mono">02</span><span class="swatch swatch-spectrum"></span><span class="name">LUMA</span><span class="tag mono">color</span><span class="line">Six experiments on the gap between color models and human eyes.</span><span class="receipt mono">6 experiments</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/LUMASHAPE/" data-color="#b3a5ff" data-tag="color × geometry" data-receipt="4,096 receptor states" data-line="A bird's four-cone color space, a tesseract you can rotate into ultraviolet.">
+      <span class="idx mono">03</span><span class="swatch"></span><span class="name">LUMASHAPE</span><span class="tag mono">color × geometry</span><span class="line">A bird's four-cone color space, a tesseract you can rotate into ultraviolet.</span><span class="receipt mono">4,096 receptor states</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/APSIS/" data-color="#a9c8ea" data-tag="gravity" data-receipt="photon ring b = 3√3 M" data-line="Light raymarched along real Schwarzschild geodesics around a black hole.">
+      <span class="idx mono">04</span><span class="swatch"></span><span class="name">APSIS</span><span class="tag mono">gravity</span><span class="line">Light raymarched along real Schwarzschild geodesics around a black hole.</span><span class="receipt mono">photon ring b = 3√3 M</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/GOLDILOCKS/" data-color="#3fd9a4" data-tag="astrobiology" data-receipt="Earth 255 K + 33 K = 288 K" data-line="Build a star, place a planet, and find out whether its water stays liquid.">
+      <span class="idx mono">05</span><span class="swatch"></span><span class="name">GOLDILOCKS</span><span class="tag mono">astrobiology</span><span class="line">Build a star, place a planet, and find out whether its water stays liquid.</span><span class="receipt mono">Earth 255 K + 33 K = 288 K</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/QUASI/" data-color="#d4a545" data-tag="materials" data-receipt="10 spots at 36.00°" data-line="Quasicrystals cut from five dimensions, with a live diffraction plate.">
+      <span class="idx mono">06</span><span class="swatch"></span><span class="name">QUASI</span><span class="tag mono">materials</span><span class="line">Quasicrystals cut from five dimensions, with a live diffraction plate.</span><span class="receipt mono">10 spots at 36.00°</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/DIFFUSE/" data-color="#5b84e0" data-tag="diffusion" data-receipt="D measured, off by 0.4%" data-line="Random walkers discover Fick's laws, and two chemicals paint a leopard.">
+      <span class="idx mono">07</span><span class="swatch"></span><span class="name">DIFFUSE</span><span class="tag mono">diffusion</span><span class="line">Random walkers discover Fick's laws, and two chemicals paint a leopard.</span><span class="receipt mono">D measured, off by 0.4%</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/META/" data-color="#58c6e8" data-tag="materials" data-receipt="ν = −1.02 against −1" data-line="Cell geometry, not chemistry, decides how a material behaves.">
+      <span class="idx mono">08</span><span class="swatch"></span><span class="name">META</span><span class="tag mono">materials</span><span class="line">Cell geometry, not chemistry, decides how a material behaves.</span><span class="receipt mono">ν = −1.02 against −1</span><span class="go" aria-hidden="true">↗</span></a></li>
+    <li><a href="https://mowke.github.io/VALENCE/" data-color="#e8d27a" data-tag="chemistry" data-receipt="5-cell angle 104.48°" data-line="Hydrogen orbitals raymarched from the Schrödinger equation, and molecules in four dimensions.">
+      <span class="idx mono">09</span><span class="swatch"></span><span class="name">VALENCE</span><span class="tag mono">chemistry</span><span class="line">Hydrogen orbitals raymarched from the Schrödinger equation, and molecules in four dimensions.</span><span class="receipt mono">5-cell angle 104.48°</span><span class="go" aria-hidden="true">↗</span></a></li>
+  </ol>
+</section>
+
+<footer class="foot">
+  <span class="eyebrow">Orbits are integrated live with leapfrog. Hover a body for its period. Throw one and it climbs a real ellipse. Turn on harmony and each body sings the note of its period, a fifth lower for every doubling.</span>
+  <span class="eyebrow mono" id="receipt">T² / a³ = <b id="kepler">…</b> for every body</span>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
