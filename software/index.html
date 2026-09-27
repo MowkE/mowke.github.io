@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>software · Samahith Thellakal</title>
+<meta name="description" content="samOS: a tiny computer in the browser. Run sorting races, A* maze solving, Game of Life, boids and the Mandelbrot set." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d14'/%3E%3Cpath d='M8 11l6 5-6 5' fill='none' stroke='%236d8bff' stroke-width='3' stroke-linecap='round'/%3E%3Crect x='16' y='20' width='9' height='3' rx='1.5' fill='%23e6e9f5'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/site.css" />
+<link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="room sw-room">
+
+<nav class="nav dark mono">
+  <a href="../" class="nav-home">samahith</a>
+  <span class="nav-links">
+    <a href="../bio/" data-c="bio"><i></i>bio</a>
+    <a href="../hardware/" data-c="hw"><i></i>hardware</a>
+    <a href="../software/" data-c="sw" class="on"><i></i>software</a>
+  </span>
+</nav>
+
+<div class="title">
+  <p class="lbl k">03 · software</p>
+  <h1>samOS</h1>
+  <p>A tiny computer I wrote for this page. Pick a program from the dock or type into the terminal. Everything on the screen is really running, and the numbers underneath are counted live.</p>
+</div>
+
+<div class="os" id="os">
+  <section class="win os-term" aria-label="Terminal">
+    <div class="bar"><i></i><i></i><i></i><span>terminal</span></div>
+    <div class="os-out" aria-live="polite"></div>
+    <label class="prompt"><span>sam@os ~ %</span><input type="text" spellcheck="false" autocomplete="off" aria-label="Command" placeholder="help" /></label>
+  </section>
+  <section class="win" aria-label="Screen">
+    <div class="bar"><i></i><i></i><i></i><span class="os-title">screen</span></div>
+    <div class="screen"><canvas></canvas></div>
+    <div class="os-foot"><div class="os-stats"></div><div class="os-controls"></div></div>
+  </section>
+</div>
+
+<nav class="dock" aria-label="Programs">
+  <button data-c="sort"><b>▁▃▇</b>sort</button>
+  <button data-c="maze"><b>⌗</b>maze</button>
+  <button data-c="life"><b>▚</b>life</button>
+  <button data-c="boids"><b>➶</b>boids</button>
+  <button data-c="mandel"><b>✺</b>mandel</button>
+</nav>
+
+<script type="module">
+import { initOS } from '../js/software.js';
+const os = initOS(document.body);
+os.setActive(true);
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>bio · Samahith Thellakal</title>
+<meta name="description" content="A living dish of cells running the cell cycle: mitosis, chromosomes, spindles, mitochondria. Click a cell to follow it." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23ff8fb5' fill-opacity='.35' stroke='%23ff5c93' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%237a2cc4'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/site.css" />
+<link rel="stylesheet" href="../css/pages.css" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body class="room bio-room" id="room">
+
+<nav class="nav dark mono">
+  <a href="../" class="nav-home">samahith</a>
+  <span class="nav-links">
+    <a href="../bio/" data-c="bio" class="on"><i></i>bio</a>
+    <a href="../hardware/" data-c="hw"><i></i>hardware</a>
+    <a href="../software/" data-c="sw"><i></i>software</a>
+  </span>
+</nav>
+
+<main class="stage" id="stage">
+  <canvas id="dish" aria-label="A dish of living cells"></canvas>
+
+  <div class="title">
+    <p class="lbl k">01 · bio</p>
+    <h1>The dish.</h1>
+    <p>Every cell here is running the cell cycle: it grows, copies its DNA, and splits in two. Watch the chromosomes line up and get pulled apart. Click any cell to follow it.</p>
+  </div>
+
+  <section class="panel census" aria-label="Population">
+    <div class="row"><span class="lbl">cells alive</span><span class="num" id="n">0</span></div>
+    <div class="row"><span class="lbl">divisions</span><span class="num" id="div">0</span></div>
+    <div class="row"><span class="lbl">deepest generation</span><span class="num" id="gen">0</span></div>
+    <div>
+      <div class="lbl" style="margin-bottom:7px">where they are in the cycle</div>
+      <div class="cycle"><i class="ph-g1" id="c-g1"></i><i class="ph-s" id="c-s"></i><i class="ph-g2" id="c-g2"></i><i class="ph-m" id="c-m"></i></div>
+    </div>
+    <div class="legend"><span><b class="ph-g1"></b>G1 grow</span><span><b class="ph-s"></b>S copy DNA</span><span><b class="ph-g2"></b>G2 check</span><span><b class="ph-m"></b>M divide</span></div>
+  </section>
+
+  <section class="panel inspect" id="inspect" aria-live="polite">
+    <span class="lbl">following cell</span>
+    <h3 id="i-id">#0</h3>
+    <span class="phase" id="i-phase">G1</span>
+    <div class="ring"><i id="i-bar"></i></div>
+    <dl>
+      <dt>generation</dt><dd id="i-gen">0</dd>
+      <dt>daughter of</dt><dd id="i-parent">founder</dd>
+      <dt>age</dt><dd id="i-age">0 s</dd>
+      <dt>next division</dt><dd id="i-next">0 s</dd>
+    </dl>
+    <button id="i-close">stop following (esc)</button>
+  </section>
+
+  <div class="panel scope">
+    <span class="lbl">microscope</span>
+    <div class="seg" id="modes">
+      <button data-m="live" class="on">live</button>
+      <button data-m="stained">stained</button>
+      <button data-m="fluor">fluorescent</button>
+    </div>
+  </div>
+
+  <p class="hint2">move to nudge · click a cell to follow it · double-click empty space to seed a new one · the cycle runs about a thousand times faster than real life</p>
+</main>
+
+<script type="module">
+import { initDish } from '../js/bio.js';
+const $ = id => document.getElementById(id);
+const room = $('room');
+const secs = s => s < 60 ? `${s.toFixed(0)} s` : `${(s / 60).toFixed(1)} min`;
+const dish = initDish($('dish'), {
+  panel: $('inspect'),
+  setBg: m => { room.classList.toggle('stained', m === 'stained'); room.classList.toggle('fluor', m === 'fluor'); },
+  stats: ({ n, maxGen, divisions, counts }) => {
+    $('n').textContent = n; $('div').textContent = divisions; $('gen').textContent = maxGen;
+    for (const k of ['G1', 'S', 'G2', 'M']) $(`c-${k.toLowerCase()}`).style.flexGrow = counts[k] + 0.001;
+  },
+  inspect: d => {
+    $('i-id').textContent = `cell #${d.id}`; $('i-phase').textContent = d.phase;
+    $('i-bar').style.width = `${(d.f * 100).toFixed(1)}%`;
+    $('i-gen').textContent = d.gen; $('i-parent').textContent = d.parent ? `#${d.parent}` : 'founder';
+    $('i-age').textContent = secs(d.age); $('i-next').textContent = d.until > 0 ? `in ${secs(d.until)}` : 'dividing now';
+  },
+});
+dish.setActive(true);
+document.querySelectorAll('#modes button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#modes button').forEach(x => x.classList.toggle('on', x === b));
+  dish.setMode(b.dataset.m);
+}));
+$('i-close').addEventListener('click', () => dish.select(null));
+</script>
+</body>
+</html>

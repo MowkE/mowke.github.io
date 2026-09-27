@@ -10,21 +10,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/site.css" />
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-} }
-</script>
 </head>
 <body>
 
 <nav class="nav mono">
   <a href="#top" class="nav-home">samahith</a>
   <span class="nav-links">
-    <a href="#bio" data-c="bio"><i></i>bio</a>
-    <a href="#hardware" data-c="hw"><i></i>hardware</a>
-    <a href="#software" data-c="sw"><i></i>software</a>
+    <a href="bio/" data-c="bio"><i></i>bio</a>
+    <a href="hardware/" data-c="hw"><i></i>hardware</a>
+    <a href="software/" data-c="sw"><i></i>software</a>
   </span>
 </nav>
 
@@ -48,77 +42,16 @@
   </div>
 
   <div class="doors">
-    <a href="#bio" class="door" data-c="bio"><span class="mono">01</span><b>bio</b><em>cells, genes, the wet stuff</em></a>
-    <a href="#hardware" class="door" data-c="hw"><span class="mono">02</span><b>hardware</b><em>robots, CAD, things that move</em></a>
-    <a href="#software" class="door" data-c="sw"><span class="mono">03</span><b>software</b><em>sims, tools, the code</em></a>
+    <a href="bio/" class="door" data-c="bio"><span class="mono">01</span><b>bio</b><em>a living dish of cells ↗</em></a>
+    <a href="hardware/" class="door" data-c="hw"><span class="mono">02</span><b>hardware</b><em>build HighTide, then drive it ↗</em></a>
+    <a href="software/" class="door" data-c="sw"><span class="mono">03</span><b>software</b><em>a tiny computer you can use ↗</em></a>
   </div>
 </header>
-
-<!-- ───────────────────────────── bio ───────────────────────────── -->
-<section id="bio" class="chapter bio">
-  <canvas id="cells" aria-hidden="true"></canvas>
-  <div class="chapter-head">
-    <p class="kicker mono">01 · bio</p>
-    <h2>Life is just<br />soft machinery.</h2>
-    <p class="blurb">These cells are living in your browser. They drift, bump, and divide on their own. Push them around with your cursor; click to seed a new one and watch it split.</p>
-    <p class="hint mono">move to push · click to seed · <span id="cell-count">0</span> cells</p>
-  </div>
-  <div class="shelf" data-empty="Biology projects are on their way in."></div>
-</section>
-
-<!-- ───────────────────────────── hardware ───────────────────────────── -->
-<section id="hardware" class="chapter hw">
-  <div class="build" id="build">
-    <div class="build-stage">
-      <canvas id="robot" aria-hidden="true"></canvas>
-      <div class="build-copy">
-        <p class="kicker mono">02 · hardware</p>
-        <h2>HighTide</h2>
-        <p class="blurb">FRC team 4414's 2026 robot. Scroll and it builds itself, one subsystem at a time.</p>
-        <div class="stage-card">
-          <span class="mono stage-n" id="stage-n">00 / 06</span>
-          <b id="stage-name">Scroll to build</b>
-          <em id="stage-note">The frame comes first.</em>
-        </div>
-      </div>
-      <div class="progress" aria-hidden="true"><i id="build-bar"></i></div>
-      <div class="subnav mono" id="subnav">
-        <button data-s="6">full robot</button>
-        <button data-s="0">drivetrain</button>
-        <button data-s="1">bumpers</button>
-        <button data-s="2">dye rotor</button>
-        <button data-s="3">intake</button>
-        <button data-s="4">turret</button>
-        <button data-s="5">shooter</button>
-      </div>
-    </div>
-  </div>
-  <div class="shelf" data-empty="More hardware lands here soon."></div>
-</section>
-
-<!-- ───────────────────────────── software ───────────────────────────── -->
-<section id="software" class="chapter sw">
-  <canvas id="code" aria-hidden="true"></canvas>
-  <div class="chapter-head">
-    <p class="kicker mono">03 · software</p>
-    <h2>A sea of<br />source.</h2>
-    <p class="blurb">Every glyph out there is a character from my own code. Drag across it to make waves; it remembers where you touched.</p>
-  </div>
-  <div class="shelf">
-    <a class="card" href="sims/">
-      <span class="mono card-k">nine sims</span>
-      <b>The instruments</b>
-      <em>Gravity, light, color, matter, and life, each simulation checking its own numbers. Throw the planets around.</em>
-      <span class="card-go">open ↗</span>
-    </a>
-    <div class="card empty"><span class="mono card-k">soon</span><b>More software</b><em>Projects land here next.</em></div>
-  </div>
-</section>
 
 <footer class="foot mono">
   <span>Samahith Thellakal</span>
   <span>built by hand · three.js · no build step</span>
-  <a href="#top">back to top ↑</a>
+  <a href="sims/">the sims ↗</a>
 </footer>
 
 <script type="module" src="js/site.js"></script>

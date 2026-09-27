@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>hardware · Samahith Thellakal</title>
+<meta name="description" content="HighTide, FRC 4414's 2026 robot, built subsystem by subsystem as you scroll. Then explode it or drive it." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='8' width='26' height='18' rx='5' fill='%23c8502b'/%3E%3Crect x='8' y='4' width='16' height='14' rx='2' fill='%232e8a8f'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/site.css" />
+<link rel="stylesheet" href="../css/pages.css" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body class="room hw-room">
+
+<nav class="nav mono">
+  <a href="../" class="nav-home">samahith</a>
+  <span class="nav-links">
+    <a href="../bio/" data-c="bio"><i></i>bio</a>
+    <a href="../hardware/" data-c="hw" class="on"><i></i>hardware</a>
+    <a href="../software/" data-c="sw"><i></i>software</a>
+  </span>
+</nav>
+
+<main class="stage">
+  <canvas id="robot" aria-label="HighTide, assembling"></canvas>
+  <div id="callouts"></div>
+
+  <div class="title">
+    <p class="lbl k">02 · hardware · FRC 4414</p>
+    <h1>HighTide</h1>
+    <p>Team 4414's 2026 robot, rebuilt one subsystem at a time. Scroll to build it.</p>
+  </div>
+
+  <div class="stage-card">
+    <span class="mono stage-n" id="stage-n">00 / 06</span>
+    <b id="stage-name">Scroll to build</b>
+    <em id="stage-note">Six subsystems, in the order they bolt together.</em>
+    <div class="kids" id="kids"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <section class="panel end" id="end">
+    <span class="lbl">exploded view</span>
+    <input type="range" id="explode" min="0" max="1" step="0.01" value="0" aria-label="Exploded view" />
+    <button class="go" id="drive">take it for a drive</button>
+    <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive, field oriented<br /><kbd>Q</kbd><kbd>E</kbd> rotate · <kbd>esc</kbd> park<br />drive over the yellow pieces to intake them<br />collected <b id="score">0 / 14</b></div>
+  </section>
+
+  <div class="progress" aria-hidden="true"><i id="build-bar"></i></div>
+  <div class="subnav mono" id="subnav">
+    <button data-s="6">full robot</button>
+    <button data-s="0">drivetrain</button>
+    <button data-s="1">bumpers</button>
+    <button data-s="2">dye rotor</button>
+    <button data-s="3">intake</button>
+    <button data-s="4">turret</button>
+    <button data-s="5">shooter</button>
+  </div>
+</main>
+
+<div class="hw-track" id="track"></div>
+
+<script type="module">
+import { initRobot, STAGES } from '../js/robot.js';
+const $ = id => document.getElementById(id);
+const card = document.querySelector('.stage-card');
+const kids = [...$('kids').children];
+const r = initRobot($('robot'), $('track'), {
+  layer: $('callouts'), bar: $('build-bar'), end: $('end'), explode: $('explode'), driveBtn: $('drive'),
+  buttons: [...document.querySelectorAll('#subnav button')],
+  stage: s => {
+    if (s === null) { $('stage-n').textContent = '00 / 06'; $('stage-name').textContent = 'Scroll to build'; $('stage-note').textContent = 'Six subsystems, in the order they bolt together.'; }
+    else { $('stage-n').textContent = s === 6 ? 'complete' : `${String(s + 1).padStart(2, '0')} / 06`; $('stage-name').textContent = STAGES[s].name; $('stage-note').textContent = STAGES[s].note; }
+    kids.forEach((k, i) => { k.classList.toggle('done', s !== null && (i < s || s === 6)); k.classList.toggle('now', i === s); });
+    card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
+  },
+  score: (n, t) => { $('score').textContent = `${n} / ${t}`; },
+  onMode: m => { $('drive').textContent = m === 'drive' ? 'park it (esc)' : 'take it for a drive'; },
+});
+r.setActive(true);
+</script>
+</body>
+</html>
