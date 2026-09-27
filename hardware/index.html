@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>hardware · Samahith Thellakal</title>
-<meta name="description" content="HighTide, FRC 4414's 2026 robot, built subsystem by subsystem as you scroll. Then explode it or drive it." />
+<meta name="description" content="FRC 9470's 2026 robot from its Onshape CAD, built subsystem by subsystem as you scroll. Then explode it or drive it." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='8' width='26' height='18' rx='5' fill='%23c8502b'/%3E%3Crect x='8' y='4' width='16' height='14' rx='2' fill='%232e8a8f'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,34 +34,32 @@
   <div id="callouts"></div>
 
   <div class="title">
-    <p class="lbl k">02 · hardware · FRC 4414</p>
-    <h1>HighTide</h1>
-    <p>Team 4414's 2026 robot, rebuilt one subsystem at a time. Scroll to build it.</p>
+    <p class="lbl k">02 · hardware · FRC 9470</p>
+    <h1>9470</h1>
+    <p>My team's 2026 robot, built from our Onshape CAD one subsystem at a time. Scroll to build it.</p>
   </div>
 
   <div class="stage-card">
-    <span class="mono stage-n" id="stage-n">00 / 06</span>
+    <span class="mono stage-n" id="stage-n">00 / 04</span>
     <b id="stage-name">Scroll to build</b>
-    <em id="stage-note">Six subsystems, in the order they bolt together.</em>
-    <div class="kids" id="kids"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <em id="stage-note">Four subsystems, in the order they bolt together.</em>
+    <div class="kids" id="kids"><i></i><i></i><i></i><i></i></div>
   </div>
 
   <section class="panel end" id="end">
     <span class="lbl">exploded view</span>
     <input type="range" id="explode" min="0" max="1" step="0.01" value="0" aria-label="Exploded view" />
     <button class="go" id="drive">take it for a drive</button>
-    <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive, field oriented<br /><kbd>Q</kbd><kbd>E</kbd> rotate · <kbd>esc</kbd> park<br />drive over the yellow pieces to intake them<br />collected <b id="score">0 / 14</b></div>
+    <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive, field oriented<br /><kbd>Q</kbd><kbd>E</kbd> rotate · <kbd>esc</kbd> park<br />drive the intake over the game pieces to collect them<br />collected <b id="score">0 / 14</b></div>
   </section>
 
   <div class="progress" aria-hidden="true"><i id="build-bar"></i></div>
   <div class="subnav mono" id="subnav">
-    <button data-s="6">full robot</button>
+    <button data-s="4">full robot</button>
     <button data-s="0">drivetrain</button>
-    <button data-s="1">bumpers</button>
-    <button data-s="2">dye rotor</button>
-    <button data-s="3">intake</button>
-    <button data-s="4">turret</button>
-    <button data-s="5">shooter</button>
+    <button data-s="1">intake</button>
+    <button data-s="2">hopper</button>
+    <button data-s="3">drum shooter</button>
   </div>
 </main>
 
@@ -76,11 +74,12 @@ const r = initRobot($('robot'), $('track'), {
   layer: $('callouts'), bar: $('build-bar'), end: $('end'), explode: $('explode'), driveBtn: $('drive'),
   buttons: [...document.querySelectorAll('#subnav button')],
   stage: s => {
-    if (s === null) { $('stage-n').textContent = '00 / 06'; $('stage-name').textContent = 'Scroll to build'; $('stage-note').textContent = 'Six subsystems, in the order they bolt together.'; }
-    else { $('stage-n').textContent = s === 6 ? 'complete' : `${String(s + 1).padStart(2, '0')} / 06`; $('stage-name').textContent = STAGES[s].name; $('stage-note').textContent = STAGES[s].note; }
-    kids.forEach((k, i) => { k.classList.toggle('done', s !== null && (i < s || s === 6)); k.classList.toggle('now', i === s); });
+    if (s === null) { $('stage-n').textContent = '00 / 04'; $('stage-name').textContent = 'Scroll to build'; $('stage-note').textContent = 'Four subsystems, in the order they bolt together.'; }
+    else { $('stage-n').textContent = s === 4 ? 'complete' : `${String(s + 1).padStart(2, '0')} / 04`; $('stage-name').textContent = STAGES[s].name; $('stage-note').textContent = STAGES[s].note; }
+    kids.forEach((k, i) => { k.classList.toggle('done', s !== null && (i < s || s === 4)); k.classList.toggle('now', i === s); });
     card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
   },
+  status: m => { if (m) { $('stage-name').textContent = 'Loading CAD'; $('stage-note').textContent = m; } },
   score: (n, t) => { $('score').textContent = `${n} / ${t}`; },
   onMode: m => { $('drive').textContent = m === 'drive' ? 'park it (esc)' : 'take it for a drive'; },
 });
