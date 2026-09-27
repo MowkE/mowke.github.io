@@ -4,13 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>bio · Samahith Thellakal</title>
-<meta name="description" content="A living dish of cells running the cell cycle: mitosis, chromosomes, spindles, mitochondria. Click a cell to follow it." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23ff8fb5' fill-opacity='.35' stroke='%23ff5c93' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%237a2cc4'/%3E%3C/svg%3E" />
+<meta name="description" content="A living neural culture and the flow cytometer that reads it: DAPI, EdU, Ki-67 and pH3 cell-cycle analysis with singlet and viability gating." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2303041a'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%237fb2ff'/%3E%3Cpath d='M16 11V3M20 13l6-6M21 17l8 2M13 20l-6 7M11 15l-8-2' stroke='%237fb2ff' stroke-width='1.6'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css" />
 <link rel="stylesheet" href="../css/pages.css" />
+<link rel="stylesheet" href="../css/lab.css" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -18,7 +19,7 @@
 } }
 </script>
 </head>
-<body class="room bio-room" id="room">
+<body class="lab">
 
 <nav class="nav dark mono">
   <a href="../" class="nav-home">samahith</a>
@@ -29,77 +30,117 @@
   </span>
 </nav>
 
-<main class="stage" id="stage">
-  <canvas id="dish" aria-label="A dish of living cells"></canvas>
-
-  <div class="title">
-    <p class="lbl k">01 · bio</p>
-    <h1>The dish.</h1>
-    <p>Every cell here is running the cell cycle: it grows, copies its DNA, and splits in two. Watch the chromosomes line up and get pulled apart. Click any cell to follow it.</p>
-  </div>
-
-  <section class="panel census" aria-label="Population">
-    <div class="row"><span class="lbl">cells alive</span><span class="num" id="n">0</span></div>
-    <div class="row"><span class="lbl">divisions</span><span class="num" id="div">0</span></div>
-    <div class="row"><span class="lbl">deepest generation</span><span class="num" id="gen">0</span></div>
-    <div>
-      <div class="lbl" style="margin-bottom:7px">where they are in the cycle</div>
-      <div class="cycle"><i class="ph-g1" id="c-g1"></i><i class="ph-s" id="c-s"></i><i class="ph-g2" id="c-g2"></i><i class="ph-m" id="c-m"></i></div>
+<main class="lab-grid">
+  <section class="dish" id="dish">
+    <canvas id="neurons" aria-label="A neural culture: neurons and dividing progenitors"></canvas>
+    <div class="dish-title">
+      <p class="lbl">01 · bio · neural culture</p>
+      <h1>Neurogenesis<br />in a dish.</h1>
+      <p>Neurons (blue) are post-mitotic and fire action potentials down their axons. Neural progenitors (violet) run the cell cycle: they round up, line their chromosomes on a spindle, and split. Some daughters become new neurons and grow an arbor as you watch. The cytometer on the right reads this same culture.</p>
     </div>
-    <div class="legend"><span><b class="ph-g1"></b>G1 grow</span><span><b class="ph-s"></b>S copy DNA</span><span><b class="ph-g2"></b>G2 check</span><span><b class="ph-m"></b>M divide</span></div>
+    <div class="legend2 mono">
+      <span><b style="background:#b48cff"></b>G1 nucleus</span><span><b style="background:#55e0ff"></b>S</span><span><b style="background:#7c9bff"></b>G2</span><span><b style="background:#ff8fe0"></b>M</span><span><b style="background:#ffc98a"></b>neuron</span>
+      <em id="inview">0 neurons · 0 progenitors in view</em>
+    </div>
+    <div class="cellcard" id="cellcard" hidden>
+      <span class="lbl" id="cc-kind">Neural progenitor</span>
+      <b id="cc-phase">G1</b>
+      <span class="mono" id="cc-dna">2.00N</span>
+      <div class="chips" id="cc-markers"></div>
+      <span class="mono dimmer">plotted as the pink crosshair on the cytometer · esc to release</span>
+    </div>
+    <p class="dish-hint mono">click any cell to inspect it and find it in the plots</p>
   </section>
 
-  <section class="panel inspect" id="inspect" aria-live="polite">
-    <span class="lbl">following cell</span>
-    <h3 id="i-id">#0</h3>
-    <span class="phase" id="i-phase">G1</span>
-    <div class="ring"><i id="i-bar"></i></div>
-    <dl>
-      <dt>generation</dt><dd id="i-gen">0</dd>
-      <dt>daughter of</dt><dd id="i-parent">founder</dd>
-      <dt>age</dt><dd id="i-age">0 s</dd>
-      <dt>next division</dt><dd id="i-next">0 s</dd>
-    </dl>
-    <button id="i-close">stop following (esc)</button>
-  </section>
-
-  <div class="panel scope">
-    <span class="lbl">microscope</span>
-    <div class="seg" id="modes">
-      <button data-m="live" class="on">live</button>
-      <button data-m="stained">stained</button>
-      <button data-m="fluor">fluorescent</button>
+  <section class="fcs" id="fcs" aria-label="Flow cytometry analysis">
+    <div class="fcs-title"><span>Flow Cytometry Analysis</span><em>NPC_cellcycle_EdU-Ki67-pH3-DAPI.fcs</em></div>
+    <div class="fcs-tabs"><span>File</span><span>Home</span><span>Insert</span><span class="on">Gating</span><span>Batch</span><span>Data</span><span>Tools</span><span>View</span></div>
+    <div class="fcs-ribbon">
+      <div class="grp">
+        <div class="btns">
+          <button data-tx="none" class="on"><i class="ic ic-none"></i>Untreated</button>
+          <button data-tx="hu"><i class="ic ic-hu"></i>Hydroxyurea</button>
+          <button data-tx="noco"><i class="ic ic-noco"></i>Nocodazole</button>
+          <button data-tx="starve"><i class="ic ic-starve"></i>Serum starve</button>
+        </div>
+        <span class="grp-l">Treatment</span>
+      </div>
+      <div class="grp">
+        <div class="btns">
+          <button id="cy-pause"><i class="ic ic-pause"></i>Pause</button>
+          <button id="cy-clear"><i class="ic ic-clear"></i>Clear</button>
+        </div>
+        <span class="grp-l">Acquisition</span>
+      </div>
+      <div class="grp note"><p id="cy-note">Asynchronous, exponentially growing culture.</p><span class="grp-l">Condition</span></div>
     </div>
-  </div>
-
-  <p class="hint2">move to nudge · click a cell to follow it · double-click empty space to seed a new one · the cycle runs about a thousand times faster than real life</p>
+    <div class="fcs-body">
+      <aside class="fcs-nav">
+        <div class="fcs-pane-t">Gate Navigator</div>
+        <ul class="tree">
+          <li><i class="sq" style="background:#fff;border-color:#999"></i>All events <em data-count="all"></em>
+            <ul><li><i class="sq" style="background:#d32f2f"></i>Cells <em data-count="cells"></em>
+              <ul><li><i class="sq" style="background:#2e7d32"></i>Singlets <em data-count="singlets"></em>
+                <ul><li><i class="sq" style="background:#1565c0"></i>Live <em data-count="live"></em>
+                  <ul>
+                    <li><i class="sq sw-G0"></i>G0 <em data-count="G0"></em></li>
+                    <li><i class="sq sw-G1"></i>G1 <em data-count="G1"></em></li>
+                    <li><i class="sq sw-S"></i>S <em data-count="S"></em></li>
+                    <li><i class="sq sw-G2"></i>G2 <em data-count="G2"></em></li>
+                    <li><i class="sq sw-M"></i>M <em data-count="M"></em></li>
+                  </ul></li></ul></li></ul></li></ul></li>
+        </ul>
+        <div class="fcs-pane-t">DNA cell cycle fit</div>
+        <dl class="fit">
+          <dt>G0/G1 peak</dt><dd id="cy-g1"></dd>
+          <dt>G2/M peak</dt><dd id="cy-g2"></dd>
+          <dt>G2/G1 ratio</dt><dd id="cy-ratio"></dd>
+          <dt>G1 CV</dt><dd id="cy-cv"></dd>
+        </dl>
+        <div class="fcs-pane-t">Panel</div>
+        <dl class="fit">
+          <dt>DNA</dt><dd>DAPI</dd><dt>S phase</dt><dd>EdU pulse</dd><dt>cycling</dt><dd>Ki-67</dd><dt>mitosis</dt><dd>pH3 (S10)</dd><dt>viability</dt><dd>fixable dye</dd>
+        </dl>
+      </aside>
+      <div class="fcs-page">
+        <div class="page-h">Experiment #1 · NPC cell cycle</div>
+        <div class="plots">
+          <canvas data-plot="scatter"></canvas>
+          <canvas data-plot="singlet"></canvas>
+          <canvas data-plot="hist"></canvas>
+          <canvas data-plot="edu"></canvas>
+          <canvas data-plot="ki"></canvas>
+          <canvas data-plot="ph3"></canvas>
+        </div>
+        <table id="cy-table" class="stats">
+          <thead><tr><th>Population</th><th>#Events</th><th>%Parent</th><th>True phase of these events</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="fcs-status"><span><i class="dot"></i>Acquiring</span><span id="cy-rate"></span><span>total <b id="cy-total"></b></span><span class="grow"></span><span>Gating: Cells › Singlets › Live</span><span>✓ No errors</span></div>
+  </section>
 </main>
 
 <script type="module">
-import { initDish } from '../js/bio.js';
+import { createCulture } from '../js/cycle.js';
+import { initNeurons } from '../js/neurons.js';
+import { initCytometer } from '../js/cytometer.js';
 const $ = id => document.getElementById(id);
-const room = $('room');
-const secs = s => s < 60 ? `${s.toFixed(0)} s` : `${(s / 60).toFixed(1)} min`;
-const dish = initDish($('dish'), {
-  panel: $('inspect'),
-  setBg: m => { room.classList.toggle('stained', m === 'stained'); room.classList.toggle('fluor', m === 'fluor'); },
-  stats: ({ n, maxGen, divisions, counts }) => {
-    $('n').textContent = n; $('div').textContent = divisions; $('gen').textContent = maxGen;
-    for (const k of ['G1', 'S', 'G2', 'M']) $(`c-${k.toLowerCase()}`).style.flexGrow = counts[k] + 0.001;
+const culture = createCulture({ n: 6000, cycleSec: 42 });
+const cyto = initCytometer($('fcs'), culture);
+const card = $('cellcard');
+const dish = initNeurons($('neurons'), culture, {
+  onSelect: d => {
+    card.hidden = !d; cyto.highlight(d ? d.event : null);
+    if (!d) return;
+    $('cc-kind').textContent = d.kind; $('cc-phase').textContent = d.phase; $('cc-dna').textContent = `DNA content ${d.dna}`;
+    $('cc-markers').innerHTML = d.markers.map(m => `<span class="${m.endsWith('+') ? 'pos' : 'neg'}">${m}</span>`).join('');
   },
-  inspect: d => {
-    $('i-id').textContent = `cell #${d.id}`; $('i-phase').textContent = d.phase;
-    $('i-bar').style.width = `${(d.f * 100).toFixed(1)}%`;
-    $('i-gen').textContent = d.gen; $('i-parent').textContent = d.parent ? `#${d.parent}` : 'founder';
-    $('i-age').textContent = secs(d.age); $('i-next').textContent = d.until > 0 ? `in ${secs(d.until)}` : 'dividing now';
-  },
+  onPlace: (x, y) => { card.style.left = `${x * 100}%`; card.style.top = `${y * 100}%`; },
+  onCount: (n, p) => { $('inview').textContent = `${n} neurons · ${p} progenitors in view`; },
 });
 dish.setActive(true);
-document.querySelectorAll('#modes button').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('#modes button').forEach(x => x.classList.toggle('on', x === b));
-  dish.setMode(b.dataset.m);
-}));
-$('i-close').addEventListener('click', () => dish.select(null));
 </script>
 </body>
 </html>

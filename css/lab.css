@@ -1,0 +1,110 @@
+/* lab.css — /bio. A fluorescence dish on the left, and on the right an
+   analysis window in the visual language of desktop flow software: a
+   ribbon, a gate navigator, white plot pages, a status bar. The contrast
+   is the point: the pretty picture, and the instrument that makes it
+   mean something. */
+
+.lab { margin: 0; height: 100vh; overflow: hidden; background: #03041a; color: #e8ecff; }
+.lab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(620px, 52vw); height: 100vh; }
+
+/* ── the dish ─────────────────────────────────────── */
+.dish { position: relative; overflow: hidden; }
+.dish canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+.dish-title { position: absolute; z-index: 2; left: 32px; top: 90px; max-width: 380px; pointer-events: none; }
+.dish-title .lbl { color: #7fb2ff; margin: 0 0 10px; }
+.dish-title h1 { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 4.4vw, 64px); line-height: 0.92; letter-spacing: -0.02em; margin: 0 0 14px; }
+.dish-title p { margin: 0; font-size: 14px; line-height: 1.55; color: rgba(232, 236, 255, 0.72); text-wrap: pretty; }
+.legend2 { position: absolute; z-index: 2; left: 32px; bottom: 26px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11px; color: rgba(232, 236, 255, 0.7); max-width: 60%; }
+.legend2 span { display: inline-flex; align-items: center; gap: 6px; }
+.legend2 b { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+.legend2 em { font-style: normal; flex-basis: 100%; color: rgba(232, 236, 255, 0.5); }
+.dish-hint { position: absolute; z-index: 2; right: 18px; bottom: 26px; margin: 0; font-size: 11px; color: rgba(232, 236, 255, 0.5); }
+.cellcard {
+  position: absolute; z-index: 3; transform: translate(26px, -50%); width: 250px; pointer-events: none;
+  display: grid; gap: 5px; padding: 13px 15px; border-radius: 12px;
+  background: rgba(10, 14, 40, 0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 0 1px rgba(127, 178, 255, 0.28), 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.cellcard[hidden] { display: none; }
+.cellcard .lbl { color: #7fb2ff; }
+.cellcard b { font-family: var(--display); font-size: 22px; line-height: 1.05; font-weight: 750; }
+.cellcard .mono { font-size: 11.5px; }
+.cellcard .dimmer { color: rgba(232, 236, 255, 0.45); font-size: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 3px 0; }
+.chips span { font: 500 10.5px var(--mono); padding: 2px 6px; border-radius: 5px; }
+.chips .pos { background: rgba(95, 224, 168, 0.18); color: #7df0bf; }
+.chips .neg { background: rgba(255, 255, 255, 0.07); color: rgba(232, 236, 255, 0.55); }
+
+/* ── the analysis window ─────────────────────────── */
+.fcs {
+  display: flex; flex-direction: column; min-height: 0; background: #f3f3f3; color: #1a1a1a;
+  font: 12px 'Segoe UI', system-ui, -apple-system, sans-serif; box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45); z-index: 4;
+}
+.fcs-title { display: flex; gap: 12px; align-items: baseline; padding: 64px 12px 6px; background: #fff; }
+.fcs-title span { font-weight: 600; }
+.fcs-title em { font-style: normal; color: #777; font-size: 11px; }
+.fcs-tabs { display: flex; background: #b8401f; color: #fff; padding: 0 6px; }
+.fcs-tabs span { padding: 5px 11px; font-size: 12px; opacity: 0.92; }
+.fcs-tabs span.on { background: #f3f3f3; color: #b8401f; font-weight: 600; border-radius: 3px 3px 0 0; margin-top: 3px; opacity: 1; }
+.fcs-ribbon { display: flex; gap: 0; background: #f3f3f3; border-bottom: 1px solid #d4d4d4; padding: 6px 4px 2px; }
+.grp { display: flex; flex-direction: column; align-items: center; padding: 0 8px; border-right: 1px solid #dadada; }
+.grp .btns { display: flex; gap: 2px; }
+.grp button {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; width: 72px; padding: 4px 2px; border: 1px solid transparent; border-radius: 3px;
+  background: none; font: 11px 'Segoe UI', system-ui, sans-serif; color: #222; cursor: pointer;
+}
+.grp button:hover { background: #e3eefa; border-color: #b9d4f0; }
+.grp button.on { background: #cde3f7; border-color: #7eb4ea; }
+.grp-l { font-size: 10.5px; color: #666; padding: 3px 0 1px; }
+.grp.note { flex: 1; align-items: stretch; border-right: 0; }
+.grp.note p { margin: 2px 0 0; font-size: 11.5px; color: #333; line-height: 1.35; max-width: 34ch; flex: 1; }
+.grp.note .grp-l { text-align: center; }
+.ic { display: block; width: 26px; height: 26px; border-radius: 5px; position: relative; }
+.ic-none { background: linear-gradient(135deg, #2e7d32, #66bb6a); }
+.ic-hu { background: linear-gradient(135deg, #0277bd, #4fc3f7); }
+.ic-noco { background: linear-gradient(135deg, #ad1457, #f06292); }
+.ic-starve { background: linear-gradient(135deg, #6d4c41, #bcaaa4); }
+.ic-pause { background: #455a64; } .ic-clear { background: #90a4ae; }
+.ic::after { content: ''; position: absolute; inset: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.85); }
+.ic-pause::after { inset: 7px 9px; border-radius: 1px; background: linear-gradient(90deg, #fff 35%, transparent 35% 65%, #fff 65%); }
+
+.fcs-body { flex: 1; display: grid; grid-template-columns: 178px 1fr; min-height: 0; }
+.fcs-nav { background: #fff; border-right: 1px solid #d4d4d4; overflow-y: auto; }
+.fcs-pane-t { background: #e8e8e8; padding: 4px 8px; font-size: 11.5px; border-bottom: 1px solid #d4d4d4; border-top: 1px solid #d4d4d4; }
+.tree, .tree ul { list-style: none; margin: 0; padding: 0 0 0 12px; }
+.tree { padding: 6px 4px 8px 4px; }
+.tree li { font-size: 11.5px; line-height: 1.7; white-space: nowrap; }
+.tree em { font-style: normal; color: #888; font-size: 10.5px; margin-left: 3px; font-variant-numeric: tabular-nums; }
+.sq { display: inline-block; width: 10px; height: 10px; margin-right: 5px; vertical-align: -1px; border: 1px solid rgba(0, 0, 0, 0.3); }
+.sw-G0 { background: #9e9e9e; } .sw-G1 { background: #7e57c2; } .sw-S { background: #0097a7; } .sw-G2 { background: #3949ab; } .sw-M { background: #d81b60; }
+.stats .swc { display: inline-block; width: 9px; height: 9px; margin-right: 5px; border: 1px solid rgba(0, 0, 0, 0.3); }
+.fit { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin: 0; padding: 6px 8px 10px; font-size: 11px; }
+.fit dt { color: #666; } .fit dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+.fcs-page { overflow-y: auto; background: #c9c9c9; padding: 10px; }
+.page-h { background: #fff; padding: 8px 12px 0; font-weight: 700; font-size: 13px; }
+.plots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #fff; padding: 8px 10px 4px; }
+.plots canvas { width: 100%; aspect-ratio: 1.15; display: block; }
+.stats { width: 100%; border-collapse: collapse; background: #fff; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.stats th { text-align: left; background: #ececec; font-weight: 600; padding: 3px 10px; border: 1px solid #d6d6d6; }
+.stats td { padding: 2px 10px; border: 1px solid #e3e3e3; }
+.stats td:nth-child(n+2), .stats th:nth-child(n+2) { text-align: right; }
+.stats tr.ph td { background: #fafafa; }
+.stats td:last-child { color: #6a1b9a; }
+.fcs-status { display: flex; gap: 16px; align-items: center; padding: 4px 10px; background: #e6e6e6; border-top: 1px solid #cfcfcf; font-size: 11px; color: #333; }
+.fcs-status .grow { flex: 1; }
+.fcs-status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2e7d32; margin-right: 5px; animation: blink 1.2s steps(1) infinite; }
+.fcs-status b { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 1100px) {
+  .lab { height: auto; overflow: auto; }
+  .lab-grid { grid-template-columns: 1fr; height: auto; }
+  .dish { height: 100vh; }
+  .fcs-title { padding-top: 10px; }
+  .fcs-body { grid-template-columns: 1fr; }
+  .fcs-nav { display: none; }
+  .fcs-ribbon { overflow-x: auto; }
+  .plots { grid-template-columns: repeat(2, 1fr); }
+}
+.dish::before { content: ''; position: absolute; z-index: 1; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 560px 420px at 0% 18%, rgba(3, 4, 26, 0.86), rgba(3, 4, 26, 0) 72%); }
