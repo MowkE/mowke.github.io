@@ -168,3 +168,35 @@ body.driving { overflow: hidden; }
 .sw-room .dock { position: fixed; z-index: 10; left: 50%; bottom: 14px; transform: translateX(-50%); margin: 0; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .sw-room .os { height: calc(100vh - 330px); margin-bottom: 110px; }
 @media (max-width: 860px) { .sw-room .os { height: auto; } }
+
+/* ── bio: the flow dashboard, in the dish's own glass ── */
+.flow { right: 22px; top: 80px; width: 330px; display: grid; gap: 10px; padding: 14px 16px 12px; }
+.fl-head { display: flex; justify-content: space-between; align-items: center; }
+.fl-rec { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; opacity: 0.75; }
+.fl-rec i { width: 7px; height: 7px; border-radius: 50%; background: #ff4d6d; box-shadow: 0 0 8px #ff4d6d; animation: blink 1.2s steps(1) infinite; }
+.fl-chain { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; font-size: 10.5px; }
+.fl-chain span { white-space: nowrap; }
+.fl-chain em { font-style: normal; opacity: 0.55; margin-right: 4px; }
+.fl-chain small { color: var(--bio); font-size: 10px; }
+.fl-chain i { font-style: normal; opacity: 0.4; }
+.bio-room.fluor .fl-chain small { color: #7fa6ff; }
+.bio-room.stained .fl-chain small { color: #8a1f4f; }
+.flow canvas { display: block; width: 100%; border-radius: 8px; }
+.fl-hist { height: 120px; }
+.fl-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.fl-pair canvas { height: 96px; }
+.fl-phases { display: grid; gap: 6px; font-size: 11.5px; }
+.fl-phases div { display: grid; grid-template-columns: 1fr auto; row-gap: 3px; }
+.fl-phases em { font-style: normal; opacity: 0.5; font-size: 10.5px; margin-left: 4px; }
+.fl-phases b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.fl-phases i { grid-column: 1 / -1; display: block; height: 4px; width: 0; border-radius: 2px; transition: width 400ms ease; }
+.fl-foot { display: flex; justify-content: space-between; gap: 8px; font-size: 10.5px; opacity: 0.7; }
+.fl-foot.dim2 { opacity: 0.5; }
+.fl-foot b { font-weight: 500; }
+.bio-room .inspect { top: auto; bottom: 86px; left: 5vw; right: auto; }
+@media (max-width: 860px) { .flow { top: auto; bottom: 70px; left: 12px; right: 12px; width: auto; max-height: 52vh; overflow-y: auto; } }
+.stage .flow canvas { position: static; inset: auto; }
+.bio-room .stage::before { content: ''; position: absolute; z-index: 1; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 620px 380px at 0% 16%, rgba(22, 8, 15, 0.82), rgba(22, 8, 15, 0) 72%); }
+.bio-room.stained .stage::before { background: radial-gradient(ellipse 620px 380px at 0% 16%, rgba(244, 221, 230, 0.85), rgba(244, 221, 230, 0) 72%); }
+.bio-room.fluor .stage::before { background: radial-gradient(ellipse 620px 380px at 0% 16%, rgba(2, 2, 4, 0.85), rgba(2, 2, 4, 0) 72%); }

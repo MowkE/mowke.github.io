@@ -16,10 +16,19 @@ import * as THREE from 'three';
 import { MarchingCubes } from 'three/addons/objects/MarchingCubes.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-const MAX = 22, START = 13, STR = 0.3, ISO = 80, SUB = 12, SCALE = 4.2;
+const MAX = 18, START = 12, STR = 0.3, ISO = 80, SUB = 12, SCALE = 4.2;
 const R = Math.sqrt(STR / (ISO + SUB));        // grown cell radius, field units
 const PHASES = [['G1', 0], ['S', 0.34], ['G2', 0.56], ['M', 0.68]];
-const CHROMO = 8, MITO = 5, VES = 5;
+const CHROMO = 8, MITO = 16, VES = 22, LAMELLA = 6;
+const FLAT = 0.42;                              // adherent cells spread flat; they only round up to divide
+
+const NOISE = `
+  float h3(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+  float vn(vec3 x){ vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(mix(h3(i), h3(i + vec3(1,0,0)), f.x), mix(h3(i + vec3(0,1,0)), h3(i + vec3(1,1,0)), f.x), f.y),
+               mix(mix(h3(i + vec3(0,0,1)), h3(i + vec3(1,0,1)), f.x), mix(h3(i + vec3(0,1,1)), h3(i + vec3(1,1,1)), f.x), f.y), f.z); }
+  float fbm(vec3 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * vn(p); p *= 2.03; a *= 0.5; } return s; }
+`;
 
 export function initDish(canvas, ui) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -38,34 +47,45 @@ export function initDish(canvas, ui) {
 
   // ── materials, retuned per microscope mode ──────────────────────
   const membrane = new THREE.MeshPhysicalMaterial({
-    color: 0xff8fb5, roughness: 0.15, transparent: true, depthWrite: false,
-    clearcoat: 1, clearcoatRoughness: 0.12, iridescence: 0.7, iridescenceIOR: 1.3,
-    emissive: 0x5a0f2c, sheen: 1, sheenColor: new THREE.Color(0xffc6da),
+    color: 0xff8fb5, roughness: 0.55, transparent: true, depthWrite: false,
+    clearcoat: 0.25, clearcoatRoughness: 0.5, iridescence: 0.18, iridescenceIOR: 1.3,
+    emissive: 0x5a0f2c, sheen: 0.6, sheenColor: new THREE.Color(0xffc6da),
   });
   const rimU = { lo: { value: 0.14 }, hi: { value: 0.92 } };
   membrane.onBeforeCompile = sh => {
     sh.uniforms.uLo = rimU.lo; sh.uniforms.uHi = rimU.hi;
-    sh.fragmentShader = 'uniform float uLo, uHi;\n' + sh.fragmentShader.replace('#include <dithering_fragment>', `#include <dithering_fragment>
+    sh.vertexShader = 'varying vec3 vWP;\n' + sh.vertexShader.replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\n vWP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = 'uniform float uLo, uHi; varying vec3 vWP;\n' + NOISE + sh.fragmentShader.replace('#include <dithering_fragment>', `#include <dithering_fragment>
       float rimK = 1.0 - abs(dot(normalize(normal), normalize(vViewPosition)));
-      gl_FragColor.a = mix(uLo, uHi, pow(rimK, 1.7));`);
+      float gran = fbm(vWP * 7.0), fine = fbm(vWP * 26.0);
+      gl_FragColor.rgb *= 0.78 + 0.34 * gran + 0.18 * fine;           // granular cytoplasm
+      gl_FragColor.a = mix(uLo, uHi, pow(rimK, 1.5)) * (0.8 + 0.45 * gran);`);
   };
-  const field = new MarchingCubes(68, membrane, true, false, 110000);
-  field.isolation = ISO; field.scale.setScalar(SCALE);
+  const field = new MarchingCubes(76, membrane, true, false, 140000);
+  field.isolation = ISO; field.scale.set(SCALE, SCALE, SCALE * FLAT);
   scene.add(field);
 
   const M = {
-    nucleus: new THREE.MeshStandardMaterial({ color: 0x7a2cc4, roughness: 0.4, emissive: 0x2c0a55 }),
+    nucleus: new THREE.MeshStandardMaterial({ color: 0x8a52c8, roughness: 0.85, emissive: 0x1c0838 }),
     nucleolus: new THREE.MeshStandardMaterial({ color: 0x3a0f6e, roughness: 0.5, emissive: 0x16042e }),
     chromo: new THREE.MeshStandardMaterial({ color: 0xb28cff, roughness: 0.35, emissive: 0x4a1d9a }),
-    mito: new THREE.MeshStandardMaterial({ color: 0xff9a4d, roughness: 0.45, emissive: 0x5a2206 }),
+    mito: new THREE.MeshStandardMaterial({ color: 0xe8844a, roughness: 0.7, emissive: 0x3a1404, transparent: true, opacity: 0.85 }),
     ves: new THREE.MeshBasicMaterial({ color: 0xffe07a }),
   };
+  M.nucleus.onBeforeCompile = sh => {
+    sh.vertexShader = 'varying vec3 vOP;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vOP = position * 5.0 + vec3(instanceMatrix[3].xyz) * 3.0;');
+    sh.fragmentShader = 'varying vec3 vOP;\n' + NOISE + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+      float chrom = fbm(vOP * 2.2);
+      diffuseColor.rgb *= 0.55 + 0.9 * smoothstep(0.25, 0.75, chrom);   // heterochromatin clumps
+      diffuseColor.a = 0.92;`);
+  };
+  M.nucleus.transparent = true;
   const inst = (geo, mat, n) => { const m = new THREE.InstancedMesh(geo, mat, n); m.frustumCulled = false; scene.add(m); return m; };
   const nuclei = inst(new THREE.SphereGeometry(0.19, 28, 18), M.nucleus, MAX * 2);
-  const nucleoli = inst(new THREE.SphereGeometry(0.065, 14, 10), M.nucleolus, MAX * 2);
+  const nucleoli = inst(new THREE.SphereGeometry(0.05, 14, 10), M.nucleolus, MAX * 4);
   const chromos = inst(new THREE.CapsuleGeometry(0.022, 0.1, 4, 8), M.chromo, MAX * CHROMO);
-  const mitos = inst(new THREE.CapsuleGeometry(0.03, 0.11, 4, 8), M.mito, MAX * 2 * MITO);
-  const vesicles = inst(new THREE.SphereGeometry(0.035, 8, 6), M.ves, MAX * 2 * VES);
+  const mitos = inst(new THREE.CapsuleGeometry(0.014, 0.15, 4, 8), M.mito, MAX * 2 * MITO);
+  const vesicles = inst(new THREE.SphereGeometry(0.017, 6, 5), M.ves, MAX * 2 * VES);
 
   const spindleGeo = new THREE.BufferGeometry();
   const spindlePos = new Float32Array(MAX * CHROMO * 2 * 3);
@@ -98,8 +118,9 @@ export function initDish(canvas, ui) {
       len: rnd(15, 24), t: 0, dir: [1, 0], dying: false, mStarted: false,
       phase: Math.random() * 6.28, sep: 0,
       chromo: Array.from({ length: CHROMO / 2 }, () => [rnd(-1, 1), rnd(-1, 1), rnd(-1, 1), rnd(0, 6.28)]),
-      mito: Array.from({ length: MITO }, () => [rnd(0, 6.28), rnd(0.45, 0.85), rnd(-0.4, 0.4), rnd(0.2, 0.6), rnd(0, 6.28)]),
-      ves: Array.from({ length: VES }, () => [rnd(-0.5, 0.5), rnd(-0.5, 0.5), rnd(-0.3, 0.3)]),
+      mito: Array.from({ length: MITO }, () => [rnd(0, 6.28), rnd(0.5, 1.05), rnd(-0.4, 0.4), rnd(0.05, 0.25), rnd(0, 6.28)]),
+      ves: Array.from({ length: VES }, () => { const a = rnd(0, 6.28), r = rnd(0.62, 0.95); return [Math.cos(a) * r, Math.sin(a) * r, rnd(-0.3, 0.3)]; }),
+      lam: Array.from({ length: LAMELLA }, (_, k) => [k / LAMELLA * 6.28 + rnd(-0.3, 0.3), rnd(0.75, 1.15), rnd(0, 6.28), rnd(0.25, 0.6)]),
     };
     cells.push(c);
     return c;
@@ -135,7 +156,7 @@ export function initDish(canvas, ui) {
   const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit = new THREE.Vector3();
   const cursor = { x: 0, y: 0, on: false };
   const host = canvas.parentElement;
-  const wpos = c => new THREE.Vector3((c.x * 2 - 1) * SCALE, (c.y * 2 - 1) * SCALE, (c.z * 2 - 1) * SCALE);
+  const wpos = c => new THREE.Vector3((c.x * 2 - 1) * SCALE, (c.y * 2 - 1) * SCALE, (c.z * 2 - 1) * SCALE * FLAT);
   function toField(e) {
     const r = canvas.getBoundingClientRect();
     ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -184,7 +205,7 @@ export function initDish(canvas, ui) {
 
   // ── microscope modes ────────────────────────────────────────────
   const MODES = {
-    live: { mem: [0xff8fb5, 0x5a0f2c], lo: 0.14, hi: 0.92, nuc: [0x7a2cc4, 0x2c0a55], nol: 0x3a0f6e, chr: [0xb28cff, 0x4a1d9a], mito: [0xff9a4d, 0x5a2206], ves: 0xffe07a, dust: 0xff8fb5, spin: 0xd8e8ff, fib: [0xff4f8a, 0.08], env: 1, key: 2.2, rim: 40 },
+    live: { mem: [0xff8fb5, 0x5a0f2c], lo: 0.14, hi: 0.92, nuc: [0x8a52c8, 0x1c0838], nol: 0x3a0f6e, chr: [0xb28cff, 0x4a1d9a], mito: [0xff9a4d, 0x5a2206], ves: 0xffe07a, dust: 0xff8fb5, spin: 0xd8e8ff, fib: [0xff4f8a, 0.08], env: 1, key: 2.2, rim: 40 },
     stained: { mem: [0xf2a0bf, 0x3a1020], lo: 0.5, hi: 0.95, nuc: [0x3b1f7a, 0x000000], nol: 0x1a0a3a, chr: [0x2a1260, 0x000000], mito: [0xd66a9a, 0x200010], ves: 0xb0406a, dust: 0xc76a90, spin: 0x6a4a8a, fib: [0xd07a9a, 0.2], env: 0.8, key: 2.2, rim: 10 },
     fluor: { mem: [0x220508, 0xff2244], lo: 0.02, hi: 0.95, nuc: [0x0a1a55, 0x2f6bff], nol: 0x0a2acc, chr: [0x88b4ff, 0x4f8cff], mito: [0x0a3a10, 0x3dff5a], ves: 0xff3860, dust: 0x3355ff, spin: 0xffffff, fib: [0x3355ff, 0.08], env: 0.15, key: 0.3, rim: 4 },
   };
@@ -236,7 +257,7 @@ export function initDish(canvas, ui) {
       const c = cells[i], o = cells[j];
       if (c.sib === o && c.push) continue;
       const dx = c.x - o.x, dy = c.y - o.y, dz = c.z - o.z, d = Math.hypot(dx, dy, dz) || 1e-4;
-      const want = R * (Math.sqrt(Math.max(c.s, 0)) + Math.sqrt(Math.max(o.s, 0))) * 1.3 + (c.sep + o.sep) * 0.5;
+      const want = R * (Math.sqrt(Math.max(c.s, 0)) + Math.sqrt(Math.max(o.s, 0))) * 1.75 + (c.sep + o.sep) * 0.5;
       if (d < want) {
         const f = (want - d) * 5 * dt / d;
         c.vx += dx * f; c.vy += dy * f; c.vz += dz * f; o.vx -= dx * f; o.vy -= dy * f; o.vz -= dz * f;
@@ -264,12 +285,17 @@ export function initDish(canvas, ui) {
         field.addBall(c.x, c.y, c.z, s * STR * 0.25 * (1 - c.sep / (R * 1.35)) + 0.0001, SUB);
       } else {
         field.addBall(c.x, c.y, c.z, s * STR * pulse * (c.dying ? 0.8 : 1), SUB);
+        const spread = c.dying ? 0 : (ph.name === 'M' ? 1 - THREE.MathUtils.smoothstep(ph.m, 0, 0.2) : THREE.MathUtils.smoothstep(ph.f, 0, 0.12));
+        if (spread > 0.02) for (const [a0, len, wob, sz] of c.lam) {
+          const a = a0 + Math.sin(t * 0.25 + wob) * 0.25, reach = R * s * len * (0.8 + 0.15 * Math.sin(t * 0.6 + wob)) * spread;
+          field.addBall(c.x + Math.cos(a) * reach, c.y + Math.sin(a) * reach, c.z, s * STR * sz * spread * 0.42, SUB);
+        }
         if (c.dying) for (let k = 0; k < 3; k++) {
           const a = t * 2 + k * 2.1 + c.phase;
           field.addBall(c.x + Math.cos(a) * R * 0.9 * s, c.y + Math.sin(a) * R * 0.9 * s, c.z, s * STR * 0.12, SUB);
         }
       }
-      const cx = W(c.x), cy = W(c.y), cz = W(c.z), ws = s * SCALE * 2;
+      const cx = W(c.x), cy = W(c.y), cz = W(c.z) * FLAT, ws = s * SCALE * 2;
       const sepW = c.sep * SCALE * 2;
 
       // nucleus: swells through S, dissolves in prophase, reforms at both poles in telophase
@@ -280,8 +306,9 @@ export function initDish(canvas, ui) {
       for (const pk of poles) {
         const ns = s * (poles.length > 1 ? 0.8 : grow) * Math.max(nucA, 0.001);
         const nx = cx + dx * pk * sepW * 0.45, ny = cy + dy * pk * sepW * 0.45;
-        m4.compose(v.set(nx, ny, cz), q.identity(), sc.setScalar(ns)); nuclei.setMatrixAt(n++, m4);
-        m4.compose(v.set(nx + 0.05 * ns, ny + 0.04 * ns, cz + 0.1 * ns), q.identity(), sc.setScalar(ns)); nucleoli.setMatrixAt(nl++, m4);
+        m4.compose(v.set(nx, ny, cz), q.identity(), sc.set(ns * 1.08, ns, ns * 0.62)); nuclei.setMatrixAt(n++, m4);
+        m4.compose(v.set(nx + 0.06 * ns, ny + 0.04 * ns, cz + 0.07 * ns), q.identity(), sc.setScalar(ns)); nucleoli.setMatrixAt(nl++, m4);
+        m4.compose(v.set(nx - 0.07 * ns, ny - 0.05 * ns, cz + 0.06 * ns), q.identity(), sc.setScalar(ns * 0.7)); nucleoli.setMatrixAt(nl++, m4);
       }
 
       // chromosomes and spindle during mitosis
@@ -298,7 +325,7 @@ export function initDish(canvas, ui) {
           for (const sgn of [1, -1]) {
             const push = 0.012 + pull * poleD * 0.75;
             const px = cx + bx + dx * sgn * push, py = cy + by + dy * sgn * push;
-            eu.set(0, 0, THREE.MathUtils.lerp(ra + t, Math.atan2(dy, dx), align));
+            eu.set(0, 0, THREE.MathUtils.lerp(ra + t, Math.atan2(dy, dx), align) + sgn * 0.42 * (1 - pull));
             m4.compose(v.set(px, py, cz + rz * 0.05), q.setFromEuler(eu), sc.setScalar(s)); chromos.setMatrixAt(ch++, m4);
             if (align > 0.3) { const pole = sgn > 0 ? pA : pB; spindlePos.set([pole[0], pole[1], cz, px, py, cz], sp * 6); sp++; }
           }
@@ -309,16 +336,17 @@ export function initDish(canvas, ui) {
       const lobes = c.sep > 0;
       c.mito.forEach(([a0, rr, zz, spd, rot], k) => {
         const lobe = lobes ? (k % 2 ? 1 : -1) * sepW * 0.5 : 0;
-        const a = a0 + t * spd * 0.4;
-        const r = rr * R * ws * 0.72 * (lobes ? 0.8 : 1);
-        v.set(cx + dx * lobe + Math.cos(a) * r, cy + dy * lobe + Math.sin(a) * r, cz + zz * 0.25 * R * ws);
-        axis.set(-Math.sin(a), Math.cos(a), Math.sin(t + rot) * 0.4).normalize();
+        const a = a0 + t * spd * 0.2 + Math.sin(t * 0.3 + rot) * 0.15;
+        const r = R * ws * (0.55 + 0.42 * (rr - 0.5)) * (lobes ? 0.75 : 1) * (ph.name === 'M' ? 0.8 : 1);
+        v.set(cx + dx * lobe + Math.cos(a) * r, cy + dy * lobe + Math.sin(a) * r, cz + zz * 0.12 * R * ws);
+        axis.set(-Math.sin(a + (rot - 3) * 0.15), Math.cos(a + (rot - 3) * 0.15), Math.sin(t * 0.5 + rot) * 0.1).normalize();
         q.setFromUnitVectors(up, axis);
         m4.compose(v, q, sc.setScalar(s)); mitos.setMatrixAt(mi++, m4);
       });
       c.ves.forEach(([ox, oy, oz], k) => {
         const a = t * 0.3 + c.phase + k;
-        m4.compose(v.set(cx + (ox * Math.cos(a) - oy * Math.sin(a)) * 1.3 * R * ws, cy + (ox * Math.sin(a) + oy * Math.cos(a)) * 1.3 * R * ws, cz + oz * 0.3 * R * ws), q.identity(), sc.setScalar(s));
+        const aa = t * 0.05 + c.phase;
+        m4.compose(v.set(cx + (ox * Math.cos(aa) - oy * Math.sin(aa)) * 0.5 * R * ws, cy + (ox * Math.sin(aa) + oy * Math.cos(aa)) * 0.5 * R * ws, cz + oz * 0.12 * R * ws), q.identity(), sc.setScalar(s * (0.7 + 0.3 * Math.sin(t * 2 + k))));
         vesicles.setMatrixAt(ve++, m4);
       });
     }
@@ -334,7 +362,7 @@ export function initDish(canvas, ui) {
     if (selected) camGoal.copy(wpos(selected)); else camGoal.set(0, 0, 0);
     camTarget.lerp(camGoal, 0.08);
     camDist += (camDistGoal - camDist) * 0.06;
-    camera.position.set(camTarget.x + Math.sin(t * 0.05) * 0.6, camTarget.y + Math.cos(t * 0.04) * 0.4, camTarget.z + camDist);
+    camera.position.set(camTarget.x + Math.sin(t * 0.05) * 0.6, camTarget.y - camDist * 0.32 + Math.cos(t * 0.04) * 0.4, camTarget.z + camDist);
     camera.lookAt(camTarget);
     renderer.render(scene, camera);
   }

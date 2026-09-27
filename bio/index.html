@@ -38,15 +38,19 @@
     <p>Every cell here is running the cell cycle: it grows, copies its DNA, and splits in two. Watch the chromosomes line up and get pulled apart. Click any cell to follow it.</p>
   </div>
 
-  <section class="panel census" aria-label="Population">
-    <div class="row"><span class="lbl">cells alive</span><span class="num" id="n">0</span></div>
-    <div class="row"><span class="lbl">divisions</span><span class="num" id="div">0</span></div>
-    <div class="row"><span class="lbl">deepest generation</span><span class="num" id="gen">0</span></div>
-    <div>
-      <div class="lbl" style="margin-bottom:7px">where they are in the cycle</div>
-      <div class="cycle"><i class="ph-g1" id="c-g1"></i><i class="ph-s" id="c-s"></i><i class="ph-g2" id="c-g2"></i><i class="ph-m" id="c-m"></i></div>
+  <section class="panel flow" id="flow" aria-label="Flow cytometry">
+    <div class="fl-head"><span class="lbl">flow cytometry · live singlets</span><span class="fl-rec mono"><i></i><span id="fl-rate"></span></span></div>
+    <div class="fl-chain mono" id="fl-chain"></div>
+    <canvas data-p="hist" class="fl-hist" aria-label="DNA content histogram"></canvas>
+    <div class="fl-pair"><canvas data-p="edu" aria-label="EdU versus DNA"></canvas><canvas data-p="ph3" aria-label="pH3 versus DNA"></canvas></div>
+    <div class="fl-phases mono">
+      <div data-ph="G1"><span>G0/G1 <em>2N, growing</em></span><b></b><i class="ph-g1"></i></div>
+      <div data-ph="S"><span>S <em>EdU+, copying DNA</em></span><b></b><i class="ph-s"></i></div>
+      <div data-ph="G2"><span>G2 <em>4N, pH3−</em></span><b></b><i class="ph-g2"></i></div>
+      <div data-ph="M"><span>M <em>4N, pH3+</em></span><b></b><i class="ph-m"></i></div>
     </div>
-    <div class="legend"><span><b class="ph-g1"></b>G1 grow</span><span><b class="ph-s"></b>S copy DNA</span><span><b class="ph-g2"></b>G2 check</span><span><b class="ph-m"></b>M divide</span></div>
+    <div class="fl-foot mono"><span id="fl-fit"></span><span>DAPI · EdU · pH3 · viability</span></div>
+    <div class="fl-foot mono dim2"><span>in the dish: <b id="n">0</b> cells · <b id="div">0</b> divisions · gen <b id="gen">0</b></span></div>
   </section>
 
   <section class="panel inspect" id="inspect" aria-live="polite">
@@ -77,15 +81,17 @@
 
 <script type="module">
 import { initDish } from '../js/bio.js';
+import { initFlow } from '../js/flow.js';
 const $ = id => document.getElementById(id);
 const room = $('room');
 const secs = s => s < 60 ? `${s.toFixed(0)} s` : `${(s / 60).toFixed(1)} min`;
+const flow = initFlow($('flow'));
+flow.setActive(true);
 const dish = initDish($('dish'), {
   panel: $('inspect'),
-  setBg: m => { room.classList.toggle('stained', m === 'stained'); room.classList.toggle('fluor', m === 'fluor'); },
+  setBg: m => { room.classList.toggle('stained', m === 'stained'); room.classList.toggle('fluor', m === 'fluor'); flow && flow.setMode(m); },
   stats: ({ n, maxGen, divisions, counts }) => {
     $('n').textContent = n; $('div').textContent = divisions; $('gen').textContent = maxGen;
-    for (const k of ['G1', 'S', 'G2', 'M']) $(`c-${k.toLowerCase()}`).style.flexGrow = counts[k] + 0.001;
   },
   inspect: d => {
     $('i-id').textContent = `cell #${d.id}`; $('i-phase').textContent = d.phase;
