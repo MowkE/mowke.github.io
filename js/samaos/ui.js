@@ -268,7 +268,7 @@ export function boot(root) {
       const job = (name, role, when, pts, links = []) => `<article class="r-job"><header><b>${name}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
-          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full résumé</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a><button class="btn quiet r-sims">Open the sims</button></div></header>
+          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full résumé</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a></div></header>
         <p class="r-sec">Software</p>
         ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', 'Jan 2026 – now', [
           'Built and launched iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
@@ -290,8 +290,11 @@ export function boot(root) {
           'Custom prompt pipelines that generate WebGL coordinate math cut asset creation time 10×.',
           'Grew from 6 local schools to 79 school districts across 98 countries through educator outreach and SEO.'],
           [['bio-sim.us', 'https://bio-sim.us/'], ['bio-sim.us/chemistry', 'https://bio-sim.us/chemistry/']])}
-        ${job('samaOS', 'This page', '2026', [
-          'A small operating system written from scratch in JavaScript: its own language and compiler, a bytecode virtual CPU, a preemptive scheduler, a file system and a shell.'])}
+        ${job('Sims', 'Nine interactive simulations · no frameworks, no build step', '2026', [
+          'Nine browser simulations that each measure something real and print it beside the textbook value.',
+          'APSIS raymarches light around a black hole along Schwarzschild geodesics; VALENCE raymarches hydrogen orbitals from the Schrödinger equation; HYPERSHAPE rotates four-dimensional shapes.',
+          'LUMA and LUMASHAPE test color models against human and bird vision; QUASI cuts quasicrystals from five dimensions; DIFFUSE rediscovers Fick\'s laws from random walkers; META shows geometry deciding how a material behaves; GOLDILOCKS checks whether a planet keeps liquid water.'])}
+        <p class="r-sims-row"><button class="btn quiet r-sims">Open the sims</button></p>
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
       w.body.querySelector('.r-sims').addEventListener('click', () => open('sims'));
