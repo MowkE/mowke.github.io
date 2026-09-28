@@ -99,7 +99,7 @@
 <button class="mute mono" id="mute" aria-pressed="false">sound on</button>
 
 <script type="module">
-import { startGame } from '../../js/rebuilt.js?v=21';
+import { startGame } from '../../js/rebuilt.js?v=22';
 const $ = id => document.getElementById(id);
 const body = document.body;
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -132,7 +132,7 @@ const ui = {
     ret.classList.toggle('on', h.aiming || h.blocked);
     ret.classList.toggle('blocked', h.blocked);
     ret.classList.toggle('lock', h.aiming && Math.abs(h.aimErr) < 0.05);
-    $('ret-t').textContent = h.blocked ? 'blocked · the hub is shielded from midfield, get back to your side' : h.aiming ? (Math.abs(h.aimErr) < 0.05 ? 'LOCKED · firing' : `aligning ${Math.abs(h.aimErr * 57.3).toFixed(0)}°`) : '';
+    $('ret-t').textContent = h.blocked ? 'midfield · no aim, lobbing FUEL back to your side' : h.aiming ? (Math.abs(h.aimErr) < 0.05 ? 'LOCKED · firing' : `aligning ${Math.abs(h.aimErr * 57.3).toFixed(0)}°`) : '';
     $('banner').textContent = h.auto ? 'AUTO · both hubs live · score here and your hub goes dark first in teleop' : h.phase === 'AUTO → TELEOP' ? 'robot disabled · teleop in a moment' : '';
     $('banner').classList.toggle('on', !!$('banner').textContent);
     if (h.made > lastPops) { const p = $('pop'); p.textContent = `+${h.made - lastPops}`; p.classList.remove('go'); void p.offsetWidth; p.classList.add('go'); }

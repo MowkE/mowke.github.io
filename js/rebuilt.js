@@ -460,22 +460,32 @@ export function startGame(canvas, ui) {
 
   // the drum is as wide as the robot: a volley leaves as a ragged line of FUEL
   // across it, never quite even: a few ms apart, each with its own small error
-  function queueVolley(r) {
+  function queueVolley(r, pass = false) {
     const n = Math.min(r.held, 3 + (Math.random() < 0.55 ? 1 : 0) + (Math.random() < 0.3 ? 1 : 0));
     const w = r.drumW || 0.45;
     for (let k = 0; k < n; k++) {
       const lat = (n === 1 ? 0 : -w / 2 + w * k / (n - 1)) + (Math.random() - 0.5) * w * 0.18;
-      r.volley.push({ in: Math.random() * 0.075 + (Math.random() < 0.2 ? 0.05 : 0), lat });
+      r.volley.push({ in: Math.random() * 0.075 + (Math.random() < 0.2 ? 0.05 : 0), lat, pass });
     }
     r.held -= n;
     sfx.shot();
+  }
+  // from midfield there's no aiming: the drum just lobs FUEL out along the robot's axis,
+  // hard enough to carry back into our alliance zone if we're pointed that way
+  function passShot(r, dir) {
+    const from = shooterWorld(r), sg = r.alliance === 'red' ? -1 : 1;
+    const zoneX = sg * (HX - 2.2), dx = Math.sin(dir);
+    let d = 6;
+    if (dx * sg > 0.25) d = clamp((zoneX - from.x) / dx, 3, 10);
+    const th = THREE.MathUtils.degToRad(42);
+    return { from, v: Math.sqrt(G * d / Math.sin(2 * th)), th, d };
   }
   function releaseVolley(r, dt) {
     for (let k = r.volley.length - 1; k >= 0; k--) {
       const v = r.volley[k]; v.in -= dt; if (v.in > 0) continue;
       r.volley.splice(k, 1);
-      const sol = solve(r, r.alliance);
       const dir = r.shootDir > 0 ? r.yaw : r.yaw + Math.PI;     // launched along the robot's own axis
+      const sol = v.pass ? passShot(r, dir) : solve(r, r.alliance);
       const sp = sol.v * (1 + (Math.random() - 0.5) * 0.045 * (1 + sol.d * 0.1));
       const th = sol.th + (Math.random() - 0.5) * 0.035;
       const ya = dir + (Math.random() - 0.5) * 0.03;
@@ -719,6 +729,10 @@ export function startGame(canvas, ui) {
     // the drum only works from our side of the hub: from midfield the shield is in the way
     const hubX = hubs[bot.alliance].x, sgA = bot.alliance === 'red' ? -1 : 1;
     bot.blocked = shooting && bot.held > 0 && (bot.x - hubX) * sgA < 0;
+    if (bot.blocked) {
+      bot.shootCool -= dt;
+      if (bot.shootCool <= 0) { queueVolley(bot, true); bot.shootCool = VOLLEY; }
+    }
     if (shooting && bot.held > 0 && !bot.blocked) {
       const sol = solve(bot, bot.alliance);
       const want = yawFor(bot, sol.heading), err = wrap(want - bot.yaw);

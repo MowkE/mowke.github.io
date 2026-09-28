@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/site.css?v=18" />
-<script>try{if((!sessionStorage.getItem("introSeen")||location.search.includes("intro"))&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("intro-on")}catch(e){}</script>
+<script>try{if(!sessionStorage.getItem("introSeen")||location.search.includes("intro"))document.documentElement.classList.add("intro-on")}catch(e){}</script>
 </head>
 <body>
 
@@ -50,7 +50,7 @@
 </header>
 
 
-<script src="js/intro.js?v=7"></script>
+<script src="js/intro.js?v=9"></script>
 <script src="js/woodstock.js?v=14"></script>
 <script type="module" src="js/site.js?v=7"></script>
 </body>

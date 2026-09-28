@@ -3,7 +3,8 @@
 // way a person types (uneven rhythm, the occasional typo and backspace),
 // the author appears, and then the whole terminal shrinks and flies into
 // its place as the Snoopy card on the home page. Click or press any key
-// to skip. Plays once per browser session.
+// to skip. Plays on the first visit of every browser session. With reduced
+// motion the quote still shows, set all at once, and fades instead of flying.
 
 // ── swap these for your own quotes ────────────────────────────────────
 const QUOTES = [
@@ -17,15 +18,15 @@ const QUOTES = [
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const seen = (() => { try { return sessionStorage.getItem('introSeen'); } catch { return null; } })();
 const force = new URLSearchParams(location.search).has('intro');
+let lastQ = -1;
 
-if ((!seen || force) && !reduced) run();
+if (!seen || force) run();
 else document.documentElement.classList.remove('intro-on');
 // safety net: the page must never stay hidden once no intro is on screen
 setInterval(() => { if (!document.getElementById('intro')) document.documentElement.classList.remove('intro-on'); }, 1000);
 // clicking the Snoopy card plays it again with a different quote
 window.__intro = { replay: () => { if (!document.getElementById('intro')) run({ replay: true }); } };
 
-let lastQ = -1;
 function run(opts = {}) {
   try { sessionStorage.setItem('introSeen', '1'); } catch {}
   let qi; do { qi = (Math.random() * QUOTES.length) | 0; } while (qi === lastQ && QUOTES.length > 1);
@@ -119,7 +120,8 @@ function run(opts = {}) {
     else { t.textContent += k; key(k === ' ' ? 'space' : 'key'); if (k === ' ') wait += 30; if (/[,.]/.test(k)) wait += 220; }
     timer = setTimeout(next, wait);
   };
-  timer = setTimeout(next, opts.replay ? 950 : 500);
+  if (reduced) { t.textContent = q.text; by.textContent = `— ${q.by}`; by.classList.add('on'); el.querySelector('.i-caret').hidden = true; timer = setTimeout(finish, 3400); }
+  else timer = setTimeout(next, opts.replay ? 950 : 500);
 
   function finish() {
     if (done) return; done = true; clearTimeout(timer);
@@ -128,8 +130,9 @@ function run(opts = {}) {
     if (card) card.style.visibility = 'hidden';
     const r = card ? card.getBoundingClientRect() : null;
     const from = el.getBoundingClientRect();
-    el.classList.add('leaving');
-    if (r) {
+    if (reduced) { el.style.transition = 'opacity 0.4s'; el.style.opacity = '0'; }
+    else el.classList.add('leaving');
+    if (r && !reduced) {
       const sx = r.width / from.width, sy = r.height / from.height;
       el.style.transformOrigin = '0 0';
       el.style.transform = `translate(${r.left - from.left}px, ${r.top - from.top}px) scale(${sx}, ${sy})`;
