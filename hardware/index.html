@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css" />
-<link rel="stylesheet" href="../css/pages.css?v=5" />
+<link rel="stylesheet" href="../css/pages.css?v=6" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -26,10 +26,10 @@
     <a href="../bio/" data-c="bio"><i></i>bio</a>
     <a href="../hardware/" data-c="hw" class="on"><i></i>hardware</a>
     <a href="../software/" data-c="sw"><i></i>software</a>
-    <a href="#record" class="nav-rec">résumé ↓</a>
+    <a href="#record" class="nav-rec">resume ↓</a>
   </span>
 </nav>
-<a class="rec-cue mono" id="rec-cue" href="#record">Scroll to build the robot · résumé at the end <i>↓</i></a>
+<a class="rec-cue mono" id="rec-cue" href="#record">Scroll to build the robot · resume at the end <i>↓</i></a>
 
 <main class="stage">
   <canvas id="robot" aria-label="HighTide, assembling"></canvas>
@@ -68,13 +68,13 @@
 
 <div class="hw-track" id="track"></div>
 
-<section class="record" id="record" aria-label="Résumé">
+<section class="record" id="record" aria-label="Resume">
   <div class="rec-in">
     <header class="rec-head">
-      <p class="rec-k mono">résumé · hardware</p>
+      <p class="rec-k mono">resume · hardware</p>
       <h2>Built it.</h2>
       <p class="rec-lede">The robot above is my team's; here's what else I've designed, wired and shipped.</p>
-      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full résumé (PDF) ↗</a>
+      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full resume (PDF) ↗</a>
     </header>
     <article class="job">
       <p class="when">Mar 2024 – now</p>
@@ -164,7 +164,7 @@ const r = initRobot($('robot'), $('track'), {
 r.setActive(true);
 </script>
 <script>
-// the résumé cue: jump on click, and step aside once the résumé is on screen
+// the resume cue: jump on click, and step aside once the resume is on screen
 {
   const cue = document.getElementById('rec-cue'), rec = document.getElementById('record');
   cue.addEventListener('click', e => { e.preventDefault(); rec.scrollIntoView({ behavior: 'smooth' }); });

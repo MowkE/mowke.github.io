@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css" />
-<link rel="stylesheet" href="../css/pages.css?v=5" />
+<link rel="stylesheet" href="../css/pages.css?v=6" />
 <link rel="stylesheet" href="../css/dive.css?v=4" />
 <script type="importmap">
 { "imports": {
@@ -27,10 +27,10 @@
     <a href="../bio/" data-c="bio" class="on"><i></i>bio</a>
     <a href="../hardware/" data-c="hw"><i></i>hardware</a>
     <a href="../software/" data-c="sw"><i></i>software</a>
-    <a href="#record" class="nav-rec">résumé ↓</a>
+    <a href="#record" class="nav-rec">resume ↓</a>
   </span>
 </nav>
-<a class="rec-cue mono" id="rec-cue" href="#record">Scroll down for my résumé <i>↓</i></a>
+<a class="rec-cue mono" id="rec-cue" href="#record">Scroll down for my resume <i>↓</i></a>
 
 <main class="stage" id="stage">
   <canvas id="dish" aria-label="A dish of living cells"></canvas>
@@ -84,13 +84,13 @@
   <p class="hint2">click a cell, then scroll to dive into its DNA · double-click to seed a cell</p>
 </main>
 
-<section class="record" id="record" aria-label="Résumé">
+<section class="record" id="record" aria-label="Resume">
   <div class="rec-in">
     <header class="rec-head">
-      <p class="rec-k mono">résumé · bio</p>
+      <p class="rec-k mono">resume · bio</p>
       <h2>In the lab.</h2>
       <p class="rec-lede">Four years of wet-lab research, from cancer drug synthesis to vesicle engineering.</p>
-      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full résumé (PDF) ↗</a>
+      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full resume (PDF) ↗</a>
     </header>
     <article class="job">
       <p class="when">Jan 2025 – now</p>
@@ -326,7 +326,7 @@ stage.addEventListener('wheel', e => { if (!dive.isOpen && dish.selected && e.de
 setInterval(() => showEdit(dish.selected), 500);
 </script>
 <script>
-// the résumé cue: jump on click, and step aside once the résumé is on screen
+// the resume cue: jump on click, and step aside once the resume is on screen
 {
   const cue = document.getElementById('rec-cue'), rec = document.getElementById('record');
   cue.addEventListener('click', e => { e.preventDefault(); rec.scrollIntoView({ behavior: 'smooth' }); });

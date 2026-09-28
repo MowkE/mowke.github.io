@@ -18,7 +18,7 @@ const ICONS = {
   sims: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6" /><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(-25 12 12)" /><circle cx="19.4" cy="8.6" r="1.2" /></svg>',
   resume: '<svg viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11z M13.5 3.5v4h4 M9 12h6 M9 15.5h6" /></svg>',
 };
-const NAMES = { resume: 'Résumé', sims: 'Orrery', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
+const NAMES = { resume: 'Resume', sims: 'Orrery', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
 
 export function boot(root) {
   const fs = makeFS(), kernel = makeKernel(fs);
@@ -262,13 +262,13 @@ export function boot(root) {
     },
   };
 
-  // ---------------------------------------------------------------- Résumé
+  // ---------------------------------------------------------------- Resume
   os.apps.resume = {
     mount(w) {
       const job = (name, role, when, pts, links = [], status = '') => `<article class="r-job"><header><b>${name}${status ? ` <i class="r-st">${status}</i>` : ''}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
-          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full résumé</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a></div></header>
+          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full resume</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a></div></header>
         <p class="r-sec">Products</p>
         ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
           'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
@@ -395,10 +395,10 @@ export function boot(root) {
     bootEl.classList.add('gone'); root.classList.add('up');
     open('terminal');
     open('resume');
-    // point people at the résumé: a notification that slides in, then gets out of the way
+    // point people at the resume: a notification that slides in, then gets out of the way
     const note = document.createElement('div');
     note.className = 'notify'; note.setAttribute('role', 'status');
-    note.innerHTML = `<span class="n-ic">${ICONS.resume}</span><div><b>My résumé is open</b><p>It's in the window on the right. Reopen it any time from the first icon in the dock.</p></div><button class="btn primary n-go">Show it</button><button class="n-x" aria-label="Dismiss">×</button>`;
+    note.innerHTML = `<span class="n-ic">${ICONS.resume}</span><div><b>My resume is open</b><p>It's in the window on the right. Reopen it any time from the first icon in the dock.</p></div><button class="btn primary n-go">Show it</button><button class="n-x" aria-label="Dismiss">×</button>`;
     root.appendChild(note);
     const dismiss = () => { note.classList.add('out'); setTimeout(() => note.remove(), 400); };
     note.querySelector('.n-go').addEventListener('click', () => { open('resume'); dismiss(); });
