@@ -18,7 +18,7 @@ const ICONS = {
   sims: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6" /><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(-25 12 12)" /><circle cx="19.4" cy="8.6" r="1.2" /></svg>',
   resume: '<svg viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11z M13.5 3.5v4h4 M9 12h6 M9 15.5h6" /></svg>',
 };
-const NAMES = { resume: 'Resume', sims: 'Orrery', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
+const NAMES = { resume: 'Resume', sims: 'Instruments', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
 
 export function boot(root) {
   const fs = makeFS(), kernel = makeKernel(fs);
@@ -31,7 +31,7 @@ export function boot(root) {
   // ---------------------------------------------------------------- dock
   for (const key of Object.keys(NAMES)) {
     const b = h(`<button class="dock-app" data-app="${key}" aria-label="Open ${NAMES[key]}"><span class="tile">${ICONS[key]}</span><span class="tip">${NAMES[key]}</span><i class="dot"></i></button>`);
-    b.addEventListener('click', () => open(key, { fromDock: true }));
+    b.addEventListener('click', () => key === 'sims' ? window.open('../sims/', '_blank', 'noopener') : open(key, { fromDock: true }));
     dock.appendChild(b);
   }
   const refreshDock = () => dock.querySelectorAll('.dock-app').forEach(b => b.classList.toggle('running', wins.some(w => w.app === b.dataset.app)));
@@ -255,10 +255,10 @@ export function boot(root) {
     },
   };
 
-  // ---------------------------------------------------------------- Orrery (the sims page, live)
+  // ---------------------------------------------------------------- Instruments (the sims page)
   os.apps.sims = {
     mount(w) {
-      w.body.innerHTML = `<div class="sims"><iframe src="../sims/?v=2" title="Orrery: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>The Orrery: nine simulations in orbit. Throw one, or click it to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
+      w.body.innerHTML = `<div class="sims"><iframe src="../sims/?v=2" title="Instruments: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>Nine simulations in orbit. Throw one, or click it to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
     },
   };
 
@@ -313,39 +313,30 @@ export function boot(root) {
         ${job('Mudra', 'Builder · gesture control for CAD', 'Aug 2026', [
           'Drive Onshape\'s viewport with your hands: MediaPipe tracking feeds a gesture state machine, which controls the browser over a WebSocket.',
           'Orbit, pan, zoom, click and fit-to-view, with a ~600 ms watchdog that releases stuck input.'], [['github.com/MowkE/mudra', 'https://github.com/MowkE/mudra']], 'Prototype')}
-        ${job('Wavelength', 'Builder · listen together in sync', 'Aug 2026', [
-          'A Chrome extension and WebSocket relay that keep friends\' YouTube Music playback in sync: rooms, leader election, reconnection, late joins and drift correction.',
-          'Only playback state travels between browsers, never audio; idempotent snapshots stop echo loops when two people act at once.'], [['github.com/MowkE/wavelength', 'https://github.com/MowkE/wavelength']], 'Built')}
         ${job('Limen', 'Builder · headline-framing extension', 'Aug 2026', [
           'A browser extension that annotates headlines and posts with the framing techniques they use and a neutral rewrite.',
           'The interface and site integration are built; scoring runs on a separate self-hosted service.'], [['github.com/MowkE/limen', 'https://github.com/MowkE/limen']], 'Prototype')}
         ${job('amdetect', 'Inference and streaming · answering-machine detection', 'Aug 2026', [
           'Tells whether a phone call reached a person or a machine (voicemail, phone menu, carrier message).',
           'A Go audio pipeline (decoding, resampling, log-mel features), ONNX inference on a pretrained Whisper telephony model, and a streaming API that trades decision time against errors.'], [], 'Built')}
-        ${job('Clicky extension (CEC)', 'Architecture sketch · on Farza\'s Clicky', 'Jul 2026', [
-          'A control hierarchy for a desktop agent: use an app\'s API first, accessibility controls next, and vision only as a fallback, with confirmations.',
-          'Adapter sketches for PyMOL and Jupyter and an Onshape stub. Written as a scaffold; not yet compiled or wired in.'], [], 'Scaffold')}
         ${job('Recollect', 'Collaboration with a friend · memory for coding models', '2026', [
           'Can a changing memory system help a frozen coding model use what it has learned? Qwen models wrapped in a memory loop, with later LoRA experiments.',
           'Results were mixed and partly negative, and the write-up documents each dead end.'], [], 'Experiment')}
         ${job('Paper-trading agent', 'Experiment · automation', 'Spring 2026', [
           'Research-journaling automation and paper-trading helpers on Alpaca. Switched off in June 2026.'], [], 'Retired')}
-        ${job('Pygame social game', 'Adaptation · creative programming', '2026', [
-          'Adapted a Pygame social-deduction game: gameplay and UI changes, plus Windows and macOS packaging.'], [], 'Built')}
 
         <p class="r-sec">Research</p>
         ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', 'Aug 2026', [
           'Asks whether limiting who gets decision-making roles lowers participation in an artificial society even when resources are plentiful, inspired by the Universe 25 experiment.',
           'A completed rule-based 2×2 study: 8 agents, 40 rounds, 800 paired-seed runs with control policies and a frozen internal preregistration.',
           'Built the infrastructure for a second study with LLM agents. A pilot run was deliberately excluded as compromised evidence; the controlled LLM study and the paper are in progress.'], [], 'In progress')}
-        ${job('Orrery', 'Nine interactive simulations, orbiting one sun · no frameworks, no build step', '2026', [
+        ${job('Instruments', 'Nine interactive science simulations · no frameworks, no build step', '2026', [
           'Nine browser simulations that each measure something real and print it beside the textbook value.',
           'APSIS raymarches light around a black hole along Schwarzschild geodesics; VALENCE raymarches hydrogen orbitals from the Schrödinger equation; HYPERSHAPE rotates four-dimensional shapes.',
           'LUMA and LUMASHAPE test color models against human and bird vision (LUMA credits a Jake Dont Draw video as inspiration); QUASI cuts quasicrystals from five dimensions; DIFFUSE rediscovers Fick\'s laws from random walkers; META shows geometry deciding how a material behaves; GOLDILOCKS checks whether a planet keeps liquid water.'])}
-        <p class="r-sims-row"><button class="btn quiet r-sims">Open the Orrery</button></p>
+        <p class="r-sims-row"><a class="btn quiet r-sims" href="../sims/" target="_blank" rel="noopener">Open Instruments ↗</a></p>
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
-      w.body.querySelector('.r-sims').addEventListener('click', () => open('sims'));
       // full screen: the window fills everything under the menu bar; Esc or the same button puts it back
       const fullBtn = w.body.querySelector('.r-full');
       const setFull = on => {
