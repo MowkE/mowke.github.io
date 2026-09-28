@@ -8,9 +8,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23ff8fb5' fill-opacity='.35' stroke='%23ff5c93' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%237a2cc4'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../css/site.css" />
-<link rel="stylesheet" href="../css/pages.css?v=6" />
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Happy+Monkey&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/site.css?v=24" />
+<link rel="stylesheet" href="../css/pages.css?v=8" />
 <link rel="stylesheet" href="../css/dive.css?v=4" />
 <script type="importmap">
 { "imports": {
@@ -36,13 +36,12 @@
   <canvas id="dish" aria-label="A dish of living cells"></canvas>
 
   <div class="title">
-    <p class="lbl k">01 · bio</p>
-    <h1>The dish.</h1>
+    <h1>The <em>dish.</em></h1>
     <p>Every cell here is running the cell cycle: it grows, copies its DNA, and splits in two. Watch the chromosomes line up and get pulled apart. Click any cell to follow it.</p>
   </div>
 
   <section class="panel flow" id="flow" aria-label="Flow cytometry">
-    <div class="fl-head"><span class="lbl">flow cytometry · live singlets</span><span class="fl-rec mono"><i></i><span id="fl-rate"></span></span></div>
+    <div class="fl-head"><span class="lbl">Flow cytometry <em>· live</em></span><span class="fl-rec mono"><i></i><span id="fl-rate"></span></span></div>
     <div class="fl-chain mono" id="fl-chain"></div>
     <canvas data-p="hist" class="fl-hist" aria-label="DNA content histogram"></canvas>
     <div class="fl-pair"><canvas data-p="edu" aria-label="EdU versus DNA"></canvas><canvas data-p="ph3" aria-label="pH3 versus DNA"></canvas></div>
@@ -57,7 +56,7 @@
   </section>
 
   <section class="panel inspect" id="inspect" aria-live="polite">
-    <span class="lbl">following cell</span>
+    <span class="lbl">Following</span>
     <h3 id="i-id">#0</h3>
     <span class="phase" id="i-phase">G1</span>
     <div class="ring"><i id="i-bar"></i></div>
@@ -69,11 +68,11 @@
     </dl>
     <button class="dive-go" id="i-dive">Dive into its DNA ↓</button>
     <p class="i-edit mono" id="i-edit" hidden></p>
-    <button id="i-close">stop following (esc)</button>
+    <button id="i-close">Stop following <kbd>esc</kbd></button>
   </section>
 
   <div class="panel scope">
-    <span class="lbl">microscope</span>
+    <span class="lbl">Channel</span>
     <div class="seg" id="modes">
       <button data-m="live" class="on">live</button>
       <button data-m="stained">stained</button>
@@ -87,10 +86,10 @@
 <section class="record" id="record" aria-label="Resume">
   <div class="rec-in">
     <header class="rec-head">
-      <p class="rec-k mono">resume · bio</p>
-      <h2>In the lab.</h2>
+      <p class="rec-k">Curriculum vitae, biology</p>
+      <h2>In the <em>lab.</em></h2>
       <p class="rec-lede">Four years of wet-lab research, from cancer drug synthesis to vesicle engineering.</p>
-      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full resume (PDF) ↗</a>
+      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full resume, PDF ↗</a>
     </header>
     <article class="job">
       <p class="when">Jan 2025 – now</p>

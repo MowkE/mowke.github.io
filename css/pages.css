@@ -253,3 +253,100 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
 @keyframes cueBob { 50% { transform: translateY(3px); } }
 @media (max-width: 700px) { .rec-cue { top: 64px; font-size: 12px; } }
 @media (prefers-reduced-motion: reduce) { .rec-cue, .rec-cue i { animation: none; } }
+
+/* ════════════ bio, redrawn ════════════
+   Acquisition software on the dish, a journal under it. Flat panels with
+   hairline rules, serif for words, mono for numbers; pink only where the
+   stain would be. */
+.bio-room { --bink: #f3e4ea; --bdim: #a88796; --brule: rgba(255, 143, 181, 0.2); --bpanel: #1c0a13; --serif: 'Newsreader', Georgia, serif;
+  --navbg: #16080f; --navfg: #f3e4ea; --navrule: rgba(255, 143, 181, 0.2); }
+.bio-room.stained { --bink: #3a1426; --bdim: #86606f; --brule: rgba(58, 20, 38, 0.18); --bpanel: #fbf1f5; --navbg: #f4dde6; --navfg: #3a1426; --navrule: rgba(58, 20, 38, 0.16); }
+.bio-room.fluor { --bink: #e8ecff; --bdim: #8b93b5; --brule: rgba(140, 160, 255, 0.2); --bpanel: #07080f; --navbg: #020204; --navfg: #e8ecff; --navrule: rgba(140, 160, 255, 0.18); }
+.bio-room .nav.dark { transition: background 700ms ease, color 500ms ease; }
+
+.bio-room .panel { background: var(--bpanel); color: var(--bink); border-radius: 3px; border: 1px solid var(--brule); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.bio-room .lbl { font: 600 15px/1.2 var(--serif); letter-spacing: 0; text-transform: none; opacity: 1; }
+.bio-room .lbl em { font-weight: 400; font-style: italic; color: var(--bdim); }
+
+.bio-room .title { top: 82px; max-width: 460px; }
+.bio-room .title h1 { font: 400 clamp(56px, 6.6vw, 96px)/0.92 var(--serif); letter-spacing: -0.025em; margin-bottom: 16px; }
+.bio-room .title h1 em { font-style: italic; }
+.bio-room .title p { font: 400 18px/1.5 var(--serif); color: var(--bink); opacity: 0.8; }
+
+.bio-room .flow { top: 66px; border-radius: 3px; }
+.bio-room .fl-rec i { border-radius: 0; box-shadow: none; width: 6px; height: 6px; }
+.bio-room .flow canvas { border-radius: 0; outline: 1px solid var(--brule); }
+.bio-room .fl-phases i { border-radius: 0; height: 3px; }
+.bio-room .fl-chain small { font-size: 10px; }
+
+.bio-room .inspect h3 { font: 400 30px/1 var(--serif); letter-spacing: -0.01em; }
+.bio-room .inspect .phase { font: italic 400 16px var(--serif); color: var(--bdim); }
+.bio-room .ring { height: 3px; border-radius: 0; }
+.bio-room .ring i { background: var(--bio); }
+.bio-room.fluor .ring i { background: #7fa6ff; }
+.bio-room .inspect button { opacity: 0.8; font-size: 12px; }
+.bio-room .inspect kbd { font: inherit; font-size: 10.5px; padding: 0 4px; border: 1px solid var(--brule); border-radius: 2px; margin-left: 4px; }
+
+.bio-room .scope { border-radius: 3px; padding: 5px 5px 5px 0; gap: 12px; }
+.bio-room .scope .lbl { padding-left: 14px; font-size: 14px; }
+.bio-room .seg { padding: 0; gap: 0; border: 1px solid var(--brule); border-radius: 2px; }
+.bio-room .seg button { font: 500 12px var(--mono); letter-spacing: 0; text-transform: none; border-radius: 0; padding: 9px 14px; opacity: 0.75; }
+.bio-room .seg button + button { border-left: 1px solid var(--brule); }
+.bio-room .seg button.on { background: var(--bink); color: var(--bpanel); opacity: 1; }
+.bio-room.fluor .seg button.on { background: var(--bink); }
+
+.rec-cue { top: 58px; border-radius: 3px; min-height: 36px; font-size: 12.5px; animation-name: cueIn2; }
+@keyframes cueIn2 { from { opacity: 0; transform: translate(-50%, -8px); } }
+
+/* bio resume: typeset like a journal CV */
+.bio-room .record { --rbg: #1c0a13; --rfg: #f3e4ea; --rdim: #a88796; --rrule: rgba(255, 143, 181, 0.18); }
+.bio-room .rec-in { border-radius: 0; font-family: var(--serif); box-shadow: 0 -1px 0 var(--rrule); }
+.bio-room .rec-head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 6px 32px; border-bottom: 1px solid var(--rfg); padding-bottom: 22px; }
+.bio-room .rec-k { grid-column: 1 / -1; margin: 0; font: italic 400 16px var(--serif); letter-spacing: 0; color: var(--rdim); }
+.bio-room .rec-head h2 { margin: 0; font: 400 clamp(52px, 7vw, 88px)/0.95 var(--serif); letter-spacing: -0.03em; }
+.bio-room .rec-head h2 em { font-style: italic; }
+.bio-room .rec-lede { grid-column: 1; margin: 6px 0 0; font: 400 18px/1.5 var(--serif); }
+.bio-room .rec-pdf { grid-column: 2; grid-row: 2 / span 2; align-self: end; border-radius: 0; min-height: 40px; background: none; color: var(--rfg); border: 1px solid var(--rfg); font: 500 12.5px var(--mono); }
+.bio-room .rec-pdf:hover { background: var(--rfg); color: var(--rbg); }
+.bio-room .job { grid-template-columns: 170px 1fr; gap: 28px; padding: 30px 0; }
+.bio-room .job .when { font-size: 12px; }
+.bio-room .job h3 { font: 600 22px/1.25 var(--serif); letter-spacing: -0.01em; }
+.bio-room .job .org { font: italic 400 16px var(--serif); margin-bottom: 14px; }
+.bio-room .job ul { list-style: none; padding: 0; gap: 10px; }
+.bio-room .job li { font: 400 17px/1.55 var(--serif); padding-left: 22px; position: relative; }
+.bio-room .job li::before { content: '–'; position: absolute; left: 0; color: var(--bio); }
+.bio-room .job li b { font-weight: 600; }
+.bio-room .jlinks a { color: var(--rfg); text-decoration: underline; text-decoration-color: var(--bio); text-underline-offset: 3px; font-size: 12.5px; }
+.bio-room .rec-foot { font: italic 400 15px var(--serif); border-top-color: var(--rfg); }
+@media (max-width: 700px) { .bio-room .rec-head { grid-template-columns: 1fr; } .bio-room .rec-pdf { grid-column: 1; grid-row: auto; justify-self: start; } .bio-room .job { grid-template-columns: 1fr; gap: 6px; } }
+
+/* ════════════ hardware resume: a drawing sheet ════════════ */
+.hw-room .record { --rbg: #f3f1ea; --rfg: #17171a; --rdim: #5b5952; --rrule: rgba(23, 23, 26, 0.16); }
+.hw-room .rec-in { border-radius: 0; position: relative; box-shadow: 0 -1px 0 var(--rrule); }
+.hw-room .rec-in::before { content: ''; position: absolute; inset: 70px clamp(10px, 2vw, 24px) 18px; border: 1.5px solid var(--rfg); pointer-events: none; }
+.hw-room .rec-in::after { content: ''; position: absolute; inset: 76px calc(clamp(10px, 2vw, 24px) + 6px) 24px; border: 0.5px solid var(--rfg); pointer-events: none; }
+.hw-room .rec-head { display: grid; grid-template-columns: 1fr auto; border: 1.5px solid var(--rfg); padding: 0; gap: 0; margin: 12px 0 18px; }
+.hw-room .rec-head > * { margin: 0; padding: 12px 16px; }
+.hw-room .rec-k { grid-column: 1 / -1; border-bottom: 1px solid var(--rfg); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rfg); }
+.hw-room .rec-head h2 { font: 800 clamp(48px, 7vw, 88px)/0.9 var(--display); font-stretch: 70%; text-transform: uppercase; letter-spacing: 0; border-right: 1px solid var(--rfg); padding-top: 18px; }
+.hw-room .rec-lede { grid-column: 1; border-top: 1px solid var(--rfg); border-right: 1px solid var(--rfg); font-size: 16px; color: var(--rdim); }
+.hw-room .rec-pdf { grid-column: 2; grid-row: 2 / span 2; border-radius: 0; background: var(--hw); color: #fff; display: flex; align-items: flex-end; font-size: 12.5px; min-height: 0; }
+.hw-room .rec-pdf:hover { background: #a93f20; }
+.hw-room .job { grid-template-columns: 150px 1fr; }
+.hw-room .job .when { text-transform: uppercase; letter-spacing: 0.04em; font-size: 11.5px; }
+.hw-room .job h3 { font: 750 24px/1.1 var(--display); font-stretch: 75%; text-transform: uppercase; letter-spacing: 0.01em; }
+.hw-room .job .org { font: 500 12.5px var(--mono); letter-spacing: 0.02em; }
+.hw-room .job li::marker { content: '□  '; color: var(--hw); font-size: 12px; }
+.hw-room .jlinks a { color: var(--hw); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 700px) { .hw-room .rec-head { grid-template-columns: 1fr; } .hw-room .rec-head h2, .hw-room .rec-lede { border-right: 0; } .hw-room .rec-pdf { grid-column: 1; grid-row: auto; min-height: 44px; } }
+/* bio title sits on the brightfield: dark ink, no dark vignette */
+.bio-room { --tink: #2a0f1c; }
+.bio-room.stained { --tink: #3a1426; }
+.bio-room.fluor { --tink: #e8ecff; }
+.bio-room .title { color: var(--tink); }
+.bio-room .title p { color: var(--tink); opacity: 0.78; }
+.bio-room .stage::before { background: radial-gradient(ellipse 640px 400px at 0% 14%, rgba(250, 244, 246, 0.85), rgba(250, 244, 246, 0) 72%); }
+.bio-room.fluor .stage::before { background: radial-gradient(ellipse 640px 400px at 0% 14%, rgba(2, 2, 4, 0.85), rgba(2, 2, 4, 0) 72%); }
+.bio-room .hint2 { color: var(--tink); }
+.inspect.open ~ .hint2 { opacity: 0; }
+.hw-room .rec-lede { max-width: none; }

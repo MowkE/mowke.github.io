@@ -276,3 +276,20 @@ h1#name .ch { font-variation-settings: normal; }
 .also li { font-size: 15px; line-height: 1.5; color: #45443f; }
 .also li b { color: var(--ink); font-weight: 650; }
 @media (max-width: 900px) { .also-grid { grid-template-columns: 1fr; } }
+
+/* ── the top bar, redrawn: a flat strip in each page's own colour ── */
+.nav {
+  top: 0; left: 0; right: 0; transform: none; height: 46px; padding: 0 clamp(16px, 4vw, 40px); gap: 20px; justify-content: space-between;
+  border-radius: 0; background: var(--navbg, var(--paper)); color: var(--navfg, var(--ink));
+  backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: 0 1px 0 var(--navrule, rgba(23, 23, 26, 0.12));
+  font-size: 13px; letter-spacing: 0;
+}
+.nav.dark { background: var(--navbg, #16080f); color: var(--navfg, #f3e4ea); box-shadow: 0 1px 0 var(--navrule, rgba(255, 143, 181, 0.18)); }
+.nav-home { font: 400 21px/1 'Happy Monkey', var(--sans); letter-spacing: 0; }
+.nav-links { gap: 22px; }
+.nav-links a { padding: 0; border-radius: 0; gap: 0; min-height: 46px; opacity: 0.72; text-decoration: none; }
+.nav-links a:hover { background: none; opacity: 1; }
+.nav-links a.on { background: none; opacity: 1; text-decoration: underline; text-decoration-color: var(--c, currentColor); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.nav-links i { display: none; }
+.nav-links .nav-rec { opacity: 1; }
+@media (max-width: 560px) { .nav-links { gap: 14px; } .nav { font-size: 12px; } .nav-home { font-size: 18px; } }
