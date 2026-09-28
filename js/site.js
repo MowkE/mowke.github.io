@@ -24,15 +24,15 @@ function scramble(s, ms) {
   s.style.width = s.getBoundingClientRect().width + 'px';   // hold the letter's width so the word never jumps
   const end = performance.now() + ms;
   const tick = () => {
-    if (performance.now() < end) { s.textContent = rand(); s.classList.add('glyph'); setTimeout(tick, 55); }
+    if (performance.now() < end) { s.textContent = rand(); s.classList.add('glyph'); setTimeout(tick, 140); }
     else { s.textContent = s.dataset.ch; s.classList.remove('glyph'); s.style.width = ''; s._busy = false; }
   };
   tick();
 }
 if (!reduced) {
-  letters.forEach((s, i) => scramble(s, 250 + i * 90));
-  setInterval(() => scramble(letters[(Math.random() * letters.length) | 0], 320), 2600);
-  letters.forEach(s => s.addEventListener('pointerenter', () => scramble(s, 380)));
+  letters.forEach((s, i) => scramble(s, 600 + i * 180));
+  setInterval(() => scramble(letters[(Math.random() * letters.length) | 0], 700), 6000);
+  letters.forEach(s => s.addEventListener('pointerenter', () => scramble(s, 700)));
 }
 
 if (fine && !reduced) {
