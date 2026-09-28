@@ -86,6 +86,8 @@ export function initDish(canvas, ui) {
   const chromos = inst(new THREE.CapsuleGeometry(0.022, 0.1, 4, 8), M.chromo, MAX * CHROMO);
   const mitos = inst(new THREE.CapsuleGeometry(0.014, 0.15, 4, 8), M.mito, MAX * 2 * MITO);
   const vesicles = inst(new THREE.SphereGeometry(0.017, 6, 5), M.ves, MAX * 2 * VES);
+  // cells carrying the glow gene get a green nucleus
+  const glowNuc = inst(new THREE.SphereGeometry(0.19, 28, 18), new THREE.MeshStandardMaterial({ color: 0x2fd67f, emissive: 0x0b9a52, emissiveIntensity: 0.9, roughness: 0.55 }), MAX * 2);
 
   const spindleGeo = new THREE.BufferGeometry();
   const spindlePos = new Float32Array(MAX * CHROMO * 2 * 3);
@@ -113,7 +115,7 @@ export function initDish(canvas, ui) {
   const rnd = (a, b) => a + Math.random() * (b - a);
   function makeCell(x, y, z, o = {}) {
     const c = {
-      id: nextId++, gen: o.gen ?? 0, parent: o.parent ?? null,
+      id: nextId++, gen: o.gen ?? 0, parent: o.parent ?? null, genome: o.genome ?? null, glow: o.glow ?? false,
       x, y, z, vx: 0, vy: 0, vz: 0, s: o.s ?? 1, born: performance.now(),
       len: rnd(15, 24), t: 0, dir: [1, 0], dying: false, mStarted: false,
       phase: Math.random() * 6.28, sep: 0,
@@ -140,8 +142,10 @@ export function initDish(canvas, ui) {
 
   function split(c) {
     const off = c.sep * 0.5, [dx, dy] = c.dir;
-    const b = makeCell(c.x - dx * off, c.y - dy * off, c.z, { gen: c.gen + 1, parent: c.id, s: 0.62 });
-    const a = makeCell(c.x + dx * off, c.y + dy * off, c.z, { gen: c.gen + 1, parent: c.id, s: 0.62 });
+    // daughters inherit the genome, edits and all
+    const heir = { gen: c.gen + 1, parent: c.id, s: 0.62, genome: c.genome, glow: c.glow };
+    const b = makeCell(c.x - dx * off, c.y - dy * off, c.z, heir);
+    const a = makeCell(c.x + dx * off, c.y + dy * off, c.z, { ...heir });
     a.push = [dx, dy, 1.2]; b.push = [-dx, -dy, 1.2];
     a.sib = b; b.sib = a;
     cells.splice(cells.indexOf(c), 1);
@@ -274,7 +278,7 @@ export function initDish(canvas, ui) {
   const W = fx => (fx * 2 - 1) * SCALE;
   function draw(t) {
     field.reset();
-    let n = 0, nl = 0, ch = 0, mi = 0, ve = 0, sp = 0;
+    let n = 0, nl = 0, ch = 0, mi = 0, ve = 0, sp = 0, gn = 0;
     for (const c of cells) {
       const ph = phaseOf(c), s = Math.max(c.s, 0.001), pulse = 1 + 0.035 * Math.sin(t * 1.6 + c.phase);
       const [dx, dy] = c.dir;
@@ -306,7 +310,8 @@ export function initDish(canvas, ui) {
       for (const pk of poles) {
         const ns = s * (poles.length > 1 ? 0.8 : grow) * Math.max(nucA, 0.001);
         const nx = cx + dx * pk * sepW * 0.45, ny = cy + dy * pk * sepW * 0.45;
-        m4.compose(v.set(nx, ny, cz), q.identity(), sc.set(ns * 1.08, ns, ns * 0.62)); nuclei.setMatrixAt(n++, m4);
+        m4.compose(v.set(nx, ny, cz), q.identity(), sc.set(ns * 1.08, ns, ns * 0.62));
+        if (c.glow) glowNuc.setMatrixAt(gn++, m4); else nuclei.setMatrixAt(n++, m4);     // the glow gene's protein lights up the nucleus
         m4.compose(v.set(nx + 0.06 * ns, ny + 0.04 * ns, cz + 0.07 * ns), q.identity(), sc.setScalar(ns)); nucleoli.setMatrixAt(nl++, m4);
         m4.compose(v.set(nx - 0.07 * ns, ny - 0.05 * ns, cz + 0.06 * ns), q.identity(), sc.setScalar(ns * 0.7)); nucleoli.setMatrixAt(nl++, m4);
       }
@@ -350,8 +355,8 @@ export function initDish(canvas, ui) {
         vesicles.setMatrixAt(ve++, m4);
       });
     }
-    nuclei.count = n; nucleoli.count = nl; chromos.count = ch; mitos.count = mi; vesicles.count = ve;
-    for (const im of [nuclei, nucleoli, chromos, mitos, vesicles]) im.instanceMatrix.needsUpdate = true;
+    nuclei.count = n; nucleoli.count = nl; chromos.count = ch; mitos.count = mi; vesicles.count = ve; glowNuc.count = gn;
+    for (const im of [nuclei, nucleoli, chromos, mitos, vesicles, glowNuc]) im.instanceMatrix.needsUpdate = true;
     spindleGeo.setDrawRange(0, sp * 2); spindleGeo.attributes.position.needsUpdate = true;
     field.update();
 
@@ -393,9 +398,16 @@ export function initDish(canvas, ui) {
     requestAnimationFrame(frame);
   }
   setMode('live');
-  window.__dish = { cells, select, setMode, phaseOf };
+  // where a cell sits on screen, for the dive to grow out of
+  function screenOf(c) {
+    const r = canvas.getBoundingClientRect(), p = wpos(c).project(camera);
+    return { x: (p.x + 1) / 2 * r.width + r.left, y: (1 - p.y) / 2 * r.height + r.top };
+  }
+  // write an edit into a cell's genome; it passes to every daughter from here on
+  function edit(c, result) { if (!c || !result) return; c.genome = result; c.glow = result.outcome === 'knock-in'; }
+  window.__dish = { cells, select, setMode, phaseOf, edit };
   return {
-    setMode, select,
+    setMode, select, screenOf, edit, get selected() { return selected; },
     setActive(on) { if (on && !active) { active = true; last = performance.now(); requestAnimationFrame(frame); } else if (!on) active = false; },
   };
 }

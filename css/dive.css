@@ -1,0 +1,108 @@
+/* the dive into a cell's DNA, and the editor at the bottom of it.
+   Styled after the tools this actually happens in: a microscope's scale bar,
+   journal figure legends, and a sequence viewer's ruler and feature track.
+   Flat panels, 1px rules, no gradients. */
+
+.dive {
+  --ink: #09060c; --fg: #ece6f0; --dim: #8c8496; --rule: rgba(236, 230, 240, 0.14);
+  --a: #e8839c; --t: #d9b36c; --g: #6fcf9f; --c: #8aa4e8; --guide: #d9a441; --glow: #5dffb4; --scar: #ff5a67;
+  position: fixed; inset: 0; z-index: 60; background: var(--ink); color: var(--fg);
+  clip-path: circle(0px at var(--ox, 50%) var(--oy, 50%)); pointer-events: none; visibility: hidden;
+  transition: clip-path 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s 0.9s;
+}
+.dive.open { clip-path: circle(150vmax at var(--ox, 50%) var(--oy, 50%)); pointer-events: auto; visibility: visible; transition: clip-path 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s; }
+#dive-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* where we are */
+.crumbs { position: absolute; top: 22px; left: 24px; display: flex; align-items: baseline; gap: 8px; font-size: 12px; color: var(--dim); }
+.crumbs i { font-style: normal; opacity: 0.4; }
+.crumbs span { transition: color 0.3s; }
+.crumbs span.past { color: #b8b0c2; }
+.crumbs span.on { color: var(--fg); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.d-back { position: absolute; top: 16px; right: 18px; font-size: 12px; padding: 6px 8px; color: var(--dim); background: none; border: 0; cursor: pointer; }
+.d-back:hover { color: var(--fg); }
+.d-back kbd { font: inherit; font-size: 10.5px; padding: 1px 5px; margin-left: 6px; border: 1px solid var(--rule); border-radius: 3px; }
+
+/* figure legend */
+.legend { position: absolute; left: 24px; bottom: 26px; margin: 0; max-width: 460px; opacity: 0; }
+.legend.in { animation: legIn 0.7s ease-out forwards; }
+@keyframes legIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.legend figcaption { font: 400 17px/1.5 "Newsreader", Georgia, serif; color: #d9d2de; }
+.legend .fig { display: block; font-size: 11px; color: var(--dim); margin-bottom: 6px; letter-spacing: 0.02em; }
+.legend b { font-weight: 600; color: var(--fg); }
+.legend em { font-style: normal; font-size: 11.5px; color: var(--dim); margin-left: 4px; white-space: nowrap; }
+.dive.editing .legend { opacity: 0 !important; animation: none; transition: opacity 0.3s; }
+
+/* scale bar, bottom right, like every micrograph */
+.scalebar { position: absolute; right: 26px; bottom: 30px; display: grid; justify-items: end; gap: 6px; font-size: 12px; color: var(--fg); transition: opacity 0.3s; }
+.scalebar i { display: block; height: 4px; background: var(--fg); transition: width 0.12s linear; }
+.dive.editing .scalebar { opacity: 0; }
+.d-hint { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); margin: 0; font-size: 12px; color: var(--dim); transition: opacity 0.4s; }
+.d-hint.gone { opacity: 0; }
+
+/* editor: a sequence viewer */
+.editor {
+  position: absolute; left: 50%; bottom: 18px; width: min(900px, calc(100vw - 28px)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  background: #0f0b13; border: 1px solid var(--rule); border-radius: 6px; transition: opacity 0.5s, transform 0.5s ease-out;
+}
+.dive.editing .editor { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.editor header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--rule); }
+.editor header b { font-weight: 600; font-size: 14px; }
+.editor header span { font-size: 11px; color: var(--dim); }
+.track-wrap { overflow-x: auto; padding: 10px 14px 4px; border-bottom: 1px solid var(--rule); scrollbar-width: thin; }
+.track { position: relative; width: max-content; padding-bottom: 34px; }
+.ticks, .strip { display: flex; }
+.ticks span, .strip span { width: 16px; flex: none; text-align: center; }
+.ticks span { font-size: 9.5px; color: var(--dim); height: 14px; line-height: 14px; overflow: visible; white-space: nowrap; }
+.strip { font-size: 14px; user-select: none; touch-action: pan-y; }
+.strip span { height: 20px; line-height: 20px; cursor: grab; transition: opacity 0.2s; }
+.strip.pair { font-size: 12px; opacity: 0.45; }
+.strip.pair span { height: 16px; line-height: 16px; cursor: default; }
+.strip .a { color: var(--a); } .strip .t { color: var(--t); } .strip .g { color: var(--g); } .strip .c { color: var(--c); }
+.strip .dim { opacity: 0.35; }
+.strip .ins { color: #06140d; background: var(--glow); }
+.strip .scar { color: #fff; background: var(--scar); }
+.annot { position: absolute; left: 0; right: 0; bottom: 4px; height: 26px; }
+.annot .f { position: absolute; top: 0; height: 7px; background: var(--guide); }
+.annot .f span { position: absolute; left: 0; top: 10px; font-size: 10.5px; white-space: nowrap; color: var(--fg); }
+.annot .f.guide::after { content: ''; position: absolute; right: -6px; top: -2.5px; border: 6px solid transparent; border-left-color: var(--guide); border-right: 0; }
+.annot .pam { background: var(--g); }
+.annot .pam.bad { background: var(--scar); }
+.annot .pam span { left: 50%; transform: translateX(-50%); }
+.annot .gene { background: var(--glow); }
+.annot .scarf { background: var(--scar); }
+.annot .cut { position: absolute; top: -52px; width: 0; height: 58px; border-left: 1px dashed var(--scar); }
+.annot .cut span { position: absolute; top: -14px; left: -10px; font-size: 10px; color: var(--scar); }
+.ed-say { margin: 0; padding: 12px 14px; font: 400 16px/1.5 "Newsreader", Georgia, serif; color: #d9d2de; min-height: 3.4em; }
+.ed-say b { font-weight: 600; color: var(--fg); } .ed-say .m { color: var(--glow); } .ed-say .r { color: #ff7c86; }
+.ed-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 14px 14px; }
+.ed-row:empty { display: none; }
+.ed-row button { font: 500 13px "JetBrains Mono", ui-monospace, monospace; border-radius: 4px; padding: 9px 14px; cursor: pointer; border: 1px solid var(--rule); background: transparent; color: var(--fg); }
+.ed-row button:hover { border-color: rgba(236, 230, 240, 0.4); }
+.ed-row button:active { transform: translateY(1px); }
+.ed-row .nudge { width: 42px; padding: 9px 0; }
+.ed-row .nudge.wide { width: auto; padding: 9px 14px; }
+.ed-row .send { margin-left: auto; background: var(--fg); color: #0f0b13; border-color: var(--fg); font-weight: 600; }
+.ed-row .send:disabled { background: transparent; color: var(--dim); border-color: var(--rule); cursor: not-allowed; }
+.ed-row .rep { flex: 1 1 260px; text-align: left; display: grid; gap: 4px; padding: 12px 14px; }
+.ed-row .rep b { font-weight: 600; font-size: 13.5px; }
+.ed-row .rep span { font: 400 14px/1.45 "Newsreader", Georgia, serif; color: #b8b0c2; }
+.ed-row .rep[data-k="template"] b { color: var(--glow); }
+
+/* in the dish: the dive button in the cell panel */
+.inspect .dive-go { justify-self: stretch; opacity: 1; width: 100%; margin: 6px 0 4px; padding: 9px 12px; border-radius: 4px; cursor: pointer; font: 500 12.5px "JetBrains Mono", monospace; color: inherit; background: transparent; border: 1px solid currentColor; text-align: left; }
+.inspect .dive-go:hover { background: rgba(255, 255, 255, 0.06); }
+.i-edit { margin: 0 0 6px; font-size: 11.5px; color: #5dffb4; }
+
+@media (max-width: 760px) {
+  .crumbs { font-size: 11px; gap: 5px; }
+  .legend { right: 24px; bottom: 70px; }
+  .legend figcaption { font-size: 15px; }
+  .scalebar { bottom: 26px; }
+  .editor { bottom: 8px; }
+  .ed-say { font-size: 14.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dive, .dive.open { transition: visibility 0s; }
+  .legend.in { animation: none; opacity: 1; }
+}

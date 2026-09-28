@@ -8,9 +8,10 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23ff8fb5' fill-opacity='.35' stroke='%23ff5c93' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%237a2cc4'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css" />
 <link rel="stylesheet" href="../css/pages.css" />
+<link rel="stylesheet" href="../css/dive.css?v=4" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -64,6 +65,8 @@
       <dt>age</dt><dd id="i-age">0 s</dd>
       <dt>next division</dt><dd id="i-next">0 s</dd>
     </dl>
+    <button class="dive-go" id="i-dive">Dive into its DNA ↓</button>
+    <p class="i-edit mono" id="i-edit" hidden></p>
     <button id="i-close">stop following (esc)</button>
   </section>
 
@@ -76,12 +79,33 @@
     </div>
   </div>
 
-  <p class="hint2">move to nudge · click a cell to follow it · double-click empty space to seed a new one · the cycle runs about a thousand times faster than real life</p>
+  <p class="hint2">click a cell, then scroll to dive into its DNA · double-click to seed a cell</p>
 </main>
 
+<section class="dive" id="dive" aria-label="Dive into the cell's DNA" aria-hidden="true">
+  <canvas id="dive-gl"></canvas>
+  <nav class="crumbs mono" id="crumbs" aria-label="Depth"></nav>
+  <button class="d-back mono" id="d-back">← dish <kbd>esc</kbd></button>
+  <figure class="legend" id="d-cap"><figcaption><span class="fig mono" id="d-fig">Fig. 1</span><b id="d-name"></b> <span id="d-note"></span> <em class="mono" id="d-size"></em></figcaption></figure>
+  <div class="scalebar mono" id="scalebar" aria-hidden="true"><i id="sb-bar"></i><span id="sb-lab"></span></div>
+  <p class="d-hint mono" id="d-hint">scroll to go deeper ↓</p>
+  <section class="editor" id="editor" aria-live="polite">
+    <header><b>Edit this locus</b><span class="mono" id="ed-meta">simplified model · made-up sequence</span></header>
+    <div class="track-wrap"><div class="track mono" id="track">
+      <div class="ticks" id="ticks"></div>
+      <div class="strip" id="strip"></div>
+      <div class="strip pair" id="strip2"></div>
+      <div class="annot" id="annot"></div>
+    </div></div>
+    <p class="ed-say" id="ed-say"></p>
+    <div class="ed-row" id="ed-row"></div>
+  </section>
+</section>
+
 <script type="module">
-import { initDish } from '../js/bio.js';
+import { initDish } from '../js/bio.js?v=4';
 import { initFlow } from '../js/flow.js';
+import { initDive, LEVELS } from '../js/dive.js?v=6';
 const $ = id => document.getElementById(id);
 const room = $('room');
 const secs = s => s < 60 ? `${s.toFixed(0)} s` : `${(s / 60).toFixed(1)} min`;
@@ -106,6 +130,138 @@ document.querySelectorAll('#modes button').forEach(b => b.addEventListener('clic
   dish.setMode(b.dataset.m);
 }));
 $('i-close').addEventListener('click', () => dish.select(null));
+
+// ── the dive ──────────────────────────────────────────────────────
+const diveEl = $('dive'), stage = $('stage');
+$('crumbs').innerHTML = LEVELS.map((l, i) => `<span data-i="${i}">${['cell', 'nucleus', 'chromatin', 'nucleosomes', 'helix'][i]}</span>`).join('<i>/</i>');
+const crumbs = [...$('crumbs').querySelectorAll('span')];
+const say = s => { $('ed-say').innerHTML = s; };
+let dragging = null;
+const niceBar = umPerPx => {
+  // pick a 1-2-5 length that draws between ~70 and ~170 px, like acquisition software does
+  const target = 110 * umPerPx, k = Math.pow(10, Math.floor(Math.log10(target)));
+  const len = [1, 2, 5, 10].map(m => m * k).reduce((a, b) => Math.abs(b - target) < Math.abs(a - target) ? b : a);
+  const lab = len >= 1 ? `${+len.toPrecision(2)} µm` : `${+(len * 1000).toPrecision(2)} nm`;
+  return { px: len / umPerPx, lab };
+};
+const dive = initDive($('dive-gl'), {
+  level(i) {
+    const L = LEVELS[i], cap = $('d-cap');
+    cap.classList.remove('in'); void cap.offsetWidth;
+    $('d-fig').textContent = `Fig. ${i + 1}`;
+    $('d-name').textContent = L.name.charAt(0).toUpperCase() + L.name.slice(1) + '.';
+    $('d-note').textContent = L.note; $('d-size').textContent = L.size;
+    cap.classList.add('in');
+    crumbs.forEach((c, k) => { c.classList.toggle('on', k === i); c.classList.toggle('past', k < i); });
+  },
+  depth(p, umPerPx) {
+    const b = niceBar(umPerPx);
+    $('sb-bar').style.width = `${b.px.toFixed(1)}px`; $('sb-lab').textContent = b.lab;
+    $('d-hint').classList.toggle('gone', p > 0.08);
+  },
+  editorOn(on) { diveEl.classList.toggle('editing', on); },
+  editor(s) { renderEditor(s); },
+  closed(cell, result) {
+    if (result) { dish.edit(cell, result); }
+    closeDive(cell);
+  },
+});
+window.__dive = dive;
+const BASES = { A: 'a', T: 't', G: 'g', C: 'c' }, PAIR = { A: 'T', T: 'A', G: 'C', C: 'G' };
+const CELLW = 16;
+function renderEditor(s) {
+  const strip = $('strip'), strip2 = $('strip2');
+  const cls = i => [BASES[s.seq[i]], s.marks[i] === 1 ? 'ins' : s.marks[i] === 2 ? 'scar' : '', s.phase === 'pick' && !(i >= s.win && i < s.win + s.guide + 3) && !s.marks[i] ? 'dim' : ''].join(' ');
+  strip.innerHTML = s.seq.map((b, i) => `<span class="${cls(i)}" data-i="${i}">${b}</span>`).join('');
+  strip2.innerHTML = s.seq.map((b, i) => `<span class="${cls(i)}">${PAIR[b]}</span>`).join('');
+  $('ticks').innerHTML = s.seq.map((_, i) => `<span>${(i + 1) % 10 === 0 ? i + 1 : (i + 1) % 5 === 0 ? '·' : ''}</span>`).join('');
+  $('ed-meta').textContent = `simplified model · made-up sequence · ${s.seq.length} bp`;
+  // annotations, the way sequence viewers draw features under the letters
+  const A = [];
+  const bar = (from, len, cls, label) => A.push(`<div class="f ${cls}" style="left:${from * CELLW}px;width:${len * CELLW}px"><span>${label}</span></div>`);
+  if (s.phase === 'pick' || s.phase === 'scan' || s.phase === 'bind') {
+    bar(s.win, s.guide, 'guide', 'guide · 20 nt');
+    bar(s.win + s.guide, 3, s.valid ? 'pam' : 'pam bad', s.valid ? 'PAM' : 'no PAM');
+    if (s.valid) A.push(`<div class="cut" style="left:${(s.win + s.guide - 3) * CELLW}px"><span>cut</span></div>`);
+  }
+  const ins = s.marks.indexOf(1);
+  if (ins >= 0) bar(ins, s.marks.lastIndexOf(1) - ins + 1, 'gene', 'glow gene (shortened)');
+  const scar = s.marks.indexOf(2);
+  if (scar >= 0) bar(scar, s.marks.lastIndexOf(2) - scar + 1, 'scarf', 'repair scar');
+  $('annot').innerHTML = A.join('');
+  const row = $('ed-row');
+  if (s.phase === 'pick') {
+    say(s.valid
+      ? `The guide covers these 20 letters, followed by <b class="m">${s.pam}</b>, which fits the <b>NGG</b> pattern Cas9 needs. It will cut three letters before it.`
+      : `Slide the guide along the strand (drag it, or use ← →). Cas9 only cuts where the 20 letters are followed by <b>N G G</b>: any letter, then two Gs. Here it's <b class="r">${s.pam}</b>.`);
+    row.innerHTML = `<button class="nudge" data-d="-1" aria-label="Move guide left">←</button><button class="nudge" data-d="1" aria-label="Move guide right">→</button><button class="send" ${s.valid ? '' : 'disabled'}>Send in Cas9</button>`;
+  } else if (s.phase === 'scan') { say('Cas9 carries the guide along the DNA, checking each NGG it passes for a 20-letter match.'); row.innerHTML = ''; }
+  else if (s.phase === 'bind') { say('Match found. The guide pairs with one strand and the helix opens up around it.'); row.innerHTML = ''; }
+  else if (s.phase === 'cut') { say('<b class="r">Cut</b>, through both strands. The cell treats a break like this as an emergency.'); row.innerHTML = ''; }
+  else if (s.phase === 'choose') {
+    say('The cell will repair the break one of two ways. Pick one.');
+    row.innerHTML = `<button class="rep" data-k="patch"><b>Let it patch itself</b><span>The ends get glued back together. Fast, but a few letters are often added or lost.</span></button><button class="rep" data-k="template"><b>Give it a template</b><span>A matching piece of DNA that carries a glow gene. If the cell copies it in, the cell lights up.</span></button>`;
+  } else if (s.phase === 'repair') { say(s.outcome === 'knock-in' ? 'Copying the template across the gap…' : 'Gluing the ends back together…'); row.innerHTML = ''; }
+  else if (s.phase === 'done') {
+    const msg = s.outcome === 'knock-in' ? '<b class="m">It worked.</b> The glow gene is now part of this cell\'s DNA. Go back out to the dish: it glows, and so will every cell it divides into.'
+      : s.outcome === 'patched-anyway' ? '<b class="r">The cell patched the break before it used your template.</b> Real cells do this a lot. The scar is marked in red.'
+      : '<b class="r">Patched.</b> The ends were joined with a few letters changed (marked in red). A scramble like that usually breaks the gene it lands in.';
+    say(msg);
+    row.innerHTML = `<button class="send" data-a="out">Back to the dish</button><button class="nudge wide" data-a="again">Start over</button>`;
+  }
+}
+$('editor').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.d) dive.moveWindow(+b.dataset.d);
+  else if (b.classList.contains('send') && !b.dataset.a) dive.sendCas9();
+  else if (b.dataset.k) dive.repair(b.dataset.k);
+  else if (b.dataset.a === 'out') dive.close();
+  else if (b.dataset.a === 'again') dive.reset();
+});
+// drag the guide along the strand
+$('strip').addEventListener('pointerdown', e => {
+  const sp = e.target.closest('span'); if (!sp || dive.phase !== 'pick') return;
+  const w = sp.getBoundingClientRect().width;
+  dragging = { x: e.clientX, from: dive.state.win, w, moved: false, i: +sp.dataset.i };
+  $('strip').setPointerCapture(e.pointerId);
+});
+$('strip').addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const d = Math.round((e.clientX - dragging.x) / dragging.w);
+  if (d) dragging.moved = true;
+  dive.setWindow(dragging.from + d);
+});
+$('strip').addEventListener('pointerup', () => {
+  if (dragging && !dragging.moved) dive.setWindow(dragging.i - 10);    // a tap centres the guide there
+  dragging = null;
+});
+
+function openDive(cell) {
+  if (!cell || dive.isOpen) return;
+  const pt = dish.screenOf(cell);
+  diveEl.style.setProperty('--ox', `${pt.x}px`); diveEl.style.setProperty('--oy', `${pt.y}px`);
+  diveEl.setAttribute('aria-hidden', 'false');
+  dive.open(cell);
+  requestAnimationFrame(() => diveEl.classList.add('open'));
+  setTimeout(() => { if (dive.isOpen) dish.setActive(false); }, 900);
+}
+function closeDive(cell) {
+  dish.setActive(true);
+  if (cell) { const pt = dish.screenOf(cell); diveEl.style.setProperty('--ox', `${pt.x}px`); diveEl.style.setProperty('--oy', `${pt.y}px`); }
+  diveEl.classList.remove('open', 'editing');
+  diveEl.setAttribute('aria-hidden', 'true');
+  showEdit(cell);
+}
+function showEdit(cell) {
+  const e = $('i-edit');
+  if (cell && cell.genome) { e.hidden = false; e.textContent = cell.genome.outcome === 'knock-in' ? 'edited · carries the glow gene' : 'edited · patched with a scar'; }
+  else e.hidden = true;
+}
+$('i-dive').addEventListener('click', () => openDive(dish.selected));
+$('d-back').addEventListener('click', () => dive.close());
+// scrolling down on a followed cell dives into it
+stage.addEventListener('wheel', e => { if (!dive.isOpen && dish.selected && e.deltaY > 12) { e.preventDefault(); openDive(dish.selected); } }, { passive: false });
+setInterval(() => showEdit(dish.selected), 500);
 </script>
 </body>
 </html>
