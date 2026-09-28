@@ -1,5 +1,5 @@
 // software.js
-// samOS: a tiny computer in the page. A terminal on one side, a screen
+// samaOS: a tiny computer in the page. A terminal on one side, a screen
 // on the other, and every command runs a real program you can watch:
 // sorting algorithms racing on the same shuffled data, a maze carved
 // by depth-first search and solved by A*, Conway's Game of Life you can
@@ -282,7 +282,7 @@ export function initOS(el) {
   fit();
 
   (async () => {
-    await type('samOS 1.0 · booting', 'dim', 14);
+    await type('samaOS 1.0 · booting', 'dim', 14);
     await type('memory ok · three.js not required · coffee low', 'dim', 8);
     print(`type ${cmdLink('help')}, or click a program in the dock below.`);
     run(sortProg);
