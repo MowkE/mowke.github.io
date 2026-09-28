@@ -58,7 +58,7 @@ export function initOS(el) {
   };
   function exec(raw) {
     const line = raw.trim(); if (!line) return;
-    print(`<span class="pr">sam@os ~ %</span> ${line.replace(/</g, '&lt;')}`);
+    print(`<span class="pr">sama@os ~ %</span> ${line.replace(/</g, '&lt;')}`);
     history.push(line); hi = history.length;
     const [c] = line.toLowerCase().split(/\s+/);
     if (COMMANDS[c]) COMMANDS[c]();
