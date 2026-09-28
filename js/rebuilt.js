@@ -5,14 +5,14 @@
 // Everything is in metres on the real field layout: hubs 182 in off each
 // alliance wall, bumps and trenches either side, depot, outpost and tower on
 // the wall, a neutral zone full of FUEL. The match runs the real clock:
-// a 20 s autonomous period (9470 drives its own routine), then 2:20 of teleop
-// where the hubs trade places, active and inactive, every 25 s.
+// a 20 s autonomous period, then 2:20 of teleop where the hubs trade places,
+// active and inactive, every 25 s. Just you and 9470 on the field.
 //
 // The FUEL is simulated: gravity, foam bounce, rolling off bumps, balls
-// knocking into each other, the robot shoving them around. Shots are real
-// projectiles solved for the hood angle and wheel speed at that distance,
-// with the robot's own velocity added in, so shooting on the move needs the
-// lead the solver gives it.
+// knocking into each other, the robot shoving them around. The drum fires
+// ragged volleys of three to five FUEL spread across its width; each one is a
+// real projectile solved for the hood angle and wheel speed at that distance,
+// with the robot's own velocity added in.
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -39,7 +39,8 @@ const T_END = T_AUTO + T_GAP + T_TELE;
 const VMAX = 4.6;        // m/s, SDS MK5n on Krakens, loaded
 const ACC = 9;           // m/s^2
 const WMAX = 7.5;        // rad/s
-const FIRE = 9;          // FUEL per second through the drum
+const VOLLEY = 0.3;      // seconds between drum volleys
+const CAP = 45;          // the hopper is closed: FUEL only gets in through the intake
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
@@ -135,11 +136,11 @@ export function startGame(canvas, ui) {
         for (let x = -HX - 2.6; x < HX + 2.6; x += rnd(0.5, 0.9)) if (Math.random() < 0.72) people.push([x, y, z + s * 0.1]);
       }
     }
-    const crowd = new THREE.InstancedMesh(new THREE.CapsuleGeometry(0.17, 0.42, 3, 6), new THREE.MeshStandardMaterial({ roughness: 0.9 }), people.length);
+    const crowd = new THREE.InstancedMesh(new THREE.CapsuleGeometry(0.12, 0.3, 3, 6), new THREE.MeshLambertMaterial(), people.length);
     const shirts = [0x8a2a2d, 0x2b4f94, 0x6b6e75, 0x3b3d44, 0xa8792b, 0x2f6b4f, 0x5a3d78, 0x90908a];
     people.forEach(([x, y, z], i) => {
-      M4.makeTranslation(x, y + 0.38, z); crowd.setMatrixAt(i, M4);
-      crowd.setColorAt(i, new THREE.Color(shirts[(Math.random() * shirts.length) | 0]).multiplyScalar(rnd(0.22, 0.45)));
+      M4.makeTranslation(x, y + 0.27, z); crowd.setMatrixAt(i, M4);
+      crowd.setColorAt(i, new THREE.Color(shirts[(Math.random() * shirts.length) | 0]).multiplyScalar(rnd(0.1, 0.22)));
     });
     crowd.userData.base = people; scene.add(crowd); arenaCrowd = crowd;
     // truss and lamps
@@ -252,7 +253,7 @@ export function startGame(canvas, ui) {
     let i = -1;
     for (let k = 0; k < nBalls; k++) if (St[k] === 0) { i = k; break; }
     if (i < 0) { if (nBalls >= NMAX) return -1; i = nBalls++; }
-    P[i * 3] = x; P[i * 3 + 1] = y; P[i * 3 + 2] = z; V[i * 3] = vx; V[i * 3 + 1] = vy; V[i * 3 + 2] = vz; St[i] = 1; Ign[i] = 0; shotBy[i] = 0; shotAlliance[i] = 0;
+    P[i * 3] = x; P[i * 3 + 1] = y; P[i * 3 + 2] = z; V[i * 3] = vx; V[i * 3 + 1] = vy; V[i * 3 + 2] = vz; St[i] = 1; Ign[i] = 0; shotBy[i] = 0;
     return i;
   }
   function neutralFuel() {
@@ -277,7 +278,7 @@ export function startGame(canvas, ui) {
   // ---------- robots ----------
   const bot = {
     alliance: 'red', x: 0, z: 0, yaw: 0, vx: 0, vz: 0, w: 0, y: 0, pitch: 0, roll: 0,
-    held: 8, cap: 40, intake: true, shootCool: 0, outCool: 0, feeding: false,
+    held: 8, cap: CAP, intake: true, shootCool: 0, feeding: false, volley: [],
     hx: 0.45, hz: 0.45, top: 0.55, shooter: new THREE.Vector3(0, 0.5, -0.2), intakeZ: 0.45,
     group: new THREE.Group(), tilt: new THREE.Group(), model: null, spinners: [], hopper: null,
   };
@@ -333,15 +334,13 @@ export function startGame(canvas, ui) {
     bot.hx = (all.max.x - all.min.x) / 2; bot.hz = (all.max.z - all.min.z) / 2; bot.top = all.max.y;
     // the drum and the intake, measured from the CAD
     const drum = partBox(/DRUMROLLER/), intake = subBox(/INTAKE/);
-    if (!drum.isEmpty()) { const c = drum.getCenter(new THREE.Vector3()); bot.shooter.set(c.x, drum.max.y + 0.06, c.z); }
+    if (!drum.isEmpty()) { const c = drum.getCenter(new THREE.Vector3()); bot.shooter.set(c.x, drum.max.y + 0.06, c.z); bot.drumW = (drum.max.x - drum.min.x) * 0.8; }
     if (!intake.isEmpty()) bot.intakeZ = intake.max.z;
     bot.shootDir = Math.sign(bot.shooter.z || -1) || -1;      // +1 if the drum sits at the front
-    // hopper: capacity from the volume inside its walls, packed spheres at ~52 %
+    // hopper: where the load sits, drawn inside the CAD's walls
     const hop = subBox(/hopprp walls/);
     const hsz = hop.getSize(new THREE.Vector3());
     if (!hop.isEmpty()) {
-      const vol = hsz.x * hsz.y * hsz.z, ball = 4 / 3 * Math.PI * R ** 3;
-      bot.cap = clamp(Math.round(vol * 0.52 / ball), 24, 70);
       bot.hopBox = hop.clone().expandByScalar(-R * 1.05);
     }
     // rollers spin about their long axis
@@ -369,28 +368,8 @@ export function startGame(canvas, ui) {
     buildT = 0;
   }, p => { if (p.total) ui.progress(p.loaded / p.total); });
 
-  // opponents and partners are simple bumper-and-box robots, the way sims draw other teams
-  const others = [];
-  function makeOther(alliance, num) {
-    const col = alliance === 'red' ? RED : BLUE;
-    const g = new THREE.Group(), t = new THREE.Group(); g.add(t);
-    const body = solid(0.62, 0.34, 0.62, mat(0x3a3e47, { metalness: 0.4, roughness: 0.4 }), 0, 0.3, 0, t);
-    solid(0.8, 0.13, 0.8, mat(col, { roughness: 0.8 }), 0, 0.12, 0, t);
-    const hood = solid(0.36, 0.14, 0.24, mat(0x22252b), 0, 0.47, -0.16, t);
-    const cv = document.createElement('canvas'); cv.width = 256; cv.height = 80; const cg = cv.getContext('2d');
-    cg.font = '700 64px Anybody, Arial Narrow, sans-serif'; cg.fillStyle = '#f3efe6'; cg.textAlign = 'center'; cg.textBaseline = 'middle'; cg.fillText(num, 128, 44);
-    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
-    for (const [x, z, ry] of [[0, 0.401, 0], [0, -0.401, Math.PI], [0.401, 0, Math.PI / 2], [-0.401, 0, -Math.PI / 2]]) {
-      const d = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.12), new THREE.MeshBasicMaterial({ map: tex, transparent: true })); d.position.set(x, 0.12, z); d.rotation.y = ry; t.add(d);
-    }
-    scene.add(g);
-    const o = { alliance, num, x: 0, z: 0, yaw: 0, vx: 0, vz: 0, w: 0, y: 0, pitch: 0, roll: 0, held: 8, cap: 24, intake: true, shootCool: 0,
-      hx: 0.4, hz: 0.4, top: 0.55, shooter: new THREE.Vector3(0, 0.6, -0.16), intakeZ: 0.4, shootDir: -1, group: g, tilt: t, ai: { goal: null, think: 0, mode: 'collect' }, skill: 0.55 + Math.random() * 0.25 };
-    others.push(o); return o;
-  }
-
   // ---------- match state ----------
-  const match = { mode: 'menu', t: 0, score: { red: 0, blue: 0 }, auto: { red: 0, blue: 0 }, firstInactive: 'red', stats: null, opponents: true };
+  const match = { mode: 'menu', t: 0, score: { red: 0, blue: 0 }, auto: { red: 0, blue: 0 }, firstInactive: 'red', stats: null };
   const keys = new Set();
   let cameraMode = 0, buildT = 0, running = false, paused = false, assist = true;
 
@@ -437,38 +416,12 @@ export function startGame(canvas, ui) {
     foamMat.color.set(bot.alliance === 'red' ? RED : BLUE);
     const lineX = sg * (HX - HUB_DX + HUB_W / 2);
     placeRobot(bot, lineX + sg * (bot.hz + 0.02), -sg * 1.55, sg < 0 ? Math.PI / 2 : -Math.PI / 2);
-    bot.held = 8; bot.intake = true;
+    bot.held = 8; bot.intake = true; bot.volley = []; bot.shootCool = 0;
     match.t = 0; match.score = { red: 0, blue: 0 }; match.auto = { red: 0, blue: 0 };
     match.stats = { shots: 0, made: 0, points: 0, dist: 0, top: 0, collected: 0, autoPts: 0, wasted: 0 };
-    match.autoPlan = autoPlan(bot);
     match.firstInactive = null;
-    // two partners and three opponents when playing a match
-    others.forEach(o => scene.remove(o.group)); others.length = 0;
-    if (match.opponents && match.mode === 'match') {
-      const mine = bot.alliance, theirs = mine === 'red' ? 'blue' : 'red';
-      const NUMS = { [mine]: ['254', '1678'], [theirs]: ['4414', '1323', '6328'] };
-      const lx = s => s * (HX - HUB_DX + HUB_W / 2 + 0.44);
-      const ms = mine === 'red' ? -1 : 1, ts = -ms;
-      // partners line up beside us on our starting line, opponents across three spots on theirs
-      NUMS[mine].forEach((n, i) => placeRobot(makeOther(mine, n), lx(ms), [ms * 1.2, ms * 3.1][i], ms < 0 ? Math.PI / 2 : -Math.PI / 2));
-      NUMS[theirs].forEach((n, i) => placeRobot(makeOther(theirs, n), lx(ts), [-1.55, 0, 1.55][i], ts < 0 ? Math.PI / 2 : -Math.PI / 2));
-    }
     running = start; paused = false;
     ui.phase && ui.phase(phaseInfo(0));
-  }
-
-  // ---------- 9470's autonomous: preload, depot, shoot ----------
-  function autoPlan(r) {
-    const sg = r.alliance === 'red' ? -1 : 1, zf = -sg, inw = -sg, wallX = sg * HX;
-    const dz = zf * -2.4;
-    return [
-      { do: 'shoot', until: 4.2 },
-      { do: 'go', x: wallX + inw * 1.6, z: dz, yaw: inw > 0 ? -Math.PI / 2 : Math.PI / 2, v: 3.6 },
-      { do: 'go', x: wallX + inw * 0.66, z: dz - 0.42, yaw: inw > 0 ? -Math.PI / 2 : Math.PI / 2, v: 1.2 },
-      { do: 'go', x: wallX + inw * 0.66, z: dz + 0.46, yaw: inw > 0 ? -Math.PI / 2 : Math.PI / 2, v: 0.9 },
-      { do: 'go', x: wallX + inw * 2.6, z: zf * -1.2, yaw: null, v: 3.6 },
-      { do: 'shoot', until: 20 },
-    ];
   }
 
   // ---------- ballistics ----------
@@ -496,18 +449,34 @@ export function startGame(canvas, ui) {
   // yaw that points the drum at a heading
   const yawFor = (r, heading) => r.shootDir > 0 ? heading : wrap(heading + Math.PI);
 
-  function fire(r, sol, noise = 1) {
-    const dir = r.shootDir > 0 ? r.yaw : r.yaw + Math.PI;           // the drum launches along the robot's own axis
-    const sp = sol.v * (1 + (Math.random() - 0.5) * 0.03 * noise * (1 + sol.d * 0.12));
-    const th = sol.th + (Math.random() - 0.5) * 0.02 * noise;
-    const ya = dir + (Math.random() - 0.5) * 0.025 * noise;
-    const h = Math.cos(th) * sp;
-    const i = spawnBall(sol.from.x, sol.from.y, sol.from.z, Math.sin(ya) * h + r.vx, Math.sin(th) * sp, Math.cos(ya) * h + r.vz);
-    if (i >= 0) { Ign[i] = 0.35; shotBy[i] = r === bot ? 1 : 0; shotAlliance[i] = r.alliance === 'red' ? 1 : 2; }
-    r.held--;
-    if (r === bot) { match.stats.shots++; sfx.shot(); }
+  // the drum is as wide as the robot: a volley leaves as a ragged line of FUEL
+  // across it, never quite even: a few ms apart, each with its own small error
+  function queueVolley(r) {
+    const n = Math.min(r.held, 3 + (Math.random() < 0.55 ? 1 : 0) + (Math.random() < 0.3 ? 1 : 0));
+    const w = r.drumW || 0.45;
+    for (let k = 0; k < n; k++) {
+      const lat = (n === 1 ? 0 : -w / 2 + w * k / (n - 1)) + (Math.random() - 0.5) * w * 0.18;
+      r.volley.push({ in: Math.random() * 0.075 + (Math.random() < 0.2 ? 0.05 : 0), lat });
+    }
+    r.held -= n;
+    sfx.shot();
   }
-  const shotBy = new Uint8Array(NMAX), shotAlliance = new Uint8Array(NMAX);
+  function releaseVolley(r, dt) {
+    for (let k = r.volley.length - 1; k >= 0; k--) {
+      const v = r.volley[k]; v.in -= dt; if (v.in > 0) continue;
+      r.volley.splice(k, 1);
+      const sol = solve(r, r.alliance);
+      const dir = r.shootDir > 0 ? r.yaw : r.yaw + Math.PI;     // launched along the robot's own axis
+      const sp = sol.v * (1 + (Math.random() - 0.5) * 0.045 * (1 + sol.d * 0.1));
+      const th = sol.th + (Math.random() - 0.5) * 0.035;
+      const ya = dir + (Math.random() - 0.5) * 0.03;
+      const h = Math.cos(th) * sp, c = Math.cos(r.yaw), s = Math.sin(r.yaw);
+      const i = spawnBall(sol.from.x + v.lat * c, sol.from.y + (Math.random() - 0.5) * 0.03, sol.from.z - v.lat * s, Math.sin(ya) * h + r.vx, Math.sin(th) * sp, Math.cos(ya) * h + r.vz);
+      if (i >= 0) { Ign[i] = 0.35; shotBy[i] = 1; }
+      match.stats.shots++;
+    }
+  }
+  const shotBy = new Uint8Array(NMAX);
 
   // ---------- physics ----------
   function stepRobot(r, cmd, dt) {
@@ -547,19 +516,6 @@ export function startGame(canvas, ui) {
     r.y = lerp(r.y, ty, Math.min(1, dt * 18));
     r.pitch = lerp(r.pitch, -Math.atan2(hf - hb, r.hz * 1.6), Math.min(1, dt * 14));
     r.roll = lerp(r.roll, Math.atan2(hr - hl, r.hx * 1.6), Math.min(1, dt * 14));
-  }
-
-  function robotsCollide(list) {
-    for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
-      const a = list[i], b = list[j];
-      const dx = b.x - a.x, dz = b.z - a.z, d = Math.hypot(dx, dz), min = (Math.max(a.hx, a.hz) + Math.max(b.hx, b.hz)) * 0.9;
-      if (d < min && d > 1e-4) {
-        const nx = dx / d, nz = dz / d, o = (min - d) / 2;
-        a.x -= nx * o; a.z -= nz * o; b.x += nx * o; b.z += nz * o;
-        const rv = (b.vx - a.vx) * nx + (b.vz - a.vz) * nz;
-        if (rv < 0) { a.vx += rv * nx * 0.5; a.vz += rv * nz * 0.5; b.vx -= rv * nx * 0.5; b.vz -= rv * nz * 0.5; if ((a === bot || b === bot) && rv < -1.2) sfx.bonk(-rv); }
-      }
-    }
   }
 
   function stepBalls(dt, robots) {
@@ -621,8 +577,7 @@ export function startGame(canvas, ui) {
         if (Math.abs(lx) > r.hx + R || Math.abs(lz) > r.hz + R || y > top + R) continue;
         const room = r.held < r.cap;
         const atIntake = r.intake && room && lz > r.hz - 0.12 && Math.abs(lx) < r.hx * 0.82 && y < r.y + 0.35;
-        const fromAbove = room && vy < 0 && y > top - 0.06 && Math.abs(lx) < r.hx * 0.7 && Math.abs(lz) < r.hz * 0.7;
-        if (atIntake || fromAbove) { St[i] = 0; r.held++; if (r === bot) { match.stats.collected++; sfx.intake(); } break; }
+        if (atIntake) { St[i] = 0; r.held++; if (r === bot) { match.stats.collected++; sfx.intake(); } break; }
         // push out along the shallowest local axis, carrying the robot's velocity
         const ox = r.hx + R - Math.abs(lx), oz = r.hz + R - Math.abs(lz), oy = top + R - y;
         if (oy < Math.min(ox, oz) && vy <= 0.5) { y = top + R; vy = Math.max(0, -vy * 0.3); vx = lerp(vx, r.vx, 0.3); vz = lerp(vz, r.vz, 0.3); continue; }
@@ -712,77 +667,12 @@ export function startGame(canvas, ui) {
     }
   }
 
-  // ---------- AI for the other five robots ----------
-  function aiCmd(o, dt, t) {
-    const sg = o.alliance === 'red' ? -1 : 1, hub = hubs[o.alliance];
-    const ai = o.ai; ai.think -= dt;
-    const active = hubActiveAt(o.alliance, t) || hubActiveAt(o.alliance, t + 2.5);
-    const wantShoot = o.held > 0 && (o.held >= o.cap * 0.8 || (active && o.held >= 10) || (t < T_AUTO && o.held > 0));
-    if (wantShoot) ai.mode = 'shoot'; else if (ai.mode === 'shoot' && o.held === 0) ai.mode = 'collect';
-    if (!wantShoot && ai.mode === 'shoot') ai.mode = 'collect';
-    let tx, tz, yaw = null, v = VMAX * 0.72 * o.skill;
-    if (ai.mode === 'shoot') {
-      // a shooting spot inside our alliance zone, on our side of the hub
-      // in auto, fire the preload from where we started; later, pick a spot in our zone
-      if (t < T_AUTO && !ai.spot) ai.spot = { x: o.x, z: o.z };
-      if (!ai.spot || (ai.think < 0 && t >= T_AUTO)) { ai.spot = { x: hub.x + sg * (1.4 + Math.random() * 1.6), z: (Math.random() - 0.5) * 5 }; ai.think = 6; }
-      tx = ai.spot.x; tz = ai.spot.z;
-      const sol = solve(o, o.alliance);
-      yaw = yawFor(o, sol.heading);
-      const near = Math.hypot(tx - o.x, tz - o.z) < 0.5;
-      if (near || Math.hypot(o.vx, o.vz) < 0.8) {
-        o.shootCool -= dt;
-        if (Math.abs(wrap(yaw - o.yaw)) < 0.06 && o.shootCool <= 0 && o.held > 0 && sol.d > 1.2) { fire(o, sol, 2.6 - o.skill * 1.5); o.shootCool = 1 / 4; }
-      }
-    } else {
-      // find the nearest loose FUEL on the field, weighted toward the neutral zone
-      if (ai.think < 0 || !ai.goal || St[ai.goal] !== 1) {
-        let best = -1, bd = 1e9;
-        for (let n = 0; n < 60; n++) {
-          const i = (Math.random() * nBalls) | 0; if (St[i] !== 1) continue;
-          const bx = P[i * 3], bz = P[i * 3 + 2];
-          if (Math.abs(bx) > HX - 1.2 || Math.abs(bz) > HZ - 0.5) continue;
-          const d = Math.hypot(bx - o.x, bz - o.z) + Math.abs(bx) * 0.35;
-          if (d < bd) { bd = d; best = i; }
-        }
-        ai.goal = best; ai.think = 1.6 + Math.random() * 1.4;
-      }
-      if (ai.goal >= 0) { tx = P[ai.goal * 3]; tz = P[ai.goal * 3 + 2]; yaw = Math.atan2(tx - o.x, tz - o.z); }
-      else { tx = 0; tz = 0; }
-    }
-    // steer: go straight at it, sliding around the hub instead of into it
-    // steer at it, pushed off nearby field elements and slid around whatever is in the way
-    const d = Math.hypot(tx - o.x, tz - o.z) || 1;
-    let ux = (tx - o.x) / d, uz = (tz - o.z) / d;
-    for (const b of colliders) {
-      if (!b.robot || b.max[1] < 0.3 || (b.arm && o.top < TRENCH_CLEAR)) continue;
-      const cx = clamp(o.x, b.min[0], b.max[0]), cz = clamp(o.z, b.min[2], b.max[2]);
-      const ex = o.x - cx, ez = o.z - cz, e = Math.hypot(ex, ez);
-      if (e > 1.1 || e < 1e-4) continue;
-      const w = (1.1 - e) * 1.8, nx = ex / e, nz = ez / e;
-      if (ux * -nx + uz * -nz > 0.2) {                     // it's ahead: go round it on the target's side
-        const px = -nz, pz = nx, side = Math.sign(px * ux + pz * uz) || 1;
-        ux += px * side * w; uz += pz * side * w;
-      }
-      ux += nx * w * 0.6; uz += nz * w * 0.6;
-    }
-    // unstick: if we've been shoving and going nowhere, pick something else
-    const sp0 = Math.hypot(o.vx, o.vz);
-    ai.stuck = sp0 < 0.25 && d > 0.6 ? (ai.stuck || 0) + dt : 0;
-    if (ai.stuck > 1.0) { ai.stuck = 0; ai.think = -1; ai.spot = null; ai.jig = { x: Math.random() - 0.5, z: Math.random() - 0.5, t: 0.6 }; }
-    if (ai.jig && ai.jig.t > 0) { ai.jig.t -= dt; ux = ai.jig.x; uz = ai.jig.z; }
-    const dn = Math.hypot(ux, uz) || 1, sp = Math.min(v, d * 2.2);
-    const cmd = { vx: ux / dn * sp, vz: uz / dn * sp, w: 0 };
-    if (yaw !== null) cmd.w = clamp(wrap(yaw - o.yaw) * 6, -WMAX * 0.7, WMAX * 0.7);
-    return cmd;
-  }
-
   // ---------- input ----------
   addEventListener('keydown', e => {
     const k = e.key.toLowerCase();
     if (k === 'tab') { e.preventDefault(); if (running) { cameraMode = (cameraMode + 1) % 3; ui.camera(['driver station', 'broadcast', 'overhead'][cameraMode]); } return; }
     if (k === 'escape') { if (running) togglePause(); return; }
-    if (running && ['w', 'a', 's', 'd', 'j', 'l', 'q', 'e', ' ', 'k', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) e.preventDefault();
+    if (running && ['w', 'a', 's', 'd', 'j', 'l', 'q', 'e', ' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) e.preventDefault();
     if (k === 'shift' && running && !e.repeat) { bot.intake = !bot.intake; sfx.click(); }
     keys.add(k === ' ' ? 'space' : k);
     sfx.unlock();
@@ -823,37 +713,9 @@ export function startGame(canvas, ui) {
       if (rot === 0) cmd.w = clamp(err * 9, -WMAX, WMAX);
       bot.aim = { sol, err };
       bot.shootCool -= dt;
-      if (Math.abs(err) < 0.05 && bot.shootCool <= 0 && sol.d > 1.0) { fire(bot, sol, 1); bot.shootCool = 1 / FIRE; }
-    }
-    if (keys.has('k')) {
-      bot.outCool -= dt;
-      if (bot.outCool <= 0 && bot.held > 0) {
-        const c = Math.cos(bot.yaw), s = Math.sin(bot.yaw);
-        const i = spawnBall(bot.x + s * (bot.hz + R + 0.03), 0.2, bot.z + c * (bot.hz + R + 0.03), s * 2.2 + bot.vx, 0.5, c * 2.2 + bot.vz);
-        if (i >= 0) Ign[i] = 0.3;
-        bot.held--; bot.outCool = 0.12;
-      }
+      if (Math.abs(err) < 0.05 && bot.shootCool <= 0 && sol.d > 1.0) { queueVolley(bot); bot.shootCool = VOLLEY; }
     }
     return cmd;
-  }
-
-  function autoCmd(dt, t) {
-    const plan = match.autoPlan; if (!plan || !plan.length) return { vx: 0, vz: 0, w: 0 };
-    const step = plan[0];
-    if (step.do === 'shoot') {
-      const sol = solve(bot, bot.alliance), want = yawFor(bot, sol.heading), err = wrap(want - bot.yaw);
-      bot.shootCool -= dt; bot.aim = { sol, err };
-      if (Math.abs(err) < 0.05 && bot.shootCool <= 0 && bot.held > 0) { fire(bot, sol, 0.8); bot.shootCool = 1 / FIRE; }
-      if (bot.held === 0 || t > step.until) plan.shift();
-      return { vx: 0, vz: 0, w: clamp(err * 9, -WMAX, WMAX) };
-    }
-    bot.aim = null;
-    const dx = step.x - bot.x, dz = step.z - bot.z, d = Math.hypot(dx, dz);
-    let yaw = step.yaw; if (yaw === null) yaw = yawFor(bot, solve(bot, bot.alliance).heading);
-    const err = wrap(yaw - bot.yaw);
-    if (d < 0.08 && Math.abs(err) < 0.12) { plan.shift(); return { vx: 0, vz: 0, w: 0 }; }
-    const sp = Math.min(step.v, d * 3.2);
-    return { vx: dx / (d || 1) * sp, vz: dz / (d || 1) * sp, w: clamp(err * 6, -WMAX, WMAX) };
   }
 
   // ---------- camera ----------
@@ -965,16 +827,17 @@ export function startGame(canvas, ui) {
       acc += dt;
       while (acc >= STEP) { tick(STEP); acc -= STEP; }
     } else acc = 0;
-    if (loaded && !running) { stepBalls(dt * 0.5, [bot, ...others]); }
+    if (loaded && !running) { stepBalls(dt * 0.5, [bot]); }
 
     // draw robots
-    for (const r of [bot, ...others]) {
+    for (const r of [bot]) {
       r.group.position.set(r.x, r.y, r.z); r.group.rotation.y = r.yaw;
       r.tilt.rotation.set(r.pitch, 0, r.roll);
     }
     if (bot.hopper && bot.hopBox) {
       const hb = bot.hopBox, nx = Math.max(1, Math.floor((hb.max.x - hb.min.x) / (2 * R))), nz = Math.max(1, Math.floor((hb.max.z - hb.min.z) / (2 * R)));
-      const n = Math.min(bot.held, 80);
+      const ny = Math.max(1, Math.floor((hb.max.y - hb.min.y) / (1.7 * R)) + 1);
+      const n = Math.min(bot.held, nx * nz * ny);
       for (let i = 0; i < n; i++) {
         const ix = i % nx, iz = Math.floor(i / nx) % nz, iy = Math.floor(i / (nx * nz));
         M4.makeTranslation(hb.min.x + R + ix * 2 * R + (iy % 2) * R * 0.5, hb.min.y + R + iy * 1.7 * R, hb.min.z + R + iz * 2 * R);
@@ -983,8 +846,8 @@ export function startGame(canvas, ui) {
       bot.hopper.count = buildT > 1.6 ? n : 0; bot.hopper.instanceMatrix.needsUpdate = true;   // preload drops in once the hopper exists
     }
     // spin rollers: intake while collecting, hopper and drum while shooting
-    if (bot.held === 0) bot.aim = null;
-    const shooting = bot.aim && bot.held > 0;
+    if (bot.held === 0 && !bot.volley.length) bot.aim = null;
+    const shooting = (bot.aim && bot.held > 0) || bot.volley.length > 0;
     for (const sp of bot.spinners) {
       if (!sp.dir) continue;
       const rate = sp.kind === 'intake' ? (bot.intake ? 16 : 0) : sp.kind === 'hopper' ? (shooting ? 14 : 2) : (shooting ? 40 : 6);
@@ -1006,7 +869,7 @@ export function startGame(canvas, ui) {
     // the crowd bounces a little while the match is on
     if (arenaCrowd && running) {
       const b = arenaCrowd.userData.base, tt = performance.now() / 1000;
-      for (let i = 0; i < b.length; i += 3) { M4.makeTranslation(b[i][0], b[i][1] + 0.38 + Math.max(0, Math.sin(tt * 7 + i)) * 0.05, b[i][2]); arenaCrowd.setMatrixAt(i, M4); }
+      for (let i = 0; i < b.length; i += 3) { M4.makeTranslation(b[i][0], b[i][1] + 0.27 + Math.max(0, Math.sin(tt * 7 + i)) * 0.05, b[i][2]); arenaCrowd.setMatrixAt(i, M4); }
       arenaCrowd.instanceMatrix.needsUpdate = true;
     }
 
@@ -1032,16 +895,13 @@ export function startGame(canvas, ui) {
 
   function tick(dt) {
     const t = match.t;
-    const inAuto = match.mode === 'match' && t < T_AUTO, inGap = match.mode === 'match' && t >= T_AUTO && t < T_AUTO + T_GAP;
-    const robots = [bot, ...others];
-    let cmd;
-    if (inGap) { cmd = { vx: 0, vz: 0, w: 0 }; bot.aim = null; }
-    else if (inAuto) cmd = autoCmd(dt, t);
-    else cmd = playerCmd(dt);
+    const inGap = match.mode === 'match' && t >= T_AUTO && t < T_AUTO + T_GAP;
+    const robots = [bot];
+    const cmd = inGap ? { vx: 0, vz: 0, w: 0 } : playerCmd(dt);
+    if (inGap) bot.aim = null;
     bot.feeding = false;
     stepRobot(bot, cmd, dt);
-    for (const o of others) stepRobot(o, inGap ? { vx: 0, vz: 0, w: 0 } : aiCmd(o, dt, t), dt);
-    robotsCollide(robots);
+    releaseVolley(bot, dt);
     stepBalls(dt, robots);
     stepOutposts(dt, robots);
     stepReturns(t);
@@ -1080,13 +940,13 @@ export function startGame(canvas, ui) {
     running = false; sfx.buzzer();
     match.mode = 'results';
     const s = match.stats;
-    ui.results({ ...s, score: match.score, alliance: bot.alliance, won: match.score[bot.alliance] > match.score[bot.alliance === 'red' ? 'blue' : 'red'], tie: match.score.red === match.score.blue });
+    ui.results({ ...s, score: match.score[bot.alliance], alliance: bot.alliance });
   }
 
   resetMatch(false);
   requestAnimationFrame(frame);
 
-  window.__game = { bot, match, others, colliders, get nBalls() { return nBalls; }, St, P, keys, solve, hubs, get running() { return running; }, get cameraMode() { return cameraMode; } };
+  window.__game = { bot, match, colliders, get nBalls() { return nBalls; }, St, P, keys, solve, hubs, get running() { return running; }, get cameraMode() { return cameraMode; } };
   return {
     start(opts) {
       sfx.unlock();
@@ -1099,7 +959,6 @@ export function startGame(canvas, ui) {
     restart() { const o = { alliance: bot.alliance, mode: match.mode === 'results' ? 'match' : match.mode }; paused = false; ui.paused(false); this.start(o); },
     setMuted(m) { sfx.muted = m; },
     setAssist(a) { assist = a; },
-    setOpponents(on) { match.opponents = on; },
     get loaded() { return loaded; },
   };
 }
