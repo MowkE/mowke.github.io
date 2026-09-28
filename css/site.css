@@ -241,7 +241,7 @@ h1 .ch.glyph { text-align: center; color: var(--olive); font-family: var(--mono)
 #intro .i-skip { position: absolute; right: 22px; bottom: 20px; font: 12px var(--mono); color: rgba(243, 241, 234, 0.5); background: none; border: 0; cursor: pointer; }
 #intro.leaving .i-body, #intro.leaving .i-skip { opacity: 0; }
 html.intro-on body { overflow: hidden; }
-html.intro-on .hero-text, html.intro-on .doors, html.intro-on .nav { opacity: 0; }
+html.intro-on .hero-text, html.intro-on .doors, html.intro-on .nav, html.intro-on .also { opacity: 0; }
 .hero-text, .doors, .nav { transition: opacity 600ms ease 250ms; }
 #intro .i-sound { position: absolute; left: 22px; bottom: 20px; font: 12px var(--mono); color: rgba(243, 241, 234, 0.5); animation: pulse-soft 2.4s ease-in-out infinite; }
 @keyframes pulse-soft { 50% { opacity: 0.45; } }
@@ -266,3 +266,13 @@ h1#name { font-family: 'Happy Monkey', var(--display); font-weight: 400; letter-
 h1#name .ch { font-variation-settings: normal; }
 .desc .mail { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--olive); text-underline-offset: 3px; white-space: nowrap; }
 .desc .mail:hover { color: var(--olive); }
+
+/* also: everything that isn't a room */
+.also { padding: 24px 6vw 12vh; }
+.also h2 { margin: 0 0 22px; font: 800 clamp(32px, 4vw, 48px)/1 var(--display); font-stretch: 120%; letter-spacing: -0.02em; }
+.also-grid { display: grid; grid-template-columns: 1.4fr 1fr 0.8fr; gap: 28px; }
+.also-k { margin: 0 0 12px; padding-bottom: 8px; font-size: 12px; letter-spacing: 0.06em; color: #6b6a63; border-bottom: 1px solid rgba(23, 23, 26, 0.12); }
+.also ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.also li { font-size: 15px; line-height: 1.5; color: #45443f; }
+.also li b { color: var(--ink); font-weight: 650; }
+@media (max-width: 900px) { .also-grid { grid-template-columns: 1fr; } }

@@ -265,35 +265,83 @@ export function boot(root) {
   // ---------------------------------------------------------------- Résumé
   os.apps.resume = {
     mount(w) {
-      const job = (name, role, when, pts, links = []) => `<article class="r-job"><header><b>${name}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
+      const job = (name, role, when, pts, links = [], status = '') => `<article class="r-job"><header><b>${name}${status ? ` <i class="r-st">${status}</i>` : ''}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
           <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full résumé</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a></div></header>
-        <p class="r-sec">Software</p>
+        <p class="r-sec">Products</p>
+        ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
+          'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
+          'Built most of the demo (everything except the inbox and agent browser) and helped build the Company Brain, which keeps the source and provenance of every piece of knowledge it ingests.',
+          'React and Vite front end, Node/Hono server, project knowledge stored as Markdown, YAML and CSV. Grew out of Substep.'], [], 'MVP')}
+        ${job('Substep', 'Cofounder · execution coach', '2026', [
+          'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
+          'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
+          'Built with Krish on top of Arin\'s screen-grounding engine; the team later pivoted to Propel.'], [], 'Prototype')}
+        ${job('Cadence', 'Builder and maintainer · desktop music companion', '2026', [
+          'A persistent overlay with lyrics, visual themes and shared listening that stays on top of whatever else you\'re doing.',
+          'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
+          'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.'],
+          [['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
         ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', 'Jan 2026 – now', [
           'Built and launched iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
           'Shipped a production MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
           'Iterated on new UI with the startup team from user feedback, aimed at managing ADHD symptoms.',
-          'Ran the social campaigns: 5,000+ organic downloads and 144k+ Instagram views.'])}
+          'Ran the social campaigns: 5,000+ organic downloads and 144k+ Instagram views.'], [['monkeyless.app', 'https://www.monkeyless.app/']], 'Live')}
+        ${job('BioSim', 'Founder &amp; Lead Developer · 3D science simulation platform', 'Oct 2022 – now', [
+          'A 3D simulation platform in the browser, built with Babylon.js and WebGL, rendering cells, organ systems and atoms, including neuron, electron-transport-chain and nephron models.',
+          'An interactive 3D periodic table with spatial structures for all 118 elements, plus periodic trends, VSEPR and intermolecular forces for AP Chemistry.',
+          'Custom prompt pipelines that generate WebGL coordinate math cut asset creation time 10×.',
+          'Grew from 6 local schools to 79 school districts across 98 countries through educator outreach and SEO.',
+          'Cohosted E-med Hacks, an education-technology hackathon for 60 students.'],
+          [['bio-sim.us', 'https://bio-sim.us/'], ['bio-sim.us/chemistry', 'https://bio-sim.us/chemistry/']], 'Live')}
         ${job('OpenTrade (YC S26)', 'Growth Outreach &amp; Front-End Design · San Francisco', '2026', [
           'School outreach campaign: 1,000+ emails to educators and institutions for product demos in India and Singapore.',
           'Front-end product design: UI layouts, visual components and overall usability.'])}
-        ${job('Substep', '', '', ['Details coming soon.'])}
-        ${job('Propel', '', '', ['Details coming soon.'])}
         ${job('ShogunAI', 'Software Engineering Contractor · AI product engineering', '2026 · one week', [
           'Rebuilt the end-to-end living knowledge-base workflow of GodHands and integrated it into ShogunAI\'s local-first desktop agent, keeping evidence-linked context across people, projects, decisions and handoffs.',
           'Delivered a working integration in one week, adapting ingestion, retrieval and UI flows to the existing architecture.'],
           [['ShogunAI on Product Hunt', 'https://www.producthunt.com/products/shogunai?launch=shogunai'], ['godhands.dev', 'https://godhands.dev/']])}
-        ${job('BioSim', 'Founder &amp; Lead Developer · 3D science simulation platform', 'Oct 2022 – now', [
-          'A 3D simulation platform in the browser, built with Babylon.js and WebGL, rendering cells, organ systems and atoms.',
-          'An interactive 3D periodic table with spatial structures for all 118 elements, built out for AP Chemistry.',
-          'Custom prompt pipelines that generate WebGL coordinate math cut asset creation time 10×.',
-          'Grew from 6 local schools to 79 school districts across 98 countries through educator outreach and SEO.'],
-          [['bio-sim.us', 'https://bio-sim.us/'], ['bio-sim.us/chemistry', 'https://bio-sim.us/chemistry/']])}
+
+        <p class="r-sec">Tools &amp; experiments</p>
+        ${job('Recall', 'Builder · knowledge layer for coding agents', 'Aug 2026', [
+          'Turns past Claude Code, Codex and Cursor sessions, corrections and git history into evidence-linked knowledge, then serves it back through hooks, an MCP server and compiled rules.',
+          'A pipeline that redacts, segments, extracts and merges into SQLite, with retrieval that blends lexical, vector and scope signals. Related to the ShogunAI contract.'], [], 'Built')}
+        ${job('Cadlytic', 'Builder · autocomplete for parametric CAD', 'Jul 2026', [
+          'Suggests the next editable Onshape feature instead of generating a mesh.',
+          'A React/TypeScript overlay in the browser and a small PyTorch next-feature model trained on a tokenized CAD representation, with model-backed suggestions written back as features.'], [], 'Prototype')}
+        ${job('Mudra', 'Builder · gesture control for CAD', 'Aug 2026', [
+          'Drive Onshape\'s viewport with your hands: MediaPipe tracking feeds a gesture state machine, which controls the browser over a WebSocket.',
+          'Orbit, pan, zoom, click and fit-to-view, with a ~600 ms watchdog that releases stuck input.'], [['github.com/MowkE/mudra', 'https://github.com/MowkE/mudra']], 'Prototype')}
+        ${job('Wavelength', 'Builder · listen together in sync', 'Aug 2026', [
+          'A Chrome extension and WebSocket relay that keep friends\' YouTube Music playback in sync: rooms, leader election, reconnection, late joins and drift correction.',
+          'Only playback state travels between browsers, never audio; idempotent snapshots stop echo loops when two people act at once.'], [['github.com/MowkE/wavelength', 'https://github.com/MowkE/wavelength']], 'Built')}
+        ${job('Limen', 'Builder · headline-framing extension', 'Aug 2026', [
+          'A browser extension that annotates headlines and posts with the framing techniques they use and a neutral rewrite.',
+          'The interface and site integration are built; scoring runs on a separate self-hosted service.'], [['github.com/MowkE/limen', 'https://github.com/MowkE/limen']], 'Prototype')}
+        ${job('amdetect', 'Inference and streaming · answering-machine detection', 'Aug 2026', [
+          'Tells whether a phone call reached a person or a machine (voicemail, phone menu, carrier message).',
+          'A Go audio pipeline (decoding, resampling, log-mel features), ONNX inference on a pretrained Whisper telephony model, and a streaming API that trades decision time against errors.'], [], 'Built')}
+        ${job('Clicky extension (CEC)', 'Architecture sketch · on Farza\'s Clicky', 'Jul 2026', [
+          'A control hierarchy for a desktop agent: use an app\'s API first, accessibility controls next, and vision only as a fallback, with confirmations.',
+          'Adapter sketches for PyMOL and Jupyter and an Onshape stub. Written as a scaffold; not yet compiled or wired in.'], [], 'Scaffold')}
+        ${job('Recollect', 'Collaboration with a friend · memory for coding models', '2026', [
+          'Can a changing memory system help a frozen coding model use what it has learned? Qwen models wrapped in a memory loop, with later LoRA experiments.',
+          'Results were mixed and partly negative, and the write-up documents each dead end.'], [], 'Experiment')}
+        ${job('Paper-trading agent', 'Experiment · automation', 'Spring 2026', [
+          'Research-journaling automation and paper-trading helpers on Alpaca. Switched off in June 2026.'], [], 'Retired')}
+        ${job('Pygame social game', 'Adaptation · creative programming', '2026', [
+          'Adapted a Pygame social-deduction game: gameplay and UI changes, plus Windows and macOS packaging.'], [], 'Built')}
+
+        <p class="r-sec">Research</p>
+        ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', 'Aug 2026', [
+          'Asks whether limiting who gets decision-making roles lowers participation in an artificial society even when resources are plentiful, inspired by the Universe 25 experiment.',
+          'A completed rule-based 2×2 study: 8 agents, 40 rounds, 800 paired-seed runs with control policies and a frozen internal preregistration.',
+          'Built the infrastructure for a second study with LLM agents. A pilot run was deliberately excluded as compromised evidence; the controlled LLM study and the paper are in progress.'], [], 'In progress')}
         ${job('Orrery', 'Nine interactive simulations, orbiting one sun · no frameworks, no build step', '2026', [
           'Nine browser simulations that each measure something real and print it beside the textbook value.',
           'APSIS raymarches light around a black hole along Schwarzschild geodesics; VALENCE raymarches hydrogen orbitals from the Schrödinger equation; HYPERSHAPE rotates four-dimensional shapes.',
-          'LUMA and LUMASHAPE test color models against human and bird vision; QUASI cuts quasicrystals from five dimensions; DIFFUSE rediscovers Fick\'s laws from random walkers; META shows geometry deciding how a material behaves; GOLDILOCKS checks whether a planet keeps liquid water.'])}
+          'LUMA and LUMASHAPE test color models against human and bird vision (LUMA credits a Jake Dont Draw video as inspiration); QUASI cuts quasicrystals from five dimensions; DIFFUSE rediscovers Fick\'s laws from random walkers; META shows geometry deciding how a material behaves; GOLDILOCKS checks whether a planet keeps liquid water.'])}
         <p class="r-sims-row"><button class="btn quiet r-sims">Open the Orrery</button></p>
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
