@@ -18,7 +18,7 @@ const ICONS = {
   sims: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6" /><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(-25 12 12)" /><circle cx="19.4" cy="8.6" r="1.2" /></svg>',
   resume: '<svg viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11z M13.5 3.5v4h4 M9 12h6 M9 15.5h6" /></svg>',
 };
-const NAMES = { resume: 'Résumé', sims: 'Sims', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
+const NAMES = { resume: 'Résumé', sims: 'Orrery', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
 
 export function boot(root) {
   const fs = makeFS(), kernel = makeKernel(fs);
@@ -255,10 +255,10 @@ export function boot(root) {
     },
   };
 
-  // ---------------------------------------------------------------- Sims
+  // ---------------------------------------------------------------- Orrery (the sims page, live)
   os.apps.sims = {
     mount(w) {
-      w.body.innerHTML = `<div class="sims"><iframe src="../sims/" title="The sims: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>Nine simulations. Throw a planet, or click one to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
+      w.body.innerHTML = `<div class="sims"><iframe src="../sims/?v=2" title="Orrery: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>The Orrery: nine simulations in orbit. Throw one, or click it to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
     },
   };
 
@@ -290,11 +290,11 @@ export function boot(root) {
           'Custom prompt pipelines that generate WebGL coordinate math cut asset creation time 10×.',
           'Grew from 6 local schools to 79 school districts across 98 countries through educator outreach and SEO.'],
           [['bio-sim.us', 'https://bio-sim.us/'], ['bio-sim.us/chemistry', 'https://bio-sim.us/chemistry/']])}
-        ${job('Sims', 'Nine interactive simulations · no frameworks, no build step', '2026', [
+        ${job('Orrery', 'Nine interactive simulations, orbiting one sun · no frameworks, no build step', '2026', [
           'Nine browser simulations that each measure something real and print it beside the textbook value.',
           'APSIS raymarches light around a black hole along Schwarzschild geodesics; VALENCE raymarches hydrogen orbitals from the Schrödinger equation; HYPERSHAPE rotates four-dimensional shapes.',
           'LUMA and LUMASHAPE test color models against human and bird vision; QUASI cuts quasicrystals from five dimensions; DIFFUSE rediscovers Fick\'s laws from random walkers; META shows geometry deciding how a material behaves; GOLDILOCKS checks whether a planet keeps liquid water.'])}
-        <p class="r-sims-row"><button class="btn quiet r-sims">Open the sims</button></p>
+        <p class="r-sims-row"><button class="btn quiet r-sims">Open the Orrery</button></p>
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
       w.body.querySelector('.r-sims').addEventListener('click', () => open('sims'));
