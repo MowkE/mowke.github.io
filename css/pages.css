@@ -105,6 +105,8 @@
   background: var(--hw); color: #fff; cursor: pointer; transition: transform 160ms var(--spring), filter 160ms ease;
 }
 .end .go:hover { filter: brightness(1.08); } .end .go:active { transform: scale(0.97); }
+.end a.go { display: block; text-align: center; text-decoration: none; }
+.end .go.ghost { background: transparent; color: var(--ink-2); box-shadow: inset 0 0 0 1px rgba(23, 23, 26, 0.18); }
 .keys { display: none; font: 500 11.5px var(--mono); line-height: 1.8; color: var(--ink-2); }
 .keys kbd { display: inline-block; min-width: 22px; text-align: center; padding: 1px 5px; border-radius: 5px; background: var(--ink); color: var(--paper); font: inherit; }
 body.driving .keys { display: block; }

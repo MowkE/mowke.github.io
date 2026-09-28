@@ -14,6 +14,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { bumperRing } from './bumper.js';
 
 export const STAGES = [
   { key: 'DTASSEM', name: 'Drivetrain', note: 'Four SDS MK5n swerve modules. Every wheel steers and drives on its own motors, so the robot moves any direction while facing any other.',
@@ -126,40 +127,10 @@ export function initRobot(canvas, track, ui) {
       const foam = []; stages[0].traverse(o => { if (o.isMesh && /DRI-FOAM/.test(o.parent?.name || '') ) foam.push(o); });
       if (!foam.length) stages[0].traverse(o => { if (o.isMesh && o.material?.name?.startsWith('0.596078_0.176471_0.050980')) foam.push(o); });
       if (foam.length >= 2) {
-        const boxes = foam.map(m => new THREE.Box3().setFromObject(m, true));
-        const U = boxes.reduce((u, b) => u.union(b), new THREE.Box3());
-        const us = U.getSize(new THREE.Vector3()), b0 = boxes[0].getSize(new THREE.Vector3());
-        const t = Math.min(b0.x, b0.z);                                   // bumper thickness
-        const outerX = us.x, outerZ = us.z, h = us.y;
-        const rr = (w, d, r) => {
-          const sh = new THREE.Shape(), x = w / 2, z = d / 2;
-          sh.moveTo(-x + r, -z); sh.lineTo(x - r, -z); sh.quadraticCurveTo(x, -z, x, -z + r); sh.lineTo(x, z - r); sh.quadraticCurveTo(x, z, x - r, z);
-          sh.lineTo(-x + r, z); sh.quadraticCurveTo(-x, z, -x, z - r); sh.lineTo(-x, -z + r); sh.quadraticCurveTo(-x, -z, -x + r, -z);
-          return sh;
-        };
-        const inset = 0.995;
-        const shape = rr(outerX * inset, outerZ * inset, t * 0.7);
-        shape.holes.push(new THREE.Path(rr(outerX * inset - 2 * t, outerZ * inset - 2 * t, t * 0.2).getPoints(24)));
-        const geo = new THREE.ExtrudeGeometry(shape, { depth: h * 0.985, bevelEnabled: true, bevelSize: t * 0.08, bevelThickness: t * 0.08, bevelSegments: 3, curveSegments: 14 });
-        geo.rotateX(Math.PI / 2);                                        // lay the extrusion flat, top face up
-        const ring = new THREE.Mesh(geo, foam[0].material);
-        ring.castShadow = ring.receiveShadow = true;
-        const c = U.getCenter(new THREE.Vector3());
-        ring.position.set(c.x, U.max.y - h * 0.0075, c.z);
+        const { ring } = bumperRing(foam.map(m => new THREE.Box3().setFromObject(m, true)), foam[0].material, edgeMats[0]);
         const holder = new THREE.Group(); holder.name = 'bumper ring'; holder.add(ring);
         holder.userData.home = holder.position.clone(); holder.userData.delay = 0.4;
         holder.userData.wobble = new THREE.Vector3(0, -6, 0);
-        ring.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 32), edgeMats[0]));
-        // team number on every face, the way real bumpers are lettered
-        const cv = document.createElement('canvas'); cv.width = 512; cv.height = 160;
-        const g2 = cv.getContext('2d'); g2.font = '700 120px Anybody, Arial Narrow, sans-serif'; g2.textAlign = 'center'; g2.textBaseline = 'middle';
-        g2.fillStyle = '#f3efe6'; g2.fillText('9470', 256, 88);
-        const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
-        const numMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
-        const dh = h * 0.8, dw = dh * 3.2, y = -h * 0.5, ox = outerX * inset / 2 + t * 0.09, oz = outerZ * inset / 2 + t * 0.09;
-        for (const [x, z, ry] of [[0, oz, 0], [0, -oz, Math.PI], [ox, 0, Math.PI / 2], [-ox, 0, -Math.PI / 2]]) {
-          const d = new THREE.Mesh(new THREE.PlaneGeometry(dw, dh), numMat); d.position.set(x, y, z); d.rotation.y = ry; ring.add(d);
-        }
         stages[0].add(holder);
       }
     }
