@@ -28,9 +28,40 @@ function run() {
   el.id = 'intro';
   el.innerHTML = `<div class="i-bar"><i></i><i></i><i></i><span>~/hello</span></div>
     <div class="i-body"><p class="i-q"><span class="i-pr">$ </span><span class="i-t"></span><span class="i-caret">▍</span></p><p class="i-by"></p></div>
-    <button class="i-skip">skip</button>`;
+    <button class="i-sound" hidden>sound on</button><button class="i-skip">skip</button>`;
   document.body.appendChild(el);
   const t = el.querySelector('.i-t'), by = el.querySelector('.i-by');
+
+  // ── keyboard sounds, synthesized: a filtered click plus a soft thock ──
+  let ac = null;
+  try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+  const soundBtn = el.querySelector('.i-sound');
+  if (ac && ac.state !== 'running') {
+    ac.resume().catch(() => {});
+    setTimeout(() => { if (ac.state !== 'running' && !done) soundBtn.hidden = false; }, 150);
+  }
+  soundBtn.addEventListener('click', e => { e.stopPropagation(); ac.resume(); soundBtn.hidden = true; });
+  let noise = null;
+  if (ac) {
+    noise = ac.createBuffer(1, ac.sampleRate * 0.05, ac.sampleRate);
+    const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+  }
+  function key(kind = 'key') {
+    if (!ac || ac.state !== 'running') return;
+    const now = ac.currentTime, out = ac.createGain();
+    out.gain.value = kind === 'space' ? 0.5 : 0.38; out.connect(ac.destination);
+    // click: noise through a bandpass, pitch varies per key
+    const src = ac.createBufferSource(); src.buffer = noise;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass';
+    bp.frequency.value = (kind === 'space' ? 1400 : kind === 'bs' ? 2600 : 3200) * (0.85 + Math.random() * 0.3); bp.Q.value = 1.2;
+    src.connect(bp).connect(out); src.start(now);
+    // thock: a short low sine drop for the body of the key
+    const o = ac.createOscillator(), og = ac.createGain();
+    o.frequency.setValueAtTime(kind === 'space' ? 150 : 220 + Math.random() * 60, now);
+    o.frequency.exponentialRampToValueAtTime(70, now + 0.05);
+    og.gain.setValueAtTime(kind === 'space' ? 0.5 : 0.3, now); og.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+    o.connect(og).connect(out); o.start(now); o.stop(now + 0.07);
+  }
   let done = false, timer;
 
   const KEYS = 'qwertyuiopasdfghjklzxcvbnm';
@@ -48,9 +79,9 @@ function run() {
     if (i >= script.length) { by.textContent = `— ${q.by}`; by.classList.add('on'); timer = setTimeout(finish, 1300); return; }
     const k = script[i++];
     let wait = 38 + Math.random() * 55;
-    if (k === 'BS') t.textContent = t.textContent.slice(0, -1), wait = 120;
+    if (k === 'BS') { t.textContent = t.textContent.slice(0, -1); wait = 120; key('bs'); }
     else if (k === 'PAUSE') wait = 260;
-    else { t.textContent += k; if (k === ' ') wait += 30; if (/[,.]/.test(k)) wait += 220; }
+    else { t.textContent += k; key(k === ' ' ? 'space' : 'key'); if (k === ' ') wait += 30; if (/[,.]/.test(k)) wait += 220; }
     timer = setTimeout(next, wait);
   };
   timer = setTimeout(next, 500);
@@ -69,6 +100,7 @@ function run() {
       el.style.transform = `translate(${r.left - from.left}px, ${r.top - from.top}px) scale(${sx}, ${sy})`;
       el.style.borderRadius = `${18 / Math.min(sx, sy)}px`;
     }
+    setTimeout(() => { if (ac) ac.close().catch(() => {}); }, 600);
     setTimeout(() => {
       if (card) card.style.visibility = '';
       document.documentElement.classList.remove('intro-on');
