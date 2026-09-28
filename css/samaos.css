@@ -202,3 +202,19 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .s-foot .btn { display: inline-flex; align-items: center; text-decoration: none; }
 .r-sims-row { margin: 10px 0 2px; }
 .r-st { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 6px; font-style: normal; font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em; vertical-align: 2px; color: var(--fg2); background: rgba(255, 255, 255, 0.08); }
+
+/* the résumé notification */
+.notify { position: absolute; z-index: 5500; top: 40px; left: 50%; width: min(460px, calc(100vw - 24px)); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+  padding: 12px 12px 12px 14px; border-radius: 18px; background: rgba(40, 41, 47, 0.78); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+  transform: translateX(-50%); animation: notifyIn 500ms 1400ms var(--spring) both; transition: opacity 300ms, transform 400ms var(--spring); }
+.notify.out { opacity: 0; transform: translate(-50%, -16px); }
+@keyframes notifyIn { from { opacity: 0; transform: translate(-50%, -24px) scale(0.96); } }
+.n-ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(180deg, #3a3b42, #24252a); }   /* 18 − 12 padding, rounded to taste */
+.n-ic svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.notify b { font-size: 13.5px; font-weight: 600; }
+.notify p { margin: 2px 0 0; font-size: 12.5px; color: var(--fg2); line-height: 1.4; }
+.n-go { white-space: nowrap; }
+.n-x { position: absolute; top: -6px; left: -6px; width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; font-size: 14px; line-height: 22px; color: var(--fg); background: rgba(70, 71, 78, 0.95); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); opacity: 0; transition: opacity 150ms; }
+.notify:hover .n-x, .n-x:focus-visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .notify { animation: none; } }

@@ -238,3 +238,18 @@ body.driving { overflow: hidden; }
 .rec-in { max-width: none; min-height: 100vh; border-radius: 28px 28px 0 0; padding: 96px max(24px, calc((100vw - 980px) / 2)) 14vh; box-shadow: 0 -30px 80px -20px rgba(0, 0, 0, 0.35); }
 @media (max-width: 700px) { .rec-in { border-radius: 22px 22px 0 0; padding: 84px 20px 12vh; } }
 .job li b { font-weight: 650; }
+
+/* the résumé cue under the nav */
+.rec-cue { position: fixed; z-index: 15; top: 76px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 18px; border-radius: 999px;
+  font-size: 13px; text-decoration: none; white-space: nowrap; color: #fff; background: var(--hw); box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+  transition: opacity 300ms ease, transform 400ms cubic-bezier(0.32, 0.72, 0, 1); animation: cueIn 700ms 900ms cubic-bezier(0.32, 0.72, 0, 1) both; }
+.bio-room .rec-cue { background: var(--bio); }
+.rec-cue i { font-style: normal; display: inline-block; animation: cueBob 1.4s ease-in-out infinite; }
+.rec-cue:hover { filter: brightness(1.08); }
+.rec-cue:active { transform: translateX(-50%) scale(0.97); }
+.rec-cue.gone { opacity: 0; pointer-events: none; transform: translate(-50%, -10px); }
+body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none; }
+@keyframes cueIn { from { opacity: 0; transform: translate(-50%, -12px); } }
+@keyframes cueBob { 50% { transform: translateY(3px); } }
+@media (max-width: 700px) { .rec-cue { top: 64px; font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .rec-cue, .rec-cue i { animation: none; } }

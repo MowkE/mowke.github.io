@@ -395,6 +395,15 @@ export function boot(root) {
     bootEl.classList.add('gone'); root.classList.add('up');
     open('terminal');
     open('resume');
+    // point people at the résumé: a notification that slides in, then gets out of the way
+    const note = document.createElement('div');
+    note.className = 'notify'; note.setAttribute('role', 'status');
+    note.innerHTML = `<span class="n-ic">${ICONS.resume}</span><div><b>My résumé is open</b><p>It's in the window on the right. Reopen it any time from the first icon in the dock.</p></div><button class="btn primary n-go">Show it</button><button class="n-x" aria-label="Dismiss">×</button>`;
+    root.appendChild(note);
+    const dismiss = () => { note.classList.add('out'); setTimeout(() => note.remove(), 400); };
+    note.querySelector('.n-go').addEventListener('click', () => { open('resume'); dismiss(); });
+    note.querySelector('.n-x').addEventListener('click', dismiss);
+    setTimeout(dismiss, 12000);
     requestAnimationFrame(frame);
     setTimeout(() => bootEl.remove(), 800);
   }, REDUCED ? 50 : 1100);
