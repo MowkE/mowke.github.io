@@ -46,8 +46,26 @@ function run() {
     noise = ac.createBuffer(1, ac.sampleRate * 0.05, ac.sampleRate);
     const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
   }
+  // real keystrokes: 18 clean clicks sliced from a typing recording, one per 150 ms slot
+  let sprite = null, lastSlot = -1;
+  const SLOT = 0.15, SLEN = 0.13, NS = 18;
+  if (ac) fetch('assets/audio/keys.mp3').then(r => r.arrayBuffer()).then(b => ac.decodeAudioData(b)).then(buf => { sprite = buf; }).catch(() => {});
   function key(kind = 'key') {
     if (!ac || ac.state !== 'running') return;
+    if (sprite) {
+      let i;
+      if (kind === 'space') i = Math.random() < 0.5 ? 0 : 1;
+      else if (kind === 'bs') i = NS - 1;
+      else { do { i = 2 + ((Math.random() * (NS - 3)) | 0); } while (i === lastSlot); }
+      lastSlot = i;
+      const src = ac.createBufferSource(), gn = ac.createGain();
+      src.buffer = sprite;
+      src.playbackRate.value = (kind === 'space' ? 0.9 : 1) * (0.96 + Math.random() * 0.08);
+      gn.gain.value = 0.75 + Math.random() * 0.25;
+      src.connect(gn).connect(ac.destination);
+      src.start(ac.currentTime, i * SLOT, SLEN);
+      return;
+    }
     const now = ac.currentTime, out = ac.createGain();
     out.gain.value = kind === 'space' ? 0.5 : 0.38; out.connect(ac.destination);
     // click: noise through a bandpass, pitch varies per key
