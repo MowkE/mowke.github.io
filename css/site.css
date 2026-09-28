@@ -210,3 +210,15 @@ a.card:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px var(--sw
   .term, .door, .door::before, .pill, h1 .ch { transition: none; }
   .caret { animation: none; }
 }
+
+/* the name, drawn in Snoopy's ASCII */
+h1#name { position: relative; display: inline-block; }
+h1 .ch.glyph { text-align: center; color: var(--olive); font-family: var(--mono); font-variation-settings: normal; font-weight: 500; }
+.swash { position: absolute; left: 0; right: 0; bottom: -0.16em; width: 100%; height: 0.22em; overflow: visible; pointer-events: none; }
+.swash path { fill: none; stroke: var(--olive); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 700; stroke-dashoffset: 700; animation: draw 1.1s var(--spring) 0.9s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.spark { position: absolute; right: -0.34em; top: -0.08em; width: 0.3em; height: 0.3em; fill: #c8321e; opacity: 0; transform: scale(0.3) rotate(-30deg); animation: spark-in 600ms var(--spring) 1.6s forwards, twinkle 3.2s ease-in-out 2.4s infinite; }
+@keyframes spark-in { to { opacity: 1; transform: scale(1) rotate(0deg); } }
+@keyframes twinkle { 50% { transform: scale(0.72) rotate(45deg); } }
+.about b { font-weight: 650; color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .swash path { animation: none; stroke-dashoffset: 0; } .spark { animation: none; opacity: 1; transform: none; } }

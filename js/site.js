@@ -15,6 +15,26 @@ document.querySelectorAll('#name .line').forEach(line => {
     line.appendChild(s); letters.push(s);
   }
 });
+// the name decodes out of Snoopy's ASCII, then glitches back now and then
+const GLYPHS = '@%#&*+=\\/|$';
+const rand = () => GLYPHS[(Math.random() * GLYPHS.length) | 0];
+letters.forEach(s => { s.dataset.ch = s.textContent; });
+function scramble(s, ms) {
+  if (s._busy) return; s._busy = true;
+  s.style.width = s.getBoundingClientRect().width + 'px';   // hold the letter's width so the word never jumps
+  const end = performance.now() + ms;
+  const tick = () => {
+    if (performance.now() < end) { s.textContent = rand(); s.classList.add('glyph'); setTimeout(tick, 55); }
+    else { s.textContent = s.dataset.ch; s.classList.remove('glyph'); s.style.width = ''; s._busy = false; }
+  };
+  tick();
+}
+if (!reduced) {
+  letters.forEach((s, i) => scramble(s, 250 + i * 90));
+  setInterval(() => scramble(letters[(Math.random() * letters.length) | 0], 320), 2600);
+  letters.forEach(s => s.addEventListener('pointerenter', () => scramble(s, 380)));
+}
+
 if (fine && !reduced) {
   addEventListener('pointermove', e => {
     for (const s of letters) {
