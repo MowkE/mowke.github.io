@@ -65,6 +65,8 @@ export function startGame(canvas, ui) {
   scene.add(key, key.target);
 
   // ---------- field geometry ----------
+  const M4 = new THREE.Matrix4();
+  let arenaCrowd = null;
   const colliders = [];        // axis-aligned boxes: { min:[x,y,z], max:[x,y,z], robot, ball, arm }
   const box = (x0, y0, z0, x1, y1, z1, f) => colliders.push({ min: [Math.min(x0, x1), y0, Math.min(z0, z1)], max: [Math.max(x0, x1), y1, Math.max(z0, z1)], robot: true, ball: true, ...f });
   const hubs = {};             // alliance -> { x, light }
@@ -74,6 +76,7 @@ export function startGame(canvas, ui) {
 
   buildCarpet();
   buildPerimeter();
+  buildArena();
   for (const a of ['red', 'blue']) buildAlliance(a);
 
   function buildCarpet() {
@@ -119,6 +122,32 @@ export function startGame(canvas, ui) {
     }
     const outline = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2 * HX, 2, 2 * HZ)), edge);
     outline.position.y = 1; scene.add(outline);
+  }
+
+  // the venue: raked stands and a crowd down both long sides, a lighting truss overhead
+  function buildArena() {
+    const seat = mat(0x17181c, { roughness: 0.95 });
+    const people = [], rnd = (a, b) => a + Math.random() * (b - a);
+    for (const s of [-1, 1]) {
+      for (let row = 0; row < 9; row++) {
+        const z = s * (HZ + 2.2 + row * 0.85), y = 0.5 + row * 0.45;
+        solid(2 * HX + 6, 0.45, 0.85, seat, 0, y - 0.225, z).castShadow = false;
+        for (let x = -HX - 2.6; x < HX + 2.6; x += rnd(0.5, 0.9)) if (Math.random() < 0.72) people.push([x, y, z + s * 0.1]);
+      }
+    }
+    const crowd = new THREE.InstancedMesh(new THREE.CapsuleGeometry(0.17, 0.42, 3, 6), new THREE.MeshStandardMaterial({ roughness: 0.9 }), people.length);
+    const shirts = [0x8a2a2d, 0x2b4f94, 0x6b6e75, 0x3b3d44, 0xa8792b, 0x2f6b4f, 0x5a3d78, 0x90908a];
+    people.forEach(([x, y, z], i) => {
+      M4.makeTranslation(x, y + 0.38, z); crowd.setMatrixAt(i, M4);
+      crowd.setColorAt(i, new THREE.Color(shirts[(Math.random() * shirts.length) | 0]).multiplyScalar(rnd(0.22, 0.45)));
+    });
+    crowd.userData.base = people; scene.add(crowd); arenaCrowd = crowd;
+    // truss and lamps
+    const truss = mat(0x2a2c31, { metalness: 0.6, roughness: 0.5 }), lamp = new THREE.MeshBasicMaterial({ color: 0xfff4de });
+    for (const s of [-1, 1]) {
+      solid(2 * HX + 4, 0.25, 0.25, truss, 0, 9, s * (HZ + 1.2)).castShadow = false;
+      for (let x = -HX; x <= HX; x += 2.4) { const l = solid(0.5, 0.12, 0.3, lamp, x, 8.85, s * (HZ + 1.2)); l.castShadow = false; }
+    }
   }
 
   function buildAlliance(a) {
@@ -216,7 +245,7 @@ export function startGame(canvas, ui) {
   // ---------- FUEL ----------
   const NMAX = 620;
   const P = new Float32Array(NMAX * 3), V = new Float32Array(NMAX * 3);
-  const St = new Uint8Array(NMAX);            // 0 unused, 1 on the field, 2 held / in a hub
+  const St = new Uint8Array(NMAX);            // 0 free (held, scored, or never used), 1 on the field
   const Ign = new Float32Array(NMAX);         // seconds a fresh shot ignores the robot
   let nBalls = 0;
   function spawnBall(x, y, z, vx = 0, vy = 0, vz = 0) {
@@ -233,7 +262,13 @@ export function startGame(canvas, ui) {
   const fuelMat = new THREE.MeshStandardMaterial({ color: 0xf5c518, roughness: 0.62, metalness: 0 });
   const fuel = new THREE.InstancedMesh(new THREE.SphereGeometry(R, 14, 10), fuelMat, NMAX);
   fuel.castShadow = true; fuel.receiveShadow = true; fuel.frustumCulled = false; scene.add(fuel);
-  const M4 = new THREE.Matrix4();
+
+
+  // streaks behind FUEL in flight
+  const TRAILS = 160, trailPos = new Float32Array(TRAILS * 6);
+  const trailGeo = new THREE.BufferGeometry(); trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPos, 3));
+  const trails = new THREE.LineSegments(trailGeo, new THREE.LineBasicMaterial({ color: 0xffd84a, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false }));
+  trails.frustumCulled = false; scene.add(trails);
 
   // spatial hash for ball-ball contacts
   const CELL = 2 * R, GX = Math.ceil(2 * HX / CELL) + 2, GZ = Math.ceil(2 * HZ / CELL) + 2;
@@ -543,7 +578,7 @@ export function startGame(canvas, ui) {
         const hb = hubs[a];
         // anything that comes down onto the top is taken by the funnel
         if (y < HUB_H + R && y > HUB_H - 0.35 && vy <= 0.05 && Math.abs(x - hb.x) < HUB_W / 2 - R * 0.3 && Math.abs(z) < HUB_W / 2 - R * 0.3) {
-          St[i] = 2; scoreFuel(a, i, t); break;
+          St[i] = 0; scoreFuel(a, i, t); break;
         }
       }
       if (St[i] !== 1) continue;
@@ -639,7 +674,7 @@ export function startGame(canvas, ui) {
   function scoreFuel(a, i, t) {
     const counts = running && (match.mode === 'free' || hubCounts(a, t));     // nothing counts after the buzzer
     if (counts) {
-      match.score[a]++;
+      match.score[a]++; hubs[a].flash = 1;
       if (t < T_AUTO && match.mode === 'match') match.auto[a]++;
     }
     if (shotBy[i]) {
@@ -688,7 +723,9 @@ export function startGame(canvas, ui) {
     let tx, tz, yaw = null, v = VMAX * 0.72 * o.skill;
     if (ai.mode === 'shoot') {
       // a shooting spot inside our alliance zone, on our side of the hub
-      if (!ai.spot || ai.think < 0) { ai.spot = { x: hub.x + sg * (1.4 + Math.random() * 1.6), z: (Math.random() - 0.5) * 5 }; ai.think = 6; }
+      // in auto, fire the preload from where we started; later, pick a spot in our zone
+      if (t < T_AUTO && !ai.spot) ai.spot = { x: o.x, z: o.z };
+      if (!ai.spot || (ai.think < 0 && t >= T_AUTO)) { ai.spot = { x: hub.x + sg * (1.4 + Math.random() * 1.6), z: (Math.random() - 0.5) * 5 }; ai.think = 6; }
       tx = ai.spot.x; tz = ai.spot.z;
       const sol = solve(o, o.alliance);
       yaw = yawFor(o, sol.heading);
@@ -943,7 +980,7 @@ export function startGame(canvas, ui) {
         M4.makeTranslation(hb.min.x + R + ix * 2 * R + (iy % 2) * R * 0.5, hb.min.y + R + iy * 1.7 * R, hb.min.z + R + iz * 2 * R);
         bot.hopper.setMatrixAt(i, M4);
       }
-      bot.hopper.count = n; bot.hopper.instanceMatrix.needsUpdate = true;
+      bot.hopper.count = buildT > 1.6 ? n : 0; bot.hopper.instanceMatrix.needsUpdate = true;   // preload drops in once the hopper exists
     }
     // spin rollers: intake while collecting, hopper and drum while shooting
     if (bot.held === 0) bot.aim = null;
@@ -957,12 +994,29 @@ export function startGame(canvas, ui) {
     let n = 0;
     for (let i = 0; i < nBalls; i++) { if (St[i] !== 1) continue; M4.makeTranslation(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]); fuel.setMatrixAt(n++, M4); }
     fuel.count = n; fuel.instanceMatrix.needsUpdate = true;
+    let tn = 0;
+    for (let i = 0; i < nBalls && tn < TRAILS; i++) {
+      if (St[i] !== 1 || P[i * 3 + 1] < 0.35) continue;
+      const vx = V[i * 3], vy = V[i * 3 + 1], vz = V[i * 3 + 2];
+      if (vx * vx + vy * vy + vz * vz < 9) continue;
+      const o = tn * 6; trailPos[o] = P[i * 3]; trailPos[o + 1] = P[i * 3 + 1]; trailPos[o + 2] = P[i * 3 + 2];
+      trailPos[o + 3] = P[i * 3] - vx * 0.045; trailPos[o + 4] = P[i * 3 + 1] - vy * 0.045; trailPos[o + 5] = P[i * 3 + 2] - vz * 0.045; tn++;
+    }
+    trailGeo.setDrawRange(0, tn * 2); trailGeo.attributes.position.needsUpdate = true;
+    // the crowd bounces a little while the match is on
+    if (arenaCrowd && running) {
+      const b = arenaCrowd.userData.base, tt = performance.now() / 1000;
+      for (let i = 0; i < b.length; i += 3) { M4.makeTranslation(b[i][0], b[i][1] + 0.38 + Math.max(0, Math.sin(tt * 7 + i)) * 0.05, b[i][2]); arenaCrowd.setMatrixAt(i, M4); }
+      arenaCrowd.instanceMatrix.needsUpdate = true;
+    }
 
     // hub lights: lit when active, dark when not, blinking through the last three seconds
     for (const a in hubs) {
       const on = hubActiveAt(a, match.t), flip = running ? nextFlip(a, match.t) : null;
       const blink = flip !== null && flip < 3 && Math.floor(match.t * 4) % 2 === 0;
-      const c = on !== blink ? hubs[a].col : new THREE.Color(0x1a1b1f);
+      const c = (on !== blink ? hubs[a].col : new THREE.Color(0x1a1b1f)).clone();
+      hubs[a].flash = Math.max(0, (hubs[a].flash || 0) - dt * 4);
+      if (hubs[a].flash > 0) c.lerp(new THREE.Color(0xffffff), hubs[a].flash * 0.8);
       hubs[a].light.forEach(m => m.color.copy(c));
     }
 
