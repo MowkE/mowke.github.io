@@ -30,7 +30,11 @@ function scramble(s, ms) {
   tick();
 }
 if (!reduced) {
-  letters.forEach((s, i) => scramble(s, 600 + i * 180));
+  const decode = () => letters.forEach((s, i) => scramble(s, 600 + i * 180));
+  if (document.documentElement.classList.contains('intro-on')) {
+    const mo = new MutationObserver(() => { if (!document.documentElement.classList.contains('intro-on')) { mo.disconnect(); setTimeout(decode, 250); } });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  } else decode();
   setInterval(() => scramble(letters[(Math.random() * letters.length) | 0], 700), 6000);
   letters.forEach(s => s.addEventListener('pointerenter', () => scramble(s, 700)));
 }
