@@ -174,3 +174,29 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
   .boot i span { animation: none; }
   .dock-app:hover .tile { transform: none; }
 }
+
+/* résumé */
+.resume { overflow-y: auto; padding: 22px 22px 26px; background: rgba(18, 19, 23, 0.55); scrollbar-width: thin; }
+.r-head { padding-bottom: 18px; margin-bottom: 6px; border-bottom: 0.5px solid var(--line); }
+.r-head h2 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+.r-head p { margin: 4px 0 14px; color: var(--fg2); }
+.r-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.r-actions .btn { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; border-radius: 10px; }
+.r-sec { margin: 16px 0 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg3); }
+.r-job { padding: 14px 0; border-bottom: 0.5px solid var(--line); }
+.r-job header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.r-job header b { font-size: 16px; font-weight: 600; }
+.r-job header span { font-size: 12px; color: var(--fg3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.r-role { margin: 2px 0 8px; color: var(--fg2); font-size: 12.5px; }
+.r-job ul { margin: 0; padding-left: 17px; display: grid; gap: 5px; }
+.r-job li { line-height: 1.5; color: rgba(242, 242, 245, 0.88); }
+.r-links { margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.r-links a { color: #6cb4ff; text-decoration: none; font-weight: 500; }
+.r-links a:hover { text-decoration: underline; }
+.r-foot { margin: 14px 0 0; color: var(--fg3); font-size: 12px; }
+
+/* sims */
+.sims { display: flex; flex-direction: column; background: #11131d; }
+.sims iframe { flex: 1; width: 100%; border: 0; background: #11131d; }
+.s-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; font-size: 12px; color: var(--fg3); border-top: 0.5px solid var(--line); }
+.s-foot .btn { display: inline-flex; align-items: center; text-decoration: none; }

@@ -15,8 +15,10 @@ const ICONS = {
   files: '<svg viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z" /></svg>',
   monitor: '<svg viewBox="0 0 24 24"><path d="M5 19V13M10 19V6M15 19V10M20 19V15" /></svg>',
   display: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M4 12h16M12 4v16" /></svg>',
+  sims: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6" /><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(-25 12 12)" /><circle cx="19.4" cy="8.6" r="1.2" /></svg>',
+  resume: '<svg viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11z M13.5 3.5v4h4 M9 12h6 M9 15.5h6" /></svg>',
 };
-const NAMES = { terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
+const NAMES = { resume: 'Résumé', sims: 'Sims', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
 
 export function boot(root) {
   const fs = makeFS(), kernel = makeKernel(fs);
@@ -43,10 +45,10 @@ export function boot(root) {
     else if (app === 'terminal') existing = opts.fromDock ? wins.find(w => w.app === 'terminal') : null;
     else existing = wins.find(w => w.app === app);
     if (existing) { if (opts.path && existing.load) existing.load(opts.path); focus(existing); unminimize(existing); return existing; }
-    const size = { terminal: [640, 420], editor: [700, 520], files: [520, 420], monitor: [620, 440], display: [440, 520] }[app];
+    const size = { terminal: [620, 420], editor: [700, 520], files: [520, 420], monitor: [620, 440], display: [440, 520], resume: [470, 620], sims: [940, 620] }[app];
     const W = Math.min(size[0], innerWidth - 24), H = Math.min(size[1], innerHeight - 140);
     // each app has a home on the desk; extra terminals and editors cascade from it
-    const home = { terminal: [0.06, 0.1], editor: [0.3, 0.14], files: [0.08, 0.3], monitor: [0.96, 0.08], display: [0.94, 0.42] }[app];
+    const home = { terminal: [0.05, 0.1], editor: [0.28, 0.14], files: [0.08, 0.3], monitor: [0.5, 0.22], display: [0.62, 0.3], resume: [0.97, 0.05], sims: [0.14, 0.06] }[app];
     const same = wins.filter(o => o.app === app).length;
     const x = Math.max(12, Math.min(innerWidth - W - 12, home[0] * innerWidth - (home[0] > 0.5 ? W : 0) + same * 30));
     const y = Math.max(44, Math.min(innerHeight - H - 100, 34 + home[1] * innerHeight + same * 28));
@@ -253,6 +255,49 @@ export function boot(root) {
     },
   };
 
+  // ---------------------------------------------------------------- Sims
+  os.apps.sims = {
+    mount(w) {
+      w.body.innerHTML = `<div class="sims"><iframe src="../sims/" title="The sims: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>Nine simulations. Throw a planet, or click one to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
+    },
+  };
+
+  // ---------------------------------------------------------------- Résumé
+  os.apps.resume = {
+    mount(w) {
+      const job = (name, role, when, pts, links = []) => `<article class="r-job"><header><b>${name}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
+      w.body.innerHTML = `<div class="resume">
+        <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
+          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full résumé</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a><button class="btn quiet r-sims">Open the sims</button></div></header>
+        <p class="r-sec">Software</p>
+        ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', 'Jan 2026 – now', [
+          'Built and launched iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
+          'Shipped a production MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
+          'Iterated on new UI with the startup team from user feedback, aimed at managing ADHD symptoms.',
+          'Ran the social campaigns: 5,000+ organic downloads and 144k+ Instagram views.'])}
+        ${job('OpenTrade (YC S26)', 'Growth Outreach &amp; Front-End Design · San Francisco', '2026', [
+          'School outreach campaign: 1,000+ emails to educators and institutions for product demos in India and Singapore.',
+          'Front-end product design: UI layouts, visual components and overall usability.'])}
+        ${job('Substep', '', '', ['Details coming soon.'])}
+        ${job('Propel', '', '', ['Details coming soon.'])}
+        ${job('ShogunAI', 'Software Engineering Contractor · AI product engineering', '2026 · one week', [
+          'Rebuilt the end-to-end living knowledge-base workflow of GodHands and integrated it into ShogunAI\'s local-first desktop agent, keeping evidence-linked context across people, projects, decisions and handoffs.',
+          'Delivered a working integration in one week, adapting ingestion, retrieval and UI flows to the existing architecture.'],
+          [['ShogunAI on Product Hunt', 'https://www.producthunt.com/products/shogunai?launch=shogunai'], ['godhands.dev', 'https://godhands.dev/']])}
+        ${job('BioSim', 'Founder &amp; Lead Developer · 3D science simulation platform', 'Oct 2022 – now', [
+          'A 3D simulation platform in the browser, built with Babylon.js and WebGL, rendering cells, organ systems and atoms.',
+          'An interactive 3D periodic table with spatial structures for all 118 elements, built out for AP Chemistry.',
+          'Custom prompt pipelines that generate WebGL coordinate math cut asset creation time 10×.',
+          'Grew from 6 local schools to 79 school districts across 98 countries through educator outreach and SEO.'],
+          [['bio-sim.us', 'https://bio-sim.us/'], ['bio-sim.us/chemistry', 'https://bio-sim.us/chemistry/']])}
+        ${job('samaOS', 'This page', '2026', [
+          'A small operating system written from scratch in JavaScript: its own language and compiler, a bytecode virtual CPU, a preemptive scheduler, a file system and a shell.'])}
+        <p class="r-foot">Y Combinator Startup School 2026</p>
+      </div>`;
+      w.body.querySelector('.r-sims').addEventListener('click', () => open('sims'));
+    },
+  };
+
   // ---------------------------------------------------------------- menu bar
   const menu = $('#sys-menu'), menuBtn = $('#sys-btn');
   menuBtn.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; menuBtn.setAttribute('aria-expanded', !menu.hidden); });
@@ -298,6 +343,7 @@ export function boot(root) {
   setTimeout(() => {
     bootEl.classList.add('gone'); root.classList.add('up');
     open('terminal');
+    open('resume');
     requestAnimationFrame(frame);
     setTimeout(() => bootEl.remove(), 800);
   }, REDUCED ? 50 : 1100);

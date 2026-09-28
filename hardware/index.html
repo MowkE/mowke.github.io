@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css" />
-<link rel="stylesheet" href="../css/pages.css" />
+<link rel="stylesheet" href="../css/pages.css?v=2" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -26,6 +26,7 @@
     <a href="../bio/" data-c="bio"><i></i>bio</a>
     <a href="../hardware/" data-c="hw" class="on"><i></i>hardware</a>
     <a href="../software/" data-c="sw"><i></i>software</a>
+    <a href="#record" class="nav-rec">résumé ↓</a>
   </span>
 </nav>
 
@@ -65,6 +66,49 @@
 </main>
 
 <div class="hw-track" id="track"></div>
+
+<section class="record" id="record" aria-label="Résumé">
+  <div class="rec-in">
+    <header class="rec-head">
+      <p class="rec-k mono">résumé · hardware</p>
+      <h2>Built it.</h2>
+      <p class="rec-lede">The robot above is my team's; here's what else I've designed, wired and shipped.</p>
+      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full résumé (PDF) ↗</a>
+    </header>
+    <article class="job">
+      <p class="when">Mar 2024 – now</p>
+      <div>
+        <h3>Outreach Lead &amp; Programmer, FRC Team 9470</h3>
+        <p class="org">Software &amp; Operations · Fremont, CA</p>
+        <ul><li>Programmed real-time shoot-on-the-move kinematics and autonomous routines in Java with WPILib.</li><li>Helped map the multi-variable shooter lookup table that scales motor velocity and launch angle from live distance tracking.</li><li>Division finalist, #2 in our division at the FRC World Championships, and on to Einstein Field as one of the top 16 teams.</li><li>Raised $7,000 from grants and merch, coordinated match play across alliances, and cofounded neurodiversity initiatives that brought quiet rooms and sensory tools to Worlds.</li></ul>
+      </div>
+    </article>
+    <article class="job">
+      <p class="when">Jan 2025 – now</p>
+      <div>
+        <h3>Hardware Designer &amp; Researcher, Pazzi Lab</h3>
+        <p class="org">reThink64 · Bioengineering · Fremont, CA</p>
+        <ul><li>Designed and built a custom multiplex Franz diffusion cell (Onshape, 3D printing) for high-throughput transdermal drug delivery testing.</li><li>Cut the testing hardware cost from $500 to $1.56 while going from 1 to 96 parallel trials. Manuscript in preparation for <em>Nature BME</em> (IF 26.3).</li><li>Worked with 3D printing manufacturers to recycle thousands of the lab's waste polypropylene pipette boxes into printer filament for structural parts.</li></ul>
+      </div>
+    </article>
+    <article class="job">
+      <p class="when">Paid internship</p>
+      <div>
+        <h3>Hardware Intern, Quo Labs</h3>
+        <p class="org">Founders Inc. · San Francisco, CA</p>
+        <ul><li>Assembled, wired and validated the electronic and mechanical systems of Sam, an emotionally intelligent eldercare robot that automates medication cycles and family communication.</li></ul>
+      </div>
+    </article>
+    <article class="job">
+      <p class="when">Apr 2025 – now</p>
+      <div>
+        <h3>Octaby, assistive robotics</h3>
+        <p class="org">Personal project</p>
+        <ul><li>A camera-based wristband for visually impaired users: Detectron computer vision finds objects, and a low-latency serial pipeline turns their positions into haptic feedback.</li></ul>
+      </div>
+    </article>
+  </div>
+</section>
 
 <script type="module">
 import { initRobot, STAGES } from '../js/robot.js?v=4';

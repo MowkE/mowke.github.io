@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css" />
-<link rel="stylesheet" href="../css/pages.css" />
+<link rel="stylesheet" href="../css/pages.css?v=2" />
 <link rel="stylesheet" href="../css/dive.css?v=4" />
 <script type="importmap">
 { "imports": {
@@ -27,6 +27,7 @@
     <a href="../bio/" data-c="bio" class="on"><i></i>bio</a>
     <a href="../hardware/" data-c="hw"><i></i>hardware</a>
     <a href="../software/" data-c="sw"><i></i>software</a>
+    <a href="#record" class="nav-rec">résumé ↓</a>
   </span>
 </nav>
 
@@ -81,6 +82,50 @@
 
   <p class="hint2">click a cell, then scroll to dive into its DNA · double-click to seed a cell</p>
 </main>
+
+<section class="record" id="record" aria-label="Résumé">
+  <div class="rec-in">
+    <header class="rec-head">
+      <p class="rec-k mono">résumé · bio</p>
+      <h2>In the lab.</h2>
+      <p class="rec-lede">Four years of wet-lab research, from cancer drug synthesis to vesicle engineering.</p>
+      <a class="rec-pdf mono" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full résumé (PDF) ↗</a>
+    </header>
+    <article class="job">
+      <p class="when">Jan 2025 – now</p>
+      <div>
+        <h3>Lead Researcher, Pazzi Lab</h3>
+        <p class="org">reThink64 · Bioengineering · Fremont, CA</p>
+        <ul><li>Lipid nanoparticles, giant and multilamellar vesicles (GUVs, MLVs), fluorescence microscopy, dynamic light scattering, GUV popping assays.</li><li>Built custom Model Context Protocol (MCP) servers that let Claude drive the lab's instruments directly: plate reader, HPLC, LC-MS, UV-Vis spectroscopy and NMR.</li><li>Projects: a skin-mimetic MLV platform for cosmetic delivery; solvent optimization to raise GUV yield; carmofur-analog membrane rupture measured with GUV popping assays.</li></ul>
+      </div>
+    </article>
+    <article class="job">
+      <p class="when">Sep 2022 – Jan 2025</p>
+      <div>
+        <h3>Lead Researcher, Zhang Lab</h3>
+        <p class="org">ASDRP · Biological Chemistry · Fremont, CA</p>
+        <ul><li>Coauthored <em>“C-19 Silyl and Trityl Ether Analogs of Andrographolide Selectively Inhibit Colon Cancer Cell Growth”</em> in <em>Bioorganic &amp; Medicinal Chemistry Letters</em> (IF 2.5).</li><li>Presented “Discovery, synthesis, and optimization of 5-phenylisoxazole based covalent inhibitors targeting G12C mutant KRAS for the treatment of cancer” at ACS, SCCUR and WCBSURC.</li><li>Tissue culture, MTT viability assays, scratch migration assays, Western blotting, qPCR.</li><li>Projects: cisplatin + podophyllotoxin-derivative combination therapy (HCT116, MDA-MB-231); synthesis and immune analysis of andrographolide analogs; KRAS G12C inhibitors on a 5-phenylisoxazole core; C-19 andrographolide analogs against colon cancer.</li></ul>
+      </div>
+    </article>
+    <article class="job">
+      <p class="when">Jul – Sep 2025</p>
+      <div>
+        <h3>Research Intern, Global Change Research Group</h3>
+        <p class="org">San Diego State University · Ecosystem Science · San Diego, CA</p>
+        <ul><li>Vibecoded Python pipelines to process large environmental datasets and study how ecosystems respond to global change.</li><li>Statistics on top: n-way ANOVAs, PCA on remote-sensing imagery, and Monte Carlo uncertainty modeling of carbon and water fluxes from soil sensors and eddy covariance towers.</li></ul>
+      </div>
+    </article>
+    <article class="job">
+      <p class="when">Nov 2022 – Jun 2023</p>
+      <div>
+        <h3>Therapeutic Support Specialist Intern</h3>
+        <p class="org">Allé Cauterucci · Support &amp; Education · Fremont, CA</p>
+        <ul><li>Built and ran individualized learning schedules for neurodivergent students.</li><li>Classroom teaching assistant, handling day-to-day classes and operations.</li></ul>
+      </div>
+    </article>
+    <p class="rec-foot mono">Conferences: ACS · SCCUR · WCBSURC</p>
+  </div>
+</section>
 
 <section class="dive" id="dive" aria-label="Dive into the cell's DNA" aria-hidden="true">
   <canvas id="dive-gl"></canvas>

@@ -202,3 +202,33 @@ body.driving { overflow: hidden; }
   background: radial-gradient(ellipse 620px 380px at 0% 16%, rgba(22, 8, 15, 0.82), rgba(22, 8, 15, 0) 72%); }
 .bio-room.stained .stage::before { background: radial-gradient(ellipse 620px 380px at 0% 16%, rgba(244, 221, 230, 0.85), rgba(244, 221, 230, 0) 72%); }
 .bio-room.fluor .stage::before { background: radial-gradient(ellipse 620px 380px at 0% 16%, rgba(2, 2, 4, 0.85), rgba(2, 2, 4, 0) 72%); }
+
+/* ── résumé: a sheet that rises over each room's simulation ─────── */
+.record { position: relative; z-index: 20; margin-top: 100vh; padding: 0 16px 12vh; --rk: var(--hw); --rbg: #fbfaf6; --rfg: var(--ink); --rdim: #5f5d57; --rrule: rgba(23, 23, 26, 0.12); }
+.bio-room .record { --rk: var(--bio); --rbg: #1f0c16; --rfg: #f6e8ee; --rdim: #b99aa8; --rrule: rgba(255, 143, 181, 0.16); }
+.hw-room .record { margin-top: 0; }
+.rec-in { max-width: 980px; margin: 0 auto; padding: 56px clamp(20px, 5vw, 64px) 48px; border-radius: 28px; background: var(--rbg); color: var(--rfg);
+  box-shadow: 0 -30px 80px -20px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--rrule); }
+.rec-head { padding-bottom: 28px; margin-bottom: 8px; border-bottom: 1px solid var(--rrule); }
+.rec-k { margin: 0 0 10px; font-size: 12px; letter-spacing: 0.08em; color: var(--rk); }
+.rec-head h2 { margin: 0 0 12px; font: 800 clamp(40px, 6vw, 72px)/0.95 var(--display, "Anybody", sans-serif); font-stretch: 120%; letter-spacing: -0.03em; }
+.rec-lede { margin: 0 0 18px; max-width: 56ch; font-size: 17px; line-height: 1.55; color: var(--rdim); }
+.rec-pdf { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 22px; font-size: 13px; text-decoration: none; background: var(--rk); color: #fff; transition: transform 160ms cubic-bezier(0.32, 0.72, 0, 1); }
+.rec-pdf:active { transform: scale(0.97); }
+.job { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 26px 0; border-bottom: 1px solid var(--rrule); }
+.job:last-of-type { border-bottom: 0; }
+.job .when { margin: 3px 0 0; font: 500 12.5px var(--mono); color: var(--rdim); font-variant-numeric: tabular-nums; }
+.job h3 { margin: 0 0 4px; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
+.job .org { margin: 0 0 12px; font-size: 14px; color: var(--rdim); }
+.job ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
+.job li { font-size: 15.5px; line-height: 1.55; }
+.job li::marker { color: var(--rk); }
+.jlinks { margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 14px; }
+.jlinks a { font: 500 13px var(--mono); color: var(--rk); text-decoration: none; }
+.jlinks a:hover { text-decoration: underline; }
+.rec-foot { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--rrule); font-size: 13px; color: var(--rdim); }
+.nav-rec { font-weight: 600; }
+@media (max-width: 700px) {
+  .job { grid-template-columns: 1fr; gap: 6px; }
+  .rec-in { border-radius: 22px; padding-top: 40px; }
+}
