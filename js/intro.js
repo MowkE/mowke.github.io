@@ -7,10 +7,11 @@
 
 // ── swap these for your own quotes ────────────────────────────────────
 const QUOTES = [
-  { text: 'what i cannot create, i do not understand.', by: 'richard feynman' },
-  { text: 'the best way to predict the future is to invent it.', by: 'alan kay' },
-  { text: 'make it work, make it right, make it fast.', by: 'kent beck' },
-  { text: 'simplicity is prerequisite for reliability.', by: 'edsger dijkstra' },
+  { text: 'The best way to predict the future is to invent it.', by: 'Alan Kay' },
+  { text: 'You are much stronger than you think you are. Trust me.', by: 'Superman' },
+  { text: 'I AM USING MY IMAGINATION', by: 'brakence' },
+  { text: 'The greatest superpower is the ability to change yourself.', by: 'Naval Ravikant' },
+  { text: 'Only those who will risk going too far can possibly find out how far one can go.', by: 'T. S. Eliot' },
 ];
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
