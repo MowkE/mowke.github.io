@@ -6,29 +6,27 @@
 {
 const term = document.getElementById('term');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Samahith's ASCII Woodstock, all yellow; denser characters glow brighter
-const ART = ["                 .+.", "               .: *@#*+.. .:.", "              .##  +@@@@###@.", "         .:+*#@@@+  +@@@@@@@:", "         ....:*#@#:  .#@@@@@*          ::.", "               .+@@+.   ..+@*       .+#@@#.", "                 +@@#**++*#@#:    :#@@@@@@@+.", "                  #@@@@@@@@@@@#*+#@@@@*++::++++.", "                  #@@@@@@@@@@@@@@@@@#:..::.   .:", "                 *@@@@@@@@@@@@@@@@@@##@@@@@@*+.", "               :*@@@@@@@@@@@@@@@@@@@@@@@#@@@@@*.", "            .+#@@##@@@@@@@@@@@@@@@@@@+.*@@@@+.", "          :*#@@#@+ :#@@@@@@@@@@@@@@@@*  +@@.", "       .+#@@@@@@@#. .@@@@@@@@@@@@@@@@@*  ..", "     +#@@@@@@@@@@@#+*@@@@@@@@@@@@@#@@@@+", "   .*@@@@@@@@@@@@@@@@@@@#@*.*@@@@@.:#@:                 +*", "   +@##@@@@@@@@@@@@##@@@@@. :@@@@@+ .:             :...*@@#+.", "   :#@@@@@@@@@@@@@@@@@@#+..*@@@**:.               *@@@@@@@@@@#:", "     :++*+++:::::+***+: .*@@@#:                  :@@@@@#+:....", "                        ..+#@#     :+*.          +@#@@*", "                           .#@* .+##+. +:        +@@@:", "                            *@#+@#:::+*+        :@@*.", "                       .:*. *@@@@##@@*        .+#*:", "                       :++. #@@@@@@@*.+*+.  ++:.", "                     :...:  :@#@@@@@##@@@#  :..:*:", "                            .#@@@@@@@@@@#+:*#**@@: .", "                              +#@@@@@#++*+..+: :@+ +.", "                                :+++.    : .## .@: @+", "                                           :@: +@. @+", "                                           *: .@#  @:", "                                          +@  #@+ .#", "                                          ** :@@: ::", "                                              ::"];
-// drawn as a clean sprite: dense characters become yellow cells, the specks are
-// dropped, and one black outline wraps the whole silhouette
+// ASCII Woodstock traced from Woodstock.png in Snoopy's own vocabulary:
+// @ is the ink line, % is the fill
+const ART = ["      @%%  @", "     %%@%%%@", "   @@@%@@@%@@@@@@", "      @%%%%%@@%%%@", "     @@%%%%%%%%@@@@@", "    @@%%%%%%%%%%%%%", " @@@%%%@%%%%%%%@@", "@@%%%%%%%%%%%%%%     @@@", "@@%%%%%%%%@%%%@    @@@%%@@", " @@@@@@@@@%%@@@@@  @%%@@@", "          @%@@@@@ @@%@", "        @@@%%%%@@@@@@", "        @@@@%%%%@@@@@", "           @@%@@@@@@@@", "             @@ @@@@@@", "                @@%@@", "                @@@@"];
+// drawn as real glyphs on a canvas, same as the Snoopy gif: dark @ ink,
+// % fill in a soft butter yellow so he sits next to Snoopy's off-white
 const bird = document.createElement('canvas');
 {
-  const CW = 1.35, CH = 2.2, PAD = 2, dpr = Math.min(devicePixelRatio || 1, 3);
+  const FS = 3.7, CW = FS * 0.6, LH = FS * 0.92, PAD = 1, dpr = Math.max(2, Math.min(devicePixelRatio || 1, 3));
   const cols = Math.max(...ART.map(l => l.length)), rows = ART.length;
-  const w = Math.ceil(cols * CW + PAD * 2), h = Math.ceil(rows * CH + PAD * 2);
+  const w = Math.ceil(cols * CW + PAD * 2), h = Math.ceil(rows * LH + PAD * 2);
   bird.width = w * dpr; bird.height = h * dpr; bird.style.width = w + 'px'; bird.style.height = h + 'px';
-  const shape = document.createElement('canvas'); shape.width = bird.width; shape.height = bird.height;
-  const sg = shape.getContext('2d'); sg.scale(dpr, dpr);
+  const g = bird.getContext('2d'); g.scale(dpr, dpr);
+  g.font = `700 ${FS}px "JetBrains Mono", ui-monospace, monospace`; g.textBaseline = 'top';
+  // a patch of card olive behind his cells so he reads on top of Snoopy's glyphs
+  g.fillStyle = '#5a613a';
+  ART.forEach((l, y) => [...l].forEach((c, x) => { if (c !== ' ') g.fillRect(PAD + x * CW - 0.6, PAD + y * LH - 0.6, CW + 1.2, LH + 1.2); }));
   ART.forEach((l, y) => [...l].forEach((c, x) => {
-    if (!'@#*+'.includes(c)) return;
-    sg.fillStyle = '@#'.includes(c) ? '#ffd23f' : '#f0bf2c';
-    sg.fillRect(PAD + x * CW, PAD + y * CH, CW + 0.35, CH + 0.35);
+    if (c === ' ') return;
+    g.fillStyle = c === '@' ? '#1d1d20' : '#e6d488';
+    g.fillText(c, PAD + x * CW, PAD + y * LH);
   }));
-  // black silhouette: the shape tinted black, stamped around a small ring
-  const ink = document.createElement('canvas'); ink.width = shape.width; ink.height = shape.height;
-  const ig = ink.getContext('2d'); ig.drawImage(shape, 0, 0); ig.globalCompositeOperation = 'source-in'; ig.fillStyle = '#111'; ig.fillRect(0, 0, ink.width, ink.height);
-  const g = bird.getContext('2d'), r = 1.1 * dpr;
-  for (let a = 0; a < 16; a++) g.drawImage(ink, Math.cos(a / 16 * Math.PI * 2) * r, Math.sin(a / 16 * Math.PI * 2) * r);
-  g.drawImage(shape, 0, 0);
 }
 bird.className = 'woodstock'; bird.setAttribute('aria-hidden', 'true');
 term.appendChild(bird);
@@ -50,8 +48,8 @@ function tick() {
   t += 1;
   // a lagging spring, so he trails the cursor like he's flying after it
   const k = reduced ? 1 : 0.08, damp = reduced ? 0 : 0.78;
-  pos.vx = (pos.vx + (goal.x - 34 - pos.x) * k) * damp;
-  pos.vy = (pos.vy + (goal.y - 30 - pos.y) * k) * damp;
+  pos.vx = (pos.vx + (goal.x - 20 - pos.x) * k) * damp;
+  pos.vy = (pos.vy + (goal.y - 22 - pos.y) * k) * damp;
   pos.x += pos.vx; pos.y += pos.vy;
   if (Math.abs(pos.vx) > 0.4) face = pos.vx > 0 ? 1 : -1;
   const speed = Math.hypot(pos.vx, pos.vy);
