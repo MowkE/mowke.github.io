@@ -29,7 +29,12 @@ window.__intro = { replay: () => { if (!document.getElementById('intro')) run({ 
 
 function run(opts = {}) {
   try { sessionStorage.setItem('introSeen', '1'); } catch {}
-  let qi; do { qi = (Math.random() * QUOTES.length) | 0; } while (qi === lastQ && QUOTES.length > 1);
+  // a visitor's very first quote is always Alan Kay; after that they're random
+  let first = false;
+  try { first = !localStorage.getItem('firstQuote'); localStorage.setItem('firstQuote', '1'); } catch {}
+  let qi;
+  if (first) qi = QUOTES.findIndex(q => q.by === 'Alan Kay');
+  else do { qi = (Math.random() * QUOTES.length) | 0; } while (qi === lastQ && QUOTES.length > 1);
   lastQ = qi;
   const q = QUOTES[qi];
   if (!opts.replay) document.documentElement.classList.add('intro-on');
