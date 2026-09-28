@@ -28,7 +28,7 @@ function run() {
   el.id = 'intro';
   el.innerHTML = `<div class="i-bar"><i></i><i></i><i></i><span>~/hello</span></div>
     <div class="i-body"><p class="i-q"><span class="i-pr">$ </span><span class="i-t"></span><span class="i-caret">▍</span></p><p class="i-by"></p></div>
-    <button class="i-sound" hidden>sound on</button><button class="i-skip">skip</button>`;
+    <span class="i-sound" hidden>click anywhere for sound</span><button class="i-skip">skip</button>`;
   document.body.appendChild(el);
   const t = el.querySelector('.i-t'), by = el.querySelector('.i-by');
 
@@ -40,7 +40,7 @@ function run() {
     ac.resume().catch(() => {});
     setTimeout(() => { if (ac.state !== 'running' && !done) soundBtn.hidden = false; }, 150);
   }
-  soundBtn.addEventListener('click', e => { e.stopPropagation(); ac.resume(); soundBtn.hidden = true; });
+  const soundOn = () => ac && ac.state === 'running';
   let noise = null;
   if (ac) {
     noise = ac.createBuffer(1, ac.sampleRate * 0.05, ac.sampleRate);
@@ -125,7 +125,13 @@ function run() {
       el.remove();
     }, 900);
   }
-  const skip = () => finish();
-  el.addEventListener('click', skip);
-  addEventListener('keydown', skip, { once: true });
+  // the first interaction unlocks sound (browsers require one); after that, interactions skip
+  const interact = e => {
+    if (e.target && e.target.closest && e.target.closest('.i-skip')) { finish(); return; }
+    if (ac && !soundOn()) { ac.resume(); soundBtn.hidden = true; return; }
+    finish();
+  };
+  el.addEventListener('pointerdown', interact);
+  const onKey = e => { if (done) { removeEventListener('keydown', onKey); return; } interact(e); };
+  addEventListener('keydown', onKey);
 }

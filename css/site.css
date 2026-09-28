@@ -243,6 +243,6 @@ h1 .ch.glyph { text-align: center; color: var(--olive); font-family: var(--mono)
 html.intro-on body { overflow: hidden; }
 html.intro-on .hero-text, html.intro-on .doors, html.intro-on .nav { opacity: 0; }
 .hero-text, .doors, .nav { transition: opacity 600ms ease 250ms; }
-#intro .i-sound { position: absolute; left: 22px; bottom: 18px; font: 12px var(--mono); color: #eceae3; background: rgba(0, 0, 0, 0.2); border: 0; border-radius: 999px; padding: 6px 12px; cursor: pointer; }
-#intro .i-sound:hover { background: rgba(0, 0, 0, 0.32); }
+#intro .i-sound { position: absolute; left: 22px; bottom: 20px; font: 12px var(--mono); color: rgba(243, 241, 234, 0.5); animation: pulse-soft 2.4s ease-in-out infinite; }
+@keyframes pulse-soft { 50% { opacity: 0.45; } }
 #intro.leaving .i-sound { opacity: 0; }
