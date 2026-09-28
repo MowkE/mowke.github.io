@@ -20,21 +20,6 @@ const ICONS = {
 };
 const NAMES = { resume: 'Resume', sims: 'Orrery', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
 
-// samaOS is 1-bit: every process gets a dither pattern instead of a colour.
-// Each tile is 4×4, row by row, 1 = black.
-const TILES = ['1010010110100101', '1111000011110000', '1000010000100001', '1010101010101010', '1111100010001000', '1100110000110011', '0001001001001000', '1111100011110010', '1110101111101011', '1111111111111111'];
-const DESK = '1000000000000000';
-const HUE_ORDER = [205, 330, 150, 40, 265, 10, 180, 90, 290, 55];
-const tileOf = hue => TILES[Math.max(0, HUE_ORDER.indexOf(hue)) % TILES.length];
-const bit = (tile, x, y) => tile[(y & 3) * 4 + (x & 3)] === '1';
-const swatchURL = (tile, px = 3) => swatchCanvas(tile, px).toDataURL();
-function swatchCanvas(tile, px = 3) {
-  const c = document.createElement('canvas'); c.width = c.height = 4 * px; const g = c.getContext('2d');
-  g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.fillStyle = '#000';
-  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (bit(tile, x, y)) g.fillRect(x * px, y * px, px, px);
-  return c;
-}
-
 export function boot(root) {
   const fs = makeFS(), kernel = makeKernel(fs);
   const os = { fs, kernel, apps: {}, open };
@@ -237,8 +222,6 @@ export function boot(root) {
         <p class="m-empty">Nothing is running. Try  run primes.sm &  in a Terminal.</p></div>`;
       const tb = w.body.querySelector('tbody'), g = w.body.querySelector('.m-graph').getContext('2d'), sum = w.body.querySelector('.m-sum');
       const hist = []; let arm = null;
-      const pats = {};
-      const patOf = hue => pats[hue] ??= g.createPattern(swatchCanvas(tileOf(hue), 1), 'repeat');
       tb.addEventListener('click', e => {
         const b = e.target.closest('button'); if (!b) return;
         const pid = +b.dataset.pid;
@@ -246,7 +229,7 @@ export function boot(root) {
         draw();
       });
       function draw() {
-        tb.innerHTML = kernel.procs.map(p => `<tr class="${p.state}"><td><i style="background-image:url(${swatchURL(tileOf(p.hue))})"></i></td><td>${p.pid}</td><td>${esc(p.name)}</td><td class="st">${p.state === 'done' ? p.exitMsg : p.state}</td><td>${(p.share * 100).toFixed(0)}%</td><td>${p.ins.toLocaleString()}</td>
+        tb.innerHTML = kernel.procs.map(p => `<tr class="${p.state}"><td><i style="--h:${p.hue}"></i></td><td>${p.pid}</td><td>${esc(p.name)}</td><td class="st">${p.state === 'done' ? p.exitMsg : p.state}</td><td>${(p.share * 100).toFixed(0)}%</td><td>${p.ins.toLocaleString()}</td>
           <td>${p.state === 'done' ? '' : `<button class="btn ${arm === p.pid ? 'danger' : 'quiet'}" data-pid="${p.pid}">${arm === p.pid ? `Quit ${p.pid}?` : 'Quit'}</button>`}</td></tr>`).join('');
         w.body.querySelector('.m-empty').hidden = kernel.procs.length > 0;
       }
@@ -254,7 +237,7 @@ export function boot(root) {
         hist.push(t); if (hist.length > 150) hist.shift();
         const W = 600, H = 90, bw = W / 150;
         g.clearRect(0, 0, W, H);
-        hist.forEach((f, i) => { let y = H; for (const s of f.slices) { const hgt = s.n / f.budget * H; g.fillStyle = patOf(s.hue); g.fillRect(Math.round(i * bw), Math.round(y - hgt), Math.ceil(bw), Math.round(hgt)); y -= hgt; } });
+        hist.forEach((f, i) => { let y = H; for (const s of f.slices) { const hgt = s.n / f.budget * H; g.fillStyle = `hsl(${s.hue} 70% 60%)`; g.fillRect(i * bw, y - hgt, bw + 0.5, hgt); y -= hgt; } });
         const busy = hist.slice(-60).reduce((a, f) => a + f.used / f.budget, 0) / Math.min(60, hist.length);
         sum.innerHTML = `<b>${(busy * 100).toFixed(0)}%</b> CPU · <b>${(busy * kernel.BUDGET * 60 / 1e6).toFixed(1)}M</b> instructions a second · <b>${kernel.procs.filter(p => p.state !== 'done').length}</b> running`;
       };
@@ -285,7 +268,7 @@ export function boot(root) {
       const job = (name, role, when, pts, links = [], status = '') => `<article class="r-job"><header><b>${name}${status ? ` <i class="r-st">${status}</i>` : ''}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
-          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full resume</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a></div></header>
+          <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full resume</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a><button class="btn quiet r-full" aria-pressed="false">View full screen</button></div></header>
         <p class="r-sec">Products</p>
         ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
           'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
@@ -363,6 +346,17 @@ export function boot(root) {
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
       w.body.querySelector('.r-sims').addEventListener('click', () => open('sims'));
+      // full screen: the window fills everything under the menu bar; Esc or the same button puts it back
+      const fullBtn = w.body.querySelector('.r-full');
+      const setFull = on => {
+        w.el.classList.toggle('full', on); fullBtn.setAttribute('aria-pressed', on);
+        fullBtn.textContent = on ? 'Exit full screen' : 'View full screen';
+        if (on) focus(w);
+      };
+      fullBtn.addEventListener('click', () => setFull(!w.el.classList.contains('full')));
+      w.el.querySelector('.bar').addEventListener('dblclick', () => setFull(!w.el.classList.contains('full')));
+      addEventListener('keydown', e => { if (e.key === 'Escape' && w.el.classList.contains('full')) setFull(false); });
+      w.setFull = setFull;
     },
   };
 
@@ -379,31 +373,20 @@ export function boot(root) {
 
   // ---------------------------------------------------------------- the wallpaper: the CPU, live
   const wall = $('#wall'), wg = wall.getContext('2d');
-  const SCALE = 3;                                        // one wallpaper pixel is 3 screen pixels, like a 72-dpi screen
-  let WW = 1, WH = 1, col = 0, colImg = null;
-  function sizeWall() {
-    WW = Math.ceil(innerWidth / SCALE); WH = Math.ceil(innerHeight / SCALE);
-    wall.width = WW; wall.height = WH; colImg = wg.createImageData(1, WH);
-    const img = wg.createImageData(WW, WH);
-    for (let y = 0; y < WH; y++) for (let x = 0; x < WW; x++) { const v = bit(DESK, x, y) ? 0 : 255, i = (y * WW + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
-    wg.putImageData(img, 0, 0);
-  }
-  sizeWall(); addEventListener('resize', sizeWall);
+  const WW = 160, WH = 90; wall.width = WW; wall.height = WH;
+  wg.fillStyle = '#101216'; wg.fillRect(0, 0, WW, WH);
   let wallAcc = 0;
   function paintWall(t) {
-    wallAcc++; if (wallAcc % 2) return;                    // one column every other frame
+    wallAcc++; if (wallAcc % 3) return;                // one column every third frame
     wg.drawImage(wall, -1, 0);
-    col++;
-    // stack each process's share from the bottom up, in its own pattern; the rest is desktop
-    const bands = []; let y = WH;
-    for (const s of t.slices) { const hgt = Math.round(s.n / t.budget * WH); bands.push([y - hgt, y, tileOf(s.hue)]); y -= hgt; }
-    const d = colImg.data;
-    for (let py = 0; py < WH; py++) {
-      const band = bands.find(([a, b]) => py >= a && py < b);
-      const black = band ? bit(band[2], col, py) || py === band[0] : bit(DESK, col, py);
-      const v = black ? 0 : 255, i = py * 4; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+    let y = 0;
+    for (const s of t.slices) {
+      const hgt = s.n / t.budget * WH;
+      const grd = wg.createLinearGradient(0, y, 0, y + hgt);
+      grd.addColorStop(0, `hsl(${s.hue} 75% 55%)`); grd.addColorStop(1, `hsl(${s.hue + 25} 70% 40%)`);
+      wg.fillStyle = grd; wg.fillRect(WW - 1, y, 1, hgt); y += hgt;
     }
-    wg.putImageData(colImg, WW - 1, 0);
+    wg.fillStyle = '#101216'; wg.fillRect(WW - 1, y, 1, WH - y);
   }
 
   // ---------------------------------------------------------------- main loop
