@@ -264,3 +264,5 @@ html.intro-on .hero-text, html.intro-on .doors, html.intro-on .nav { opacity: 0;
 /* the name, in Happy Monkey */
 h1#name { font-family: 'Happy Monkey', var(--display); font-weight: 400; letter-spacing: 0; line-height: 0.95; }
 h1#name .ch { font-variation-settings: normal; }
+.desc .mail { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--olive); text-underline-offset: 3px; white-space: nowrap; }
+.desc .mail:hover { color: var(--olive); }
