@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../../css/rebuilt.css?v=3" />
+<link rel="stylesheet" href="../../css/rebuilt.css?v=4" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -99,7 +99,7 @@
 <button class="mute mono" id="mute" aria-pressed="false">sound on</button>
 
 <script type="module">
-import { startGame } from '../../js/rebuilt.js?v=20';
+import { startGame } from '../../js/rebuilt.js?v=21';
 const $ = id => document.getElementById(id);
 const body = document.body;
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -129,9 +129,10 @@ const ui = {
     $('intake').textContent = h.feeding ? 'outpost feeding' : h.held >= h.cap ? 'hopper full' : h.intake ? 'intake on' : 'intake off';
     $('range').textContent = h.dist === null ? '' : `${h.dist.toFixed(1)} m to hub`;
     const ret = $('reticle');
-    ret.classList.toggle('on', h.aiming);
+    ret.classList.toggle('on', h.aiming || h.blocked);
+    ret.classList.toggle('blocked', h.blocked);
     ret.classList.toggle('lock', h.aiming && Math.abs(h.aimErr) < 0.05);
-    $('ret-t').textContent = h.aiming ? (Math.abs(h.aimErr) < 0.05 ? 'LOCKED · firing' : `aligning ${Math.abs(h.aimErr * 57.3).toFixed(0)}°`) : '';
+    $('ret-t').textContent = h.blocked ? 'blocked · the hub is shielded from midfield, get back to your side' : h.aiming ? (Math.abs(h.aimErr) < 0.05 ? 'LOCKED · firing' : `aligning ${Math.abs(h.aimErr * 57.3).toFixed(0)}°`) : '';
     $('banner').textContent = h.auto ? 'AUTO · both hubs live · score here and your hub goes dark first in teleop' : h.phase === 'AUTO → TELEOP' ? 'robot disabled · teleop in a moment' : '';
     $('banner').classList.toggle('on', !!$('banner').textContent);
     if (h.made > lastPops) { const p = $('pop'); p.textContent = `+${h.made - lastPops}`; p.classList.remove('go'); void p.offsetWidth; p.classList.add('go'); }

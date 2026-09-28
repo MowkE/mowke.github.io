@@ -119,7 +119,7 @@ body.driving { overflow: hidden; }
   .callout b { font-size: 10.5px; }
 }
 
-/* ── software: samOS ─────────────────────────────── */
+/* ── software: samaOS ─────────────────────────────── */
 .sw-room { background: radial-gradient(1200px 700px at 70% 20%, #16204a 0%, #07090f 60%) fixed; color: #e6e9f5; }
 .sw-room .title { position: static; padding: 84px 5vw 0; max-width: none; pointer-events: auto; display: grid; grid-template-columns: auto 1fr; column-gap: 32px; align-items: end; }
 .sw-room .title .lbl { grid-column: 1 / -1; }

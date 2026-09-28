@@ -172,6 +172,15 @@ export function startGame(canvas, ui) {
     const band = new THREE.Mesh(new THREE.BoxGeometry(HUB_W + 0.02, 0.06, HUB_W + 0.02), new THREE.MeshBasicMaterial({ color: col }));
     band.position.y = HUB_H - 0.13; hub.add(band);
     box(hx - HUB_W / 2, 0, -HUB_W / 2, hx + HUB_W / 2, HUB_H - 0.02, HUB_W / 2, { hub: a });
+    // the neutral-zone face is shielded: a tall panel above the rim, so the hub only takes FUEL lobbed from its own side
+    {
+      const out = -sg, fx = out * (HUB_W / 2 + 0.03), SH = 1.7;
+      const shield = new THREE.Mesh(new THREE.PlaneGeometry(HUB_W + 0.1, SH), new THREE.MeshStandardMaterial({ color: 0xdfe8f5, transparent: true, opacity: 0.16, roughness: 0.1, side: THREE.DoubleSide, depthWrite: false }));
+      shield.position.set(fx, HUB_H + SH / 2, 0); shield.rotation.y = Math.PI / 2; hub.add(shield);
+      for (const z of [-1, 1]) solid(0.05, SH, 0.05, am, fx, HUB_H + SH / 2, z * (HUB_W / 2 + 0.05), hub);
+      solid(0.06, 0.06, HUB_W + 0.15, glow, fx, HUB_H + SH, 0, hub).castShadow = false;
+      box(hx + fx - 0.04, HUB_H - 0.05, -HUB_W / 2 - 0.06, hx + fx + 0.04, HUB_H + SH, HUB_W / 2 + 0.06, { robot: false });
+    }
     hubs[a] = { x: hx, light: [rim.material, band.material], col: new THREE.Color(col), sg };
 
     // BUMPs either side of the hub, then a divider, then the TRENCH out to the guardrail
@@ -707,7 +716,10 @@ export function startGame(canvas, ui) {
     // shooting: hold space and the heading controller swings the drum onto the hub
     const shooting = keys.has('space') || touch.shoot;
     bot.aim = null;
-    if (shooting && bot.held > 0) {
+    // the drum only works from our side of the hub: from midfield the shield is in the way
+    const hubX = hubs[bot.alliance].x, sgA = bot.alliance === 'red' ? -1 : 1;
+    bot.blocked = shooting && bot.held > 0 && (bot.x - hubX) * sgA < 0;
+    if (shooting && bot.held > 0 && !bot.blocked) {
       const sol = solve(bot, bot.alliance);
       const want = yawFor(bot, sol.heading), err = wrap(want - bot.yaw);
       if (rot === 0) cmd.w = clamp(err * 9, -WMAX, WMAX);
@@ -898,7 +910,7 @@ export function startGame(canvas, ui) {
     const inGap = match.mode === 'match' && t >= T_AUTO && t < T_AUTO + T_GAP;
     const robots = [bot];
     const cmd = inGap ? { vx: 0, vz: 0, w: 0 } : playerCmd(dt);
-    if (inGap) bot.aim = null;
+    if (inGap) { bot.aim = null; bot.blocked = false; }
     bot.feeding = false;
     stepRobot(bot, cmd, dt);
     releaseVolley(bot, dt);
@@ -930,7 +942,7 @@ export function startGame(canvas, ui) {
     ui.hud({
       phase: ph.name, clock: ph.clock, score: match.score, alliance: a, active, flip, mode: match.mode,
       held: bot.held, cap: bot.cap, intake: bot.intake, feeding: bot.feeding,
-      speed: Math.hypot(bot.vx, bot.vz), dist: sol ? sol.d : null, aiming: !!bot.aim, aimErr: bot.aim ? bot.aim.err : 0,
+      speed: Math.hypot(bot.vx, bot.vz), dist: sol ? sol.d : null, aiming: !!bot.aim, aimErr: bot.aim ? bot.aim.err : 0, blocked: !!bot.blocked,
       auto: match.mode === 'match' && match.t < T_AUTO, pops: pops.map(p => p.t), made: match.stats.made, shots: match.stats.shots,
       outpost: outposts[a].stock,
     });

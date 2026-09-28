@@ -42,7 +42,7 @@ export function initOS(el) {
         print(`${cmdLink(c)} <span class="dim">${d}</span>`);
     },
     about: () => {
-      print('Samahith Thellakal. I like to learn new things.');
+      print('Samahith. I like to learn new things.');
       print('this whole computer is about 600 lines of plain JavaScript. no framework, no build step.', 'dim');
     },
     projects: () => {

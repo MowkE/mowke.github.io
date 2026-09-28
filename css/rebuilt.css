@@ -82,6 +82,8 @@ body.playing .hud { opacity: 1; transform: none; }
 .reticle.on { opacity: 1; }
 .reticle i { width: 18px; height: 18px; border: 2px solid var(--dim); border-radius: 50%; }
 .reticle.lock i { border-color: var(--fuel); background: radial-gradient(circle, var(--fuel) 30%, transparent 34%); }
+.reticle.blocked i { border-color: var(--ours); background: linear-gradient(45deg, transparent 44%, var(--ours) 45% 55%, transparent 56%); }
+.reticle.blocked span { color: #ffc7ad; border-color: rgba(224, 102, 47, 0.5); }
 .reticle span { font-size: 12px; color: var(--ink); background: var(--panel); padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); }
 
 .banner { position: fixed; top: 86px; left: 50%; transform: translate(-50%, -8px); z-index: 9; font-size: 12px; letter-spacing: 0.04em; padding: 7px 14px; border-radius: 99px; background: rgba(224, 102, 47, 0.16); border: 1px solid rgba(224, 102, 47, 0.5); color: #ffc7ad; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; }
