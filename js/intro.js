@@ -19,11 +19,16 @@ const seen = (() => { try { return sessionStorage.getItem('introSeen'); } catch 
 const force = new URLSearchParams(location.search).has('intro');
 
 if ((!seen || force) && !reduced) run();
+// clicking the Snoopy card plays it again with a different quote
+window.__intro = { replay: () => { if (!document.getElementById('intro')) run({ replay: true }); } };
 
-function run() {
+let lastQ = -1;
+function run(opts = {}) {
   try { sessionStorage.setItem('introSeen', '1'); } catch {}
-  const q = QUOTES[(Math.random() * QUOTES.length) | 0];
-  document.documentElement.classList.add('intro-on');
+  let qi; do { qi = (Math.random() * QUOTES.length) | 0; } while (qi === lastQ && QUOTES.length > 1);
+  lastQ = qi;
+  const q = QUOTES[qi];
+  if (!opts.replay) document.documentElement.classList.add('intro-on');
   const el = document.createElement('div');
   el.id = 'intro';
   el.innerHTML = `<div class="i-bar"><i></i><i></i><i></i><span>~/hello</span></div>
@@ -31,6 +36,15 @@ function run() {
     <span class="i-sound" hidden>click anywhere for sound</span><button class="i-skip">skip</button>`;
   document.body.appendChild(el);
   const t = el.querySelector('.i-t'), by = el.querySelector('.i-by');
+  if (opts.replay) {
+    // grow out of the card, the reverse of the ending
+    const card = document.getElementById('term'), r = card.getBoundingClientRect();
+    card.style.visibility = 'hidden';
+    el.style.transition = 'none'; el.style.transformOrigin = '0 0';
+    el.style.transform = `translate(${r.left}px, ${r.top}px) scale(${r.width / innerWidth}, ${r.height / innerHeight})`;
+    el.getBoundingClientRect();
+    el.style.transition = ''; el.style.transform = '';
+  }
 
   // ── keyboard sounds, synthesized: a filtered click plus a soft thock ──
   let ac = null;
@@ -102,7 +116,7 @@ function run() {
     else { t.textContent += k; key(k === ' ' ? 'space' : 'key'); if (k === ' ') wait += 30; if (/[,.]/.test(k)) wait += 220; }
     timer = setTimeout(next, wait);
   };
-  timer = setTimeout(next, 500);
+  timer = setTimeout(next, opts.replay ? 950 : 500);
 
   function finish() {
     if (done) return; done = true; clearTimeout(timer);
