@@ -232,3 +232,8 @@ body.driving { overflow: hidden; }
   .job { grid-template-columns: 1fr; gap: 6px; }
   .rec-in { border-radius: 22px; padding-top: 40px; }
 }
+
+/* the résumé fills the screen once you reach it */
+.record { padding: 0; }
+.rec-in { max-width: none; min-height: 100vh; border-radius: 28px 28px 0 0; padding: 96px max(24px, calc((100vw - 980px) / 2)) 14vh; box-shadow: 0 -30px 80px -20px rgba(0, 0, 0, 0.35); }
+@media (max-width: 700px) { .rec-in { border-radius: 22px 22px 0 0; padding: 84px 20px 12vh; } }
