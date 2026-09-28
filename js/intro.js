@@ -19,6 +19,9 @@ const seen = (() => { try { return sessionStorage.getItem('introSeen'); } catch 
 const force = new URLSearchParams(location.search).has('intro');
 
 if ((!seen || force) && !reduced) run();
+else document.documentElement.classList.remove('intro-on');
+// safety net: the page must never stay hidden once no intro is on screen
+setInterval(() => { if (!document.getElementById('intro')) document.documentElement.classList.remove('intro-on'); }, 1000);
 // clicking the Snoopy card plays it again with a different quote
 window.__intro = { replay: () => { if (!document.getElementById('intro')) run({ replay: true }); } };
 
