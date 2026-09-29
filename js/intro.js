@@ -21,7 +21,7 @@ const seen = (() => { try { return sessionStorage.getItem('introSeen'); } catch 
 const force = new URLSearchParams(location.search).has('intro');
 let lastQ = -1;
 
-if (!seen || force) run();
+if (!seen || force) { if (window.__gateLocked) addEventListener('gate-open', () => run(), { once: true }); else run(); }
 else document.documentElement.classList.remove('intro-on');
 // safety net: the page must never stay hidden once no intro is on screen
 setInterval(() => { if (!document.getElementById('intro')) document.documentElement.classList.remove('intro-on'); }, 1000);

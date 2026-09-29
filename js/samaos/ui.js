@@ -393,7 +393,8 @@ export function boot(root) {
 
   // ---------------------------------------------------------------- boot
   const bootEl = $('#boot');
-  setTimeout(() => {
+  const afterGate = f => window.__gateLocked ? addEventListener('gate-open', f, { once: true }) : f();
+  afterGate(() => setTimeout(() => {
     bootEl.classList.add('gone'); root.classList.add('up');
     open('terminal');
     open('resume');
@@ -408,7 +409,7 @@ export function boot(root) {
     setTimeout(dismiss, 12000);
     requestAnimationFrame(frame);
     setTimeout(() => bootEl.remove(), 800);
-  }, REDUCED ? 50 : 1100);
+  }, REDUCED ? 50 : 1100));
 
   window.__samaos = { os, wins, open };
   return os;
