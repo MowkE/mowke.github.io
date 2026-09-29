@@ -253,3 +253,13 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
 @keyframes cueBob { 50% { transform: translateY(3px); } }
 @media (max-width: 700px) { .rec-cue { top: 64px; font-size: 12px; } }
 @media (prefers-reduced-motion: reduce) { .rec-cue, .rec-cue i { animation: none; } }
+
+/* publications & conferences, first thing in the bio resume */
+.pubs { padding: 26px 0 30px; border-bottom: 1px solid var(--rrule); }
+.pubs-h { margin: 0 0 16px; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.pubs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.pubs-list li { display: grid; grid-template-columns: 150px 1fr; gap: 24px; font-size: 15.5px; line-height: 1.55; }
+.pubs-list .pk { font-size: 12px; color: var(--rk); padding-top: 3px; }
+.pubs-list a { font: 500 12.5px var(--mono); color: var(--rk); text-decoration: none; margin-left: 8px; white-space: nowrap; }
+.pubs-list a:hover { text-decoration: underline; }
+@media (max-width: 700px) { .pubs-list li { grid-template-columns: 1fr; gap: 2px; } }
