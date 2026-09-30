@@ -277,7 +277,8 @@ export function boot(root) {
         ${job('Substep', 'Cofounder · execution coach', '2026', [
           'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
           'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
-          'Built with Krish on top of Arin\'s screen-grounding engine; the team later pivoted to Propel.'], [], 'Prototype')}
+          'The team later pivoted to Propel.',
+          '<b>Received the YC 10% email.</b>'], [], 'Prototype')}
         ${job('Cadence', 'Builder and maintainer · desktop music companion', '2026', [
           'A persistent overlay with lyrics, visual themes and shared listening that stays on top of whatever else you\'re doing.',
           'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
