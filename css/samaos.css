@@ -235,4 +235,4 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .r-acc-h { margin: 0 0 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6cb4ff; }
 .r-acc p:last-child { margin: 0; font-size: 15px; line-height: 1.5; }
 .r-acc b { color: #fff; }
-.r-acc .r-acc-sub { margin-top: 8px !important; font-size: 13.5px !important; color: var(--fg2); }
+.r-acc .r-acc-sub { margin-top: 8px !important; }
