@@ -275,17 +275,6 @@ export function boot(root) {
           'Built most of the demo (everything except the inbox and agent browser) and helped build the Company Brain, which keeps the source and provenance of every piece of knowledge it ingests.',
           'React and Vite front end, Node/Hono server, project knowledge stored as Markdown, YAML and CSV. Grew out of Substep.',
           '<b>Got an a16z Alpha Speedrun interview.</b>'], [], 'MVP')}
-        ${job('Substep', 'Cofounder · execution coach', '2026', [
-          'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
-          'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
-          'The team later pivoted to Propel.',
-          '<b>Received the YC 10% email.</b>'], [], 'Prototype')}
-        ${job('Cadence', 'Builder and maintainer · desktop music companion', '2026', [
-          'A persistent overlay with lyrics, visual themes and shared listening that stays on top of whatever else you\'re doing.',
-          'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
-          'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.',
-          '<b>Started 2 weeks ago and already at 784 downloads.</b>'],
-          [['mowke.github.io/cadence (cool website :D)', 'https://mowke.github.io/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
         ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', 'Jan 2026 – now', [
           'Built and launched iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
           'Shipped a production MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
@@ -306,7 +295,18 @@ export function boot(root) {
           'Delivered a working integration in one week, adapting ingestion, retrieval and UI flows to the existing architecture.'],
           [['ShogunAI on Product Hunt', 'https://www.producthunt.com/products/shogunai?launch=shogunai'], ['godhands.dev', 'https://godhands.dev/']])}
 
-        <p class="r-sec">Tools &amp; experiments</p>
+        <p class="r-sec">Side projects</p>
+        ${job('Substep', 'Cofounder · execution coach', '2026', [
+          'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
+          'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
+          'The team later pivoted to Propel.',
+          '<b>Received the YC 10% email.</b>'], [], 'Prototype')}
+        ${job('Cadence', 'Builder and maintainer · desktop music companion', '2026', [
+          'A persistent overlay with lyrics, visual themes and shared listening that stays on top of whatever else you\'re doing.',
+          'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
+          'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.',
+          '<b>Started 2 weeks ago and already at 784 downloads.</b>'],
+          [['mowke.github.io/cadence (cool website :D)', 'https://mowke.github.io/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
         ${job('Recall', 'Builder · knowledge layer for coding agents', 'Aug 2026', [
           'Turns past Claude Code, Codex and Cursor sessions, corrections and git history into evidence-linked knowledge, then serves it back through hooks, an MCP server and compiled rules.',
           'A pipeline that redacts, segments, extracts and merges into SQLite, with retrieval that blends lexical, vector and scope signals. Related to the ShogunAI contract.'], [], 'Built')}
@@ -327,8 +327,6 @@ export function boot(root) {
           'Results were mixed and partly negative, and the write-up documents each dead end.'], [], 'Experiment')}
         ${job('Paper-trading agent', 'Experiment · automation', 'Spring 2026', [
           'Research-journaling automation and paper-trading helpers on Alpaca. Switched off in June 2026.'], [], 'Retired')}
-
-        <p class="r-sec">Research</p>
         ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', 'Aug 2026', [
           'Asks whether limiting who gets decision-making roles lowers participation in an artificial society even when resources are plentiful, inspired by the Universe 25 experiment.',
           'A completed rule-based 2×2 study: 8 agents, 40 rounds, 800 paired-seed runs with control policies and a frozen internal preregistration.',
