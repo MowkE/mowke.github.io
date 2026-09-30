@@ -269,7 +269,7 @@ export function boot(root) {
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
           <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full resume</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a><button class="btn quiet r-full" aria-pressed="false">View full screen</button></div></header>
-        <section class="r-acc"><p class="r-acc-h">Accomplishments</p><p>Not many accomplishments in CS lol. But we did get the <b>a16z Alpha Speedrun interview</b> for Propel and the <b>YC 10% email</b> for Substep.</p></section>
+        <section class="r-acc"><p class="r-acc-h">Accomplishments</p><p>Not many accomplishments in CS lol. But we did get the <b>a16z Alpha Speedrun interview</b> for Propel and the <b>YC 10% email</b> for Substep.</p><p class="r-acc-sub">Not rly an accomplishment lol, but I went to <b>YC Startup School</b>.</p></section>
         <p class="r-sec">Products</p>
         ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
           'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
@@ -281,7 +281,7 @@ export function boot(root) {
           'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
           'The team later pivoted to Propel.',
           '<b>Received the YC 10% email.</b>'], [], 'Prototype')}
-        ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', 'Jan 2026 – now', [
+        ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', '2026', [
           'Built and launched iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
           'Shipped a production MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
           'Iterated on new UI with the startup team from user feedback, aimed at managing ADHD symptoms.',
@@ -290,8 +290,8 @@ export function boot(root) {
           'A 3D simulation platform in the browser, built with Babylon.js and WebGL, rendering cells, organ systems and atoms, including neuron, electron-transport-chain and nephron models.',
           'An interactive 3D periodic table with spatial structures for all 118 elements, plus periodic trends, VSEPR and intermolecular forces for AP Chemistry.',
           'Custom prompt pipelines that generate WebGL coordinate math cut asset creation time 10×.',
-          'Grew from 6 local schools to 79 school districts across 98 countries through educator outreach and SEO.',
-          'Cohosted E-med Hacks, an education-technology hackathon for 60 students.'],
+          'Cohosted E-med Hacks, an education-technology hackathon for 60 students.',
+          '<b>Used by 82 school districts across 99 countries.</b>'],
           [['bio-sim.us', 'https://bio-sim.us/'], ['bio-sim.us/chemistry', 'https://bio-sim.us/chemistry/']], 'Live')}
         ${job('OpenTrade (YC S26)', 'Growth Outreach &amp; Front-End Design · San Francisco', '2026', [
           'School outreach campaign: 1,000+ emails to educators and institutions for product demos in India and Singapore.',
@@ -308,7 +308,7 @@ export function boot(root) {
           'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.',
           '<b>Started 2 weeks ago and already at 784 downloads.</b>'],
           [['mowke.github.io/cadence (cool website :D)', 'https://mowke.github.io/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
-        ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', 'Aug 2026', [
+        ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', '2026', [
           'Asks whether limiting who gets decision-making roles lowers participation in an artificial society even when resources are plentiful, inspired by the Universe 25 experiment.',
           'A completed rule-based 2×2 study: 8 agents, 40 rounds, 800 paired-seed runs with control policies and a frozen internal preregistration.',
           'Built the infrastructure for a second study with LLM agents. A pilot run was deliberately excluded as compromised evidence; the controlled LLM study and the paper are in progress.'], [], 'In progress')}
@@ -319,22 +319,22 @@ export function boot(root) {
           'Nine browser simulations that each measure something real and print it beside the textbook value.',
           'APSIS raymarches light around a black hole along Schwarzschild geodesics; VALENCE raymarches hydrogen orbitals from the Schrödinger equation; HYPERSHAPE rotates four-dimensional shapes.',
           'LUMA and LUMASHAPE test color models against human and bird vision (LUMA credits a Jake Dont Draw video as inspiration); QUASI cuts quasicrystals from five dimensions; DIFFUSE rediscovers Fick\'s laws from random walkers; META shows geometry deciding how a material behaves; GOLDILOCKS checks whether a planet keeps liquid water.'], [['mowke.github.io/sims (cool site :D)', 'https://mowke.github.io/sims/']])}
-        ${job('Recall', 'Builder · knowledge layer for coding agents', 'Aug 2026', [
+        ${job('Recall', 'Builder · knowledge layer for coding agents', '2026', [
           'Turns past Claude Code, Codex and Cursor sessions, corrections and git history into evidence-linked knowledge, then serves it back through hooks, an MCP server and compiled rules.',
           'A pipeline that redacts, segments, extracts and merges into SQLite, with retrieval that blends lexical, vector and scope signals. Related to the ShogunAI contract.'], [], 'Built')}
-        ${job('Cadlytic', 'Builder · autocomplete for parametric CAD', 'Jul 2026', [
-          'Suggests the next editable Onshape feature instead of generating a mesh.',
-          'A React/TypeScript overlay in the browser and a small PyTorch next-feature model trained on a tokenized CAD representation, with model-backed suggestions written back as features.'], [], 'Prototype')}
-        ${job('Mudra', 'Builder · gesture control for CAD', 'Aug 2026', [
+        ${job('Cadlytic', 'Builder · autocomplete for parametric CAD', '2026', [
+          'Suggests the next editable Onshape feature, which you can select, instead of generating a mesh.',
+          'A React/TypeScript overlay in the browser and a small PyTorch next-feature model trained on a tokenized CAD representation, with model-backed suggestions written back as features.'], [], 'Retired')}
+        ${job('Mudra', 'Builder · gesture control for CAD', '2026', [
           'Drive Onshape\'s viewport with your hands: MediaPipe tracking feeds a gesture state machine, which controls the browser over a WebSocket.',
           'Orbit, pan, zoom, click and fit-to-view, with a ~600 ms watchdog that releases stuck input.'], [['github.com/MowkE/mudra', 'https://github.com/MowkE/mudra']], 'Prototype')}
-        ${job('Limen', 'Builder · headline-framing extension', 'Aug 2026', [
+        ${job('Limen', 'Builder · headline-framing extension', '2026', [
           'A browser extension that annotates headlines and posts with the framing techniques they use and a neutral rewrite.',
           'The interface and site integration are built; scoring runs on a separate self-hosted service.'], [['github.com/MowkE/limen', 'https://github.com/MowkE/limen']], 'Prototype')}
-        ${job('amdetect', 'Inference and streaming · answering-machine detection', 'Aug 2026', [
+        ${job('amdetect', 'Inference and streaming · answering-machine detection', '2026', [
           'Tells whether a phone call reached a person or a machine (voicemail, phone menu, carrier message).',
           'A Go audio pipeline (decoding, resampling, log-mel features), ONNX inference on a pretrained Whisper telephony model, and a streaming API that trades decision time against errors.'], [], 'Built')}
-        ${job('Paper-trading agent', 'Experiment · automation', 'Spring 2026', [
+        ${job('Paper-trading agent', 'Experiment · automation', '2026', [
           'Research-journaling automation and paper-trading helpers on Alpaca. Switched off in June 2026.'], [], 'Retired')}
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
