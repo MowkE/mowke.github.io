@@ -283,8 +283,9 @@ export function boot(root) {
         ${job('Cadence', 'Builder and maintainer · desktop music companion', '2026', [
           'A persistent overlay with lyrics, visual themes and shared listening that stays on top of whatever else you\'re doing.',
           'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
-          'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.'],
-          [['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
+          'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.',
+          '<b>Started 2 weeks ago and already at 784 downloads.</b>'],
+          [['mowke.github.io/cadence (cool website :D)', 'https://mowke.github.io/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
         ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', 'Jan 2026 – now', [
           'Built and launched iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
           'Shipped a production MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
