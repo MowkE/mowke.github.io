@@ -273,7 +273,8 @@ export function boot(root) {
         ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
           'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
           'Built most of the demo (everything except the inbox and agent browser) and helped build the Company Brain, which keeps the source and provenance of every piece of knowledge it ingests.',
-          'React and Vite front end, Node/Hono server, project knowledge stored as Markdown, YAML and CSV. Grew out of Substep.'], [], 'MVP')}
+          'React and Vite front end, Node/Hono server, project knowledge stored as Markdown, YAML and CSV. Grew out of Substep.',
+          '<b>Got an a16z Alpha Speedrun interview.</b>'], [], 'MVP')}
         ${job('Substep', 'Cofounder · execution coach', '2026', [
           'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
           'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
