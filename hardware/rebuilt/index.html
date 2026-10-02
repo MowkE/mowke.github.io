@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../../css/rebuilt.css?v=4" />
+<link rel="stylesheet" href="../../css/rebuilt.css?v=41" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -109,7 +109,7 @@ let alliance = 'red', mode = 'match', lastPops = 0;
 const ui = {
   progress(p) { $('load-bar').style.width = `${(p * 100).toFixed(0)}%`; $('start-t').textContent = `loading the CAD · ${(p * 100).toFixed(0)}%`; },
   loaded(f) {
-    $('start').disabled = false; $('start-t').textContent = 'start match'; $('load-bar').style.width = '0';
+    $('start').disabled = false; $('start-t').textContent = 'Start match'; $('load-bar').style.width = '0';
     $('f-size').textContent = `${(f.width / 0.0254).toFixed(1)} × ${(f.length / 0.0254).toFixed(1)} in`;
     $('f-top').textContent = `${(f.top / 0.0254).toFixed(1)} in${f.trench ? ' · fits the trench' : ' · too tall for the trench'}`;
   },
@@ -178,7 +178,7 @@ const ui = {
 
 const game = startGame($('game'), ui);
 document.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => { alliance = b.dataset.a; document.querySelectorAll('[data-a]').forEach(x => x.classList.toggle('on', x === b)); }));
-document.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; document.querySelectorAll('[data-m]').forEach(x => x.classList.toggle('on', x === b)); $('start-t').textContent = mode === 'match' ? 'start match' : 'start driving'; }));
+document.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; document.querySelectorAll('[data-m]').forEach(x => x.classList.toggle('on', x === b)); $('start-t').textContent = mode === 'match' ? 'Start match' : 'Start driving'; }));
 $('start').addEventListener('click', () => game.start({ alliance, mode }));
 $('p-resume').addEventListener('click', () => game.resume());
 $('p-restart').addEventListener('click', () => game.restart());

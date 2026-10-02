@@ -281,3 +281,31 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
 .pubs-list .pk { font-size: clamp(19px, 1.9vw, 24px); }
 .awards .pubs-list li > div { font-weight: 400; }
 .awards .pubs-list li b { font-weight: 700; }
+
+/* ════════ keycaps in the rooms ════════ */
+.bio-room .scope { border-radius: 14px; padding: 6px 6px 9px; }
+.seg { border-radius: 12px; gap: 6px; padding: 0; }
+.seg button { border-radius: var(--key-r, 7px); min-height: 40px; letter-spacing: 0.02em; text-transform: none; font-size: 12px; opacity: 1;
+  background: rgba(127, 127, 127, 0.14); box-shadow: 0 0 0 1px rgba(127, 127, 127, 0.22), 0 3px 0 rgba(0, 0, 0, 0.35);
+  transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, background 150ms ease; }
+.seg button:hover { background: rgba(127, 127, 127, 0.22); }
+.seg button:active, .seg button.on { transform: translateY(2px); }
+.bio-room .seg button.on { background: var(--bio); color: #fff; box-shadow: 0 0 0 1px #b23a66, 0 1px 0 #b23a66; }
+.bio-room.fluor .seg button.on { background: #2f6bff; box-shadow: 0 0 0 1px #1d48b8, 0 1px 0 #1d48b8; }
+
+.rec-pdf { border-radius: var(--key-r, 7px); background: var(--rk); color: #fff; box-shadow: 0 3px 0 var(--rk-edge, rgba(0, 0, 0, 0.4)); transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, filter 150ms ease; }
+.rec-pdf:hover { filter: brightness(1.06); }
+.rec-pdf:active { transform: translateY(3px); box-shadow: 0 0 0 var(--rk-edge, rgba(0, 0, 0, 0.4)); }
+.record { --rk-edge: #8f3518; }
+.bio-room .record { --rk-edge: #b23a66; }
+
+.rec-cue { border-radius: var(--key-r, 7px); min-height: 44px; box-shadow: 0 3px 0 #8f3518, 0 12px 28px -12px rgba(0, 0, 0, 0.45); transition: opacity 300ms ease, transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease; }
+.bio-room .rec-cue { box-shadow: 0 3px 0 #b23a66, 0 12px 28px -12px rgba(0, 0, 0, 0.45); }
+.rec-cue:active { transform: translate(-50%, 3px); box-shadow: 0 0 0 transparent; }
+
+.end .go { border-radius: var(--key-r, 7px); min-height: 44px; box-shadow: 0 3px 0 #8f3518; transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, filter 150ms ease; }
+.end .go:active { transform: translateY(3px); box-shadow: 0 0 0 #8f3518; }
+.end .go.ghost { background: #fbfaf6; color: var(--ink); box-shadow: 0 0 0 1px rgba(23, 23, 26, 0.18), 0 3px 0 #d4d0c4; }
+.end .go.ghost:active { box-shadow: 0 0 0 1px rgba(23, 23, 26, 0.18), 0 0 0 #d4d0c4; }
+@media (prefers-reduced-motion: reduce) { .seg button:active, .seg button.on, .rec-pdf:active, .end .go:active { transform: none; } .rec-cue:active { transform: translateX(-50%); } }
+.end .go { text-transform: none; letter-spacing: 0; font-size: 13px; }

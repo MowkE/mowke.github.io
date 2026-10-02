@@ -276,3 +276,37 @@ h1#name .ch { font-variation-settings: normal; }
 .also li { font-size: 15px; line-height: 1.5; color: #45443f; }
 .also li b { color: var(--ink); font-weight: 650; }
 @media (max-width: 900px) { .also-grid { grid-template-columns: 1fr; } }
+
+/* ════════ keycaps: every button is a key you press ════════
+   The site opens by typing, so its controls are keys: a slightly rounded cap with a
+   visible bottom edge that travels down when pressed. Options that are "on" stay
+   latched down. Containers are trays, not capsules (tray radius = key radius + padding). */
+:root { --key-r: 7px; --key-travel: 3px; }
+.nav { border-radius: 14px; padding: 6px 6px 6px 16px; }
+.nav-links { gap: 4px; }
+.nav-links a { border-radius: var(--key-r); min-height: 32px; padding: 6px 12px; transition: background 150ms ease, transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease; }
+.nav-links a:hover { background: rgba(127, 127, 127, 0.1); }
+.nav-links a.on { background: #fff; color: var(--ink); box-shadow: 0 0 0 1px rgba(23, 23, 26, 0.16), 0 1px 0 rgba(23, 23, 26, 0.22); transform: translateY(1px); }
+.nav.dark .nav-links a.on { background: rgba(255, 255, 255, 0.16); color: inherit; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 1px 0 rgba(0, 0, 0, 0.5); }
+.nav-links a:active { transform: translateY(2px); }
+
+.pill {
+  border-radius: var(--key-r); min-height: 44px; padding: 0 16px; background: #fbfaf6; color: var(--ink);
+  border: 1px solid rgba(23, 23, 26, 0.22); box-shadow: 0 var(--key-travel) 0 #c9c5b8, inset 0 1px 0 #fff;
+  transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, background 150ms ease;
+}
+.pill:hover { background: #fff; transform: none; }
+.pill:active { transform: translateY(var(--key-travel)); box-shadow: 0 0 0 #c9c5b8, inset 0 1px 0 #fff; }
+.pill.resume { background: var(--olive); color: #fff; border-color: #3e4426; box-shadow: 0 var(--key-travel) 0 #3e4426, inset 0 1px 0 rgba(255, 255, 255, 0.18); }
+.pill.resume:hover { background: #646b41; }
+.pill.resume:active { box-shadow: 0 0 0 #3e4426, inset 0 1px 0 rgba(255, 255, 255, 0.18); }
+.pill.ghost { background: transparent; box-shadow: none; }
+
+.subnav { border-radius: 14px; gap: 6px; padding: 7px 7px 10px; }
+.subnav button { font: 500 12.5px var(--mono); letter-spacing: 0; text-transform: none; border-radius: var(--key-r); min-height: 40px; padding: 0 14px;
+  background: #fbfaf6; color: var(--ink-2); box-shadow: 0 0 0 1px rgba(23, 23, 26, 0.16), 0 var(--key-travel) 0 #d4d0c4;
+  transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, background 150ms ease, color 150ms ease; }
+.subnav button:hover { color: var(--ink); background: #fff; }
+.subnav button:active, .subnav button.on { transform: translateY(2px); }
+.subnav button.on { background: var(--teal); color: #fff; box-shadow: 0 0 0 1px #1f6266, 0 1px 0 #1f6266; }
+@media (prefers-reduced-motion: reduce) { .pill:active, .subnav button:active, .subnav button.on, .nav-links a.on, .nav-links a:active { transform: none; } }

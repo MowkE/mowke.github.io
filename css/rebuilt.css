@@ -179,3 +179,20 @@ body.paused .pause, body.results-on .results { opacity: 1; transform: translate(
   .count.on { animation-duration: 0.01s; opacity: 1; }
   .hubstat.warn > i { animation: none; }
 }
+
+/* ════════ keycaps ════════ */
+.back, .mute { border-radius: 8px; min-height: 36px; display: inline-flex; align-items: center; backdrop-filter: none; background: #1a1c22;
+  box-shadow: 0 3px 0 #000; transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, color 150ms ease; }
+.back:active, .mute:active { transform: translateY(3px); box-shadow: 0 0 0 #000; }
+.seg { border-radius: 12px; gap: 6px; padding: 0; border: 0; background: none; }
+.seg button { border-radius: 7px; min-height: 40px; padding: 0 16px; background: #1e2027; color: var(--dim); box-shadow: 0 0 0 1px var(--line), 0 3px 0 #000;
+  transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, background 150ms ease; }
+.seg button:active, .seg button.on { transform: translateY(2px); }
+.seg button.on { background: var(--ink); color: var(--bg); box-shadow: 0 0 0 1px var(--ink), 0 1px 0 #000; }
+.seg button[data-a="red"].on { background: var(--red); color: #fff; box-shadow: 0 0 0 1px #9c2226, 0 1px 0 #9c2226; }
+.seg button[data-a="blue"].on { background: var(--blue); color: #fff; box-shadow: 0 0 0 1px #2045a8, 0 1px 0 #2045a8; }
+.start { border-radius: 12px; box-shadow: 0 4px 0 #a8850c; transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 120ms ease, filter 150ms ease; }
+.start:active { transform: translateY(4px); box-shadow: 0 0 0 #a8850c; }
+.start:disabled { box-shadow: 0 4px 0 #17181c; }
+@media (prefers-reduced-motion: reduce) { .back:active, .mute:active, .seg button:active, .seg button.on, .start:active { transform: none; } }
+.start { text-transform: none; letter-spacing: -0.01em; }
