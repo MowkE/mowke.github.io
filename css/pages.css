@@ -309,3 +309,7 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
 .end .go.ghost:active { box-shadow: 0 0 0 1px rgba(23, 23, 26, 0.18), 0 0 0 #d4d0c4; }
 @media (prefers-reduced-motion: reduce) { .seg button:active, .seg button.on, .rec-pdf:active, .end .go:active { transform: none; } .rec-cue:active { transform: translateX(-50%); } }
 .end .go { text-transform: none; letter-spacing: 0; font-size: 13px; }
+
+/* side projects heading in the hardware resume */
+.side-h { margin: 34px 0 0; padding-top: 30px; border-top: 1px solid var(--rrule); font: 800 clamp(26px, 3vw, 36px)/1 var(--display); font-stretch: 115%; letter-spacing: -0.02em; }
+.job-bare h3 { margin: 0; }
