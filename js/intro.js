@@ -14,6 +14,7 @@ const QUOTES = [
   { text: 'The greatest superpower is the ability to change yourself.', by: 'Naval Ravikant' },
   { text: 'Only those who will risk going too far can possibly find out how far one can go.', by: 'T. S. Eliot' },
   { text: 'Sleep more than you study, study more than you party, and maximize partying.', by: "the best advice I've ever gotten" },
+  { text: "I just accept what's in front of me bru", by: 'Eggchan' },
 ];
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
