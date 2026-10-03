@@ -313,3 +313,4 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
 /* side projects heading in the hardware resume */
 .side-h { margin: 34px 0 0; padding-top: 30px; border-top: 1px solid var(--rrule); font: 800 clamp(26px, 3vw, 36px)/1 var(--display); font-stretch: 115%; letter-spacing: -0.02em; }
 .job-bare h3 { margin: 0; }
+.side-h { border-top: 0; padding-top: 0; margin-top: 40px; }
