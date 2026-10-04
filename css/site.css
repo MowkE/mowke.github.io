@@ -328,3 +328,31 @@ h1#name .ch { font-variation-settings: normal; }
 .doors-note svg { width: 86px; height: 44px; margin-top: 4px; fill: none; stroke: var(--olive); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 html.intro-on .doors-note { opacity: 0; }
 @media (max-width: 900px) { .doors-note { position: static; margin: 0 0 -6px 4px; font-size: 19px; } .doors-note svg { width: 64px; height: 34px; } }
+/* polaroids above the name: faded until you hover. Drop photos in assets/polaroids/1.jpg, 2.jpg, 3.jpg */
+.polaroids { position: relative; height: 150px; margin: 0 0 22px; }
+.pol { position: absolute; top: 0; margin: 0; width: 118px; padding: 7px 7px 24px; background: #ebe8e0; border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(23, 23, 26, 0.08), 0 10px 22px -14px rgba(23, 23, 26, 0.45); opacity: 0.55; filter: saturate(0.25) sepia(0.25);
+  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1), opacity 250ms ease, filter 250ms ease, box-shadow 250ms ease; }
+.pol::before { content: ''; display: block; aspect-ratio: 1; background: #1b1b1d; }
+.pol img { position: absolute; left: 7px; top: 7px; width: calc(100% - 14px); aspect-ratio: 1; object-fit: cover; display: block; }
+.pol.p1 { left: 0; transform: rotate(-9deg); }
+.pol.p2 { left: 92px; top: 10px; transform: rotate(6deg); z-index: 1; }
+.pol.p3 { left: 190px; top: 2px; transform: rotate(-3deg); }
+.pol:hover { opacity: 1; filter: none; z-index: 3; transform: rotate(0deg) translateY(-6px) scale(1.06); box-shadow: 0 1px 0 rgba(23, 23, 26, 0.08), 0 22px 40px -16px rgba(23, 23, 26, 0.5); }
+@media (max-width: 900px) { .polaroids { height: 120px; } .pol { width: 92px; padding: 5px 5px 18px; } .pol img { left: 5px; top: 5px; width: calc(100% - 10px); } .pol.p2 { left: 72px; } .pol.p3 { left: 148px; } }
+@media (prefers-reduced-motion: reduce) { .pol { transition: opacity 200ms, filter 200ms; } .pol:hover { transform: none; } }
+
+/* five polaroids in a loose row, none overlapping */
+.polaroids { display: flex; gap: 26px; height: auto; align-items: flex-start; padding: 6px 4px 0; }
+.pol, .pol.p1, .pol.p2, .pol.p3 { position: relative; left: auto; top: auto; flex: none; width: 112px; }
+.pol img { left: 7px; top: 7px; }
+.pol.p1 { transform: rotate(-6deg); }
+.pol.p2 { transform: rotate(4deg) translateY(8px); }
+.pol.p3 { transform: rotate(-2deg) translateY(2px); }
+.pol.p4 { transform: rotate(5deg) translateY(10px); }
+.pol.p5 { transform: rotate(-4deg) translateY(3px); }
+.pol:hover { transform: rotate(0deg) translateY(-6px) scale(1.06); }
+@media (max-width: 900px) {
+  .polaroids { gap: 14px; overflow-x: auto; padding: 6px 4px 14px; scrollbar-width: none; }
+  .pol, .pol.p1, .pol.p2, .pol.p3 { width: 88px; }
+}
