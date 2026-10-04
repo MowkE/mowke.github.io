@@ -360,3 +360,5 @@ html.intro-on .doors-note { opacity: 0; }
 .pol { opacity: 0.92; filter: none; }
 .pol::before { background: #efe9dd; }
 .pol:hover { opacity: 1; filter: none; }
+.doors-note { margin-left: 4px; margin-top: -54px; font-size: 21px; }
+.hero { row-gap: 66px; } .doors-note { margin-top: -50px; }
