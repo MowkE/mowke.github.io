@@ -320,3 +320,11 @@ h1#name .ch { font-variation-settings: normal; }
 .door:hover .wins, .door:hover .wins .wins-note { color: rgba(255, 255, 255, 0.92); }
 .door:hover .wins li::before { background: #fff; }
 .door { justify-content: flex-start; align-content: start; } .door b { margin-top: 6px; }
+
+/* a hand-drawn nudge toward the three rooms */
+.hero { position: relative; }
+.doors-note { position: absolute; grid-area: doors; align-self: start; justify-self: start; margin: -58px 0 0 calc(50% - 300px); display: flex; align-items: flex-start; gap: 4px; pointer-events: none;
+  font: 400 22px/1 'Happy Monkey', var(--sans); color: var(--olive); transform: rotate(-3deg); }
+.doors-note svg { width: 86px; height: 44px; margin-top: 4px; fill: none; stroke: var(--olive); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+html.intro-on .doors-note { opacity: 0; }
+@media (max-width: 900px) { .doors-note { position: static; margin: 0 0 -6px 4px; font-size: 19px; } .doors-note svg { width: 64px; height: 34px; } }
