@@ -356,3 +356,7 @@ html.intro-on .doors-note { opacity: 0; }
   .polaroids { gap: 14px; overflow-x: auto; padding: 6px 4px 14px; scrollbar-width: none; }
   .pol, .pol.p1, .pol.p2, .pol.p3 { width: 88px; }
 }
+/* the photos are faded in the files themselves; the frames just sit at rest and lift on hover */
+.pol { opacity: 0.92; filter: none; }
+.pol::before { background: #efe9dd; }
+.pol:hover { opacity: 1; filter: none; }
