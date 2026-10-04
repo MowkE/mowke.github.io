@@ -310,3 +310,13 @@ h1#name .ch { font-variation-settings: normal; }
 .subnav button:active, .subnav button.on { transform: translateY(2px); }
 .subnav button.on { background: var(--teal); color: #fff; box-shadow: 0 0 0 1px #1f6266, 0 1px 0 #1f6266; }
 @media (prefers-reduced-motion: reduce) { .pill:active, .subnav button:active, .subnav button.on, .nav-links a.on, .nav-links a:active { transform: none; } }
+
+/* wins under each door */
+.door .wins { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 6px; font-size: 14.5px; line-height: 1.4; color: var(--ink-2); transition: color 260ms ease; }
+.door .wins li { padding-left: 14px; position: relative; }
+.door .wins li::before { content: ''; position: absolute; left: 0; top: 0.58em; width: 6px; height: 6px; border-radius: 1px; background: var(--c); transition: background 260ms ease; }
+.door .wins .wins-note { padding-left: 0; font-style: italic; color: var(--ink); }
+.door .wins .wins-note::before { display: none; }
+.door:hover .wins, .door:hover .wins .wins-note { color: rgba(255, 255, 255, 0.92); }
+.door:hover .wins li::before { background: #fff; }
+.door { justify-content: flex-start; align-content: start; } .door b { margin-top: 6px; }
