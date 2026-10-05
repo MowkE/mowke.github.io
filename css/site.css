@@ -268,7 +268,7 @@ h1#name .ch { font-variation-settings: normal; }
 .desc .mail:hover { color: var(--olive); }
 
 /* also: everything that isn't a room */
-.also { padding: 24px 6vw 12vh; }
+.also { padding: 24px 6vw 6vh; }
 .also h2 { margin: 0 0 22px; font: 800 clamp(32px, 4vw, 48px)/1 var(--display); font-stretch: 120%; letter-spacing: -0.02em; }
 .also-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 36px; }
 .also-k { margin: 0 0 12px; padding-bottom: 8px; font-size: 12px; letter-spacing: 0.06em; color: #6b6a63; border-bottom: 1px solid rgba(23, 23, 26, 0.12); }
@@ -364,7 +364,7 @@ html.intro-on .doors-note { opacity: 0; }
 .hero { row-gap: 66px; } .doors-note { margin-top: -50px; }
 
 /* ── time capsule: a sealed letter with a three-year countdown ── */
-.capsule { padding: 4vh 6vw 2vh; }
+.capsule { padding: 0 6vw 12vh; }
 .cap-card { display: flex; align-items: center; gap: clamp(20px, 4vw, 48px); max-width: 860px; padding: 26px clamp(20px, 3vw, 34px);
   background: #fbfaf6; border: 1px solid rgba(23, 23, 26, 0.14); border-radius: 14px; box-shadow: 0 4px 0 #d9d5c8; }
 .cap-env { flex: none; width: clamp(110px, 14vw, 160px); transform: rotate(-4deg); }
