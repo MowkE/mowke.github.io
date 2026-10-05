@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Happy+Monkey&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/site.css?v=51" />
+<link rel="stylesheet" href="css/site.css?v=52" />
 <script>try{if(!sessionStorage.getItem("introSeen")||location.search.includes("intro"))document.documentElement.classList.add("intro-on")}catch(e){}</script>
 </head>
 <body>
@@ -60,6 +60,17 @@
   </div>
 </header>
 
+<section class="capsule" id="capsule" aria-label="Time capsule">
+  <div class="cap-card">
+    <svg class="cap-env" viewBox="0 0 160 110" aria-hidden="true"><rect x="4" y="8" width="152" height="98" rx="6" /><path d="M6 12 L80 64 L154 12" /><circle class="cap-seal" cx="80" cy="62" r="15" /><text x="80" y="67" text-anchor="middle">S</text></svg>
+    <div class="cap-copy">
+      <p class="cap-k mono">time capsule <span>·</span> sealed Oct 4, 2026</p>
+      <h2>A letter to future me</h2>
+      <p class="cap-count mono" aria-live="off"><span><b data-u="d">0</b>days</span><span><b data-u="h">00</b>hrs</span><span><b data-u="m">00</b>min</span><span><b data-u="s">00</b>sec</span></p>
+      <p class="cap-foot mono">opens Oct 4, 2029. no peeking.</p>
+    </div>
+  </div>
+</section>
 <section class="also" aria-label="Also">
   <h2>Also</h2>
   <div class="also-grid">
@@ -90,6 +101,7 @@
 
 <script src="js/intro.js?v=13"></script>
 <script src="js/woodstock.js?v=14"></script>
+<script src="js/capsule.js?v=1"></script>
 <script type="module" src="js/site.js?v=7"></script>
 </body>
 </html>
