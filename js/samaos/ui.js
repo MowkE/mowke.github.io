@@ -259,7 +259,7 @@ export function boot(root) {
   // ---------------------------------------------------------------- Instruments (the sims page)
   os.apps.sims = {
     mount(w) {
-      w.body.innerHTML = `<div class="sims"><iframe src="../sims/?v=2" title="Instruments: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>Nine simulations in orbit. Throw one, or click it to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
+      w.body.innerHTML = `<div class="sims"><iframe src="../sims/?v=2" title="Instruments: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>These are some simulations I made for my rabbit holes. Throw one, or click it to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
     },
   };
 
