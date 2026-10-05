@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Happy+Monkey&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/site.css?v=53" />
+<link rel="stylesheet" href="css/site.css?v=56" />
 <script>try{if(!sessionStorage.getItem("introSeen")||location.search.includes("intro"))document.documentElement.classList.add("intro-on")}catch(e){}</script>
 </head>
 <body>
@@ -44,6 +44,7 @@
       <a class="pill" href="https://www.instagram.com/moke.o_o/" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="3.8" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="11.9" cy="4.1" r="0.9" fill="currentColor"/></svg>instagram</a>
       <a class="pill resume" href="assets/samahith-resume.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M4 1.5h5.5L13 5v9.5H4z M9.5 1.5V5H13 M6.5 8.5h4 M6.5 11h4"/></svg>resume</a>
     </div>
+    <button class="sq-open" id="sq-open" type="button" aria-haspopup="dialog"><span>sidequest recs</span><b>pin one here →</b></button>
   </div>
 
   <div class="term" id="term">
@@ -99,9 +100,32 @@
 </section>
 
 
+<div class="sq" id="sq" hidden role="dialog" aria-modal="true" aria-labelledby="sq-h">
+  <div class="sq-panel">
+    <header class="sq-head">
+      <div><p class="sq-k mono">pin one for me</p><h2 id="sq-h">Sidequest recs</h2><p class="sq-sub">Something we should do together, or something you think I should go do. Notes show up once I've read them.</p></div>
+      <button class="sq-close" type="button" aria-label="Close sidequest recs">✕</button>
+    </header>
+    <form class="sq-form" autocomplete="off">
+      <fieldset class="sq-kind"><legend class="sq-k mono">what kind</legend>
+        <label><input type="radio" name="kind" value="together" checked /><span>let's do this together</span></label>
+        <label><input type="radio" name="kind" value="todo" /><span>you should do this</span></label>
+      </fieldset>
+      <label class="sq-field"><span class="sq-k mono">the sidequest <i class="sq-left">280</i></span><textarea name="note" maxlength="280" rows="3" placeholder="hike Mt. Si at sunrise, build a hovercraft, eat at every pho spot on the Ave…" required></textarea></label>
+      <div class="sq-row">
+        <label class="sq-field"><span class="sq-k mono">your name or @</span><input name="name" maxlength="40" placeholder="anonymous" /></label>
+        <input class="sq-hp" name="website" tabindex="-1" aria-hidden="true" />
+        <button class="pill resume" type="submit">Pin it</button>
+      </div>
+      <p class="sq-status" aria-live="polite"></p>
+    </form>
+    <div class="sq-board" aria-label="Sidequest recs"></div>
+  </div>
+</div>
 <script src="js/intro.js?v=13"></script>
 <script src="js/woodstock.js?v=14"></script>
 <script src="js/capsule.js?v=1"></script>
+<script src="js/sidequests.js?v=2"></script>
 <script type="module" src="js/site.js?v=7"></script>
 </body>
 </html>
