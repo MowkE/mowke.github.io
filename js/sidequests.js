@@ -1,5 +1,4 @@
-// Sidequest recs: visitors pin "let's do this together" / "you should do this"
-// notes. Stored in Supabase; a note shows up only after Samahith approves it
+// Sidequest recs: one textbox, "what sidequest shld we do yo". Stored in Supabase; a note shows up only after Samahith approves it
 // (see supabase/sidequests.sql). The anon key is public by design: row-level
 // security only lets visitors insert unapproved notes and read approved ones.
 (() => {
@@ -8,7 +7,6 @@
   const live = SUPABASE_URL && SUPABASE_KEY;
   const api = (q, init = {}) => fetch(`${SUPABASE_URL}/rest/v1/sidequests${q}`, { ...init,
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', ...(init.headers || {}) } });
-  const TAGS = { together: "let's do this together", todo: 'you should do this' };
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
   const open = document.getElementById('sq-open'), dlg = document.getElementById('sq');
@@ -18,15 +16,14 @@
   let loaded = false;
 
   function render(notes) {
-    if (!notes.length) { board.innerHTML = '<p class="sq-empty">No notes pinned yet. Be the first.</p>'; return; }
-    board.innerHTML = notes.map((n, i) => `<figure class="sq-note ${n.kind}" style="--tilt:${((i * 37) % 7 - 3) * 0.7}deg">
-      <span class="sq-tag mono">${TAGS[n.kind] || ''}</span><p>${esc(n.note)}</p><figcaption>— ${esc(n.name)}</figcaption></figure>`).join('');
+    if (!notes.length) { board.innerHTML = ''; return; }
+    board.innerHTML = notes.map((n, i) => `<figure class="sq-note${i % 3 === 1 ? ' alt' : ''}" style="--tilt:${((i * 37) % 7 - 3) * 0.7}deg"><p>${esc(n.note)}</p></figure>`).join('');
   }
   async function load() {
     if (!live) { board.innerHTML = '<p class="sq-empty">The board isn\'t connected yet. Check back soon.</p>'; return; }
-    board.innerHTML = '<p class="sq-empty">Loading notes…</p>';
+    board.innerHTML = '';
     try {
-      const r = await api('?select=name,note,kind,created_at&order=created_at.desc&limit=120');
+      const r = await api('?select=note,created_at&order=created_at.desc&limit=120');
       if (!r.ok) throw 0; render(await r.json()); loaded = true;
     } catch { board.innerHTML = '<p class="sq-empty">Couldn\'t load the board. Check your connection and open it again.</p>'; }
   }
@@ -44,19 +41,18 @@
   open.addEventListener('click', show);
   dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('.sq-close')) hide(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !dlg.hidden) hide(); });
-  form.addEventListener('input', () => { dlg.querySelector('.sq-left').textContent = 280 - form.note.value.length; });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (form.website.value) return;            // honeypot: bots fill every field
-    const body = { name: form.name.value.trim() || 'anonymous', note: form.note.value.trim(), kind: form.kind.value };
+    const body = { name: 'anonymous', note: form.note.value.trim(), kind: 'together' };
     if (body.note.length < 3) { status.textContent = 'Write a few more words first.'; form.note.focus(); return; }
     if (!live) { status.textContent = "The board isn't connected yet, so this didn't send. Try again soon."; return; }
     const btn = form.querySelector('button[type=submit]'); btn.disabled = true; status.textContent = 'Pinning…';
     try {
       const r = await api('', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(body) });
       if (!r.ok) throw 0;
-      form.note.value = ''; dlg.querySelector('.sq-left').textContent = 280;
+      form.note.value = '';
       status.textContent = "Pinned. It'll show up on the board once I've read it.";
     } catch { status.textContent = "Couldn't pin that. Check your connection and try again."; }
     btn.disabled = false;

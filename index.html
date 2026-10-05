@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Happy+Monkey&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/site.css?v=56" />
+<link rel="stylesheet" href="css/site.css?v=58" />
 <script>try{if(!sessionStorage.getItem("introSeen")||location.search.includes("intro"))document.documentElement.classList.add("intro-on")}catch(e){}</script>
 </head>
 <body>
@@ -102,22 +102,11 @@
 
 <div class="sq" id="sq" hidden role="dialog" aria-modal="true" aria-labelledby="sq-h">
   <div class="sq-panel">
-    <header class="sq-head">
-      <div><p class="sq-k mono">pin one for me</p><h2 id="sq-h">Sidequest recs</h2><p class="sq-sub">Something we should do together, or something you think I should go do. Notes show up once I've read them.</p></div>
-      <button class="sq-close" type="button" aria-label="Close sidequest recs">✕</button>
-    </header>
+    <button class="sq-close" type="button" aria-label="Close sidequest recs">✕</button>
     <form class="sq-form" autocomplete="off">
-      <fieldset class="sq-kind"><legend class="sq-k mono">what kind</legend>
-        <label><input type="radio" name="kind" value="together" checked /><span>let's do this together</span></label>
-        <label><input type="radio" name="kind" value="todo" /><span>you should do this</span></label>
-      </fieldset>
-      <label class="sq-field"><span class="sq-k mono">the sidequest <i class="sq-left">280</i></span><textarea name="note" maxlength="280" rows="3" placeholder="hike Mt. Si at sunrise, build a hovercraft, eat at every pho spot on the Ave…" required></textarea></label>
-      <div class="sq-row">
-        <label class="sq-field"><span class="sq-k mono">your name or @</span><input name="name" maxlength="40" placeholder="anonymous" /></label>
-        <input class="sq-hp" name="website" tabindex="-1" aria-hidden="true" />
-        <button class="pill resume" type="submit">Pin it</button>
-      </div>
-      <p class="sq-status" aria-live="polite"></p>
+      <label class="sq-field"><h2 id="sq-h">what sidequest shld we do yo</h2><textarea name="note" maxlength="280" rows="3" required></textarea></label>
+      <input class="sq-hp" name="website" tabindex="-1" aria-hidden="true" />
+      <div class="sq-row"><p class="sq-status" aria-live="polite"></p><button class="pill resume" type="submit">Pin it</button></div>
     </form>
     <div class="sq-board" aria-label="Sidequest recs"></div>
   </div>
@@ -125,7 +114,7 @@
 <script src="js/intro.js?v=13"></script>
 <script src="js/woodstock.js?v=14"></script>
 <script src="js/capsule.js?v=1"></script>
-<script src="js/sidequests.js?v=3"></script>
+<script src="js/sidequests.js?v=5"></script>
 <script type="module" src="js/site.js?v=7"></script>
 </body>
 </html>
