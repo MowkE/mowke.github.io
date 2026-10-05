@@ -267,7 +267,10 @@ export function boot(root) {
   // My app Cadence, in a window: the billboard frame, album art inside a progress ring
   // and an audio-reactive visualizer, the three lyric styles. Where Cadence scrolls
   // lyrics, this scrolls my on-repeat queue. Audio is Apple's official 30-second previews.
-  const ON_REPEAT = [1442825350, 1438243880, 1738257931];   // Hey There Delilah · Babydoll · Earrings
+  // Hey There Delilah · Babydoll · Earrings · Como · Flowers · Talk2me · ocean · Medicine · icarus · Astrid · Bugs · rock music · Titles · Earthquake
+  const ON_REPEAT = [1442825350, 1438243880, 1738257931, 1731002890, 1576901249, 1601559246, 1788627801, 1738313162, 1606018581, 1521690452, 1636498818, 1609976326, 1585148948, 1609952857];
+  // "Titles (feat. funeral)" reads as the song "Titles" by "twikipedia, funeral"
+  const splitFeat = t => { const m = t.trackName.match(/^(.*?)\s*[(\[]feat\.\s*([^)\]]+)[)\]]\s*$/i); return m ? [m[1], `${t.artistName}, ${m[2]}`] : [t.trackName, t.artistName]; };
   os.apps.cadence = {
     mount(w) {
       w.body.innerHTML = `<div class="cdn cy-cyberpunk">
@@ -301,9 +304,11 @@ export function boot(root) {
       });
       function show(i) {
         cur = (i + tracks.length) % tracks.length; const t = tracks[cur];
-        q('.cdn-title').textContent = t.trackName; q('.cdn-artist').textContent = t.artistName;
+        const [name, by] = splitFeat(t); q('.cdn-title').textContent = name; q('.cdn-artist').textContent = by;
         art.src = t.artworkUrl100.replace('100x100bb', '600x600bb');
         lines.querySelectorAll('li').forEach((li, k) => { li.classList.toggle('active', k === cur); li.classList.toggle('past', k < cur); });
+        // keep the playing song centred, like a lyric line
+        const li = lines.children[cur]; if (li) lines.scrollTo({ top: li.offsetTop - lines.clientHeight / 2 + li.offsetHeight / 2, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
         audio.src = t.previewUrl; arc.style.strokeDashoffset = C;
       }
       function play() {
@@ -325,7 +330,7 @@ export function boot(root) {
       fetch(`https://itunes.apple.com/lookup?id=${ON_REPEAT.join(',')}&entity=song`).then(r => r.json()).then(j => {
         const byId = Object.fromEntries(j.results.filter(x => x.previewUrl).map(x => [x.trackId, x]));
         tracks = ON_REPEAT.map(id => byId[id]).filter(Boolean);
-        lines.innerHTML = tracks.map((t, i) => `<li data-i="${i}" tabindex="0"><span class="lt">${esc(t.trackName)}</span><em>${esc(t.artistName)}</em></li>`).join('');
+        lines.innerHTML = tracks.map((t, i) => { const [name, by] = splitFeat(t); return `<li data-i="${i}" tabindex="0"><span class="lt">${esc(name)}</span><em>${esc(by)}</em></li>`; }).join('');
         lines.querySelectorAll('li').forEach(li => li.addEventListener('keydown', e => { if (e.key === 'Enter') li.click(); }));
         if (tracks.length) show(0);
       }).catch(() => { q('.cdn-artist').textContent = "Couldn't reach Apple Music. Check your connection and reopen Cadence."; });
