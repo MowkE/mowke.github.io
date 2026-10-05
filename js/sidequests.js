@@ -3,8 +3,8 @@
 // (see supabase/sidequests.sql). The anon key is public by design: row-level
 // security only lets visitors insert unapproved notes and read approved ones.
 (() => {
-  const SUPABASE_URL = '';   // e.g. https://abcd1234.supabase.co
-  const SUPABASE_KEY = '';   // the project's anon / publishable key
+  const SUPABASE_URL = 'https://rslxunyxxsfgeqlbszwu.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_cYd2A90Cyo6WhZfTRdFNOA_-iqcC8Bf';   // publishable: safe in the page
   const live = SUPABASE_URL && SUPABASE_KEY;
   const api = (q, init = {}) => fetch(`${SUPABASE_URL}/rest/v1/sidequests${q}`, { ...init,
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', ...(init.headers || {}) } });

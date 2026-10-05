@@ -22,3 +22,5 @@ create policy "everyone reads approved notes" on public.sidequests
 -- visitors can't choose their own id, date or approval
 revoke insert on public.sidequests from anon;
 grant insert (name, note, kind) on public.sidequests to anon;
+grant usage on schema public to anon;
+grant select on public.sidequests to anon;
