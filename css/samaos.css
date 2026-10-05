@@ -236,3 +236,63 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .r-acc p:last-child { margin: 0; font-size: 15px; line-height: 1.5; }
 .r-acc b { color: #fff; }
 .r-acc .r-acc-sub { margin-top: 8px !important; }
+
+
+/* Cadence, as it looks on the desktop */
+.cdn { --neon-pink: #ff00ff; --neon-cyan: #00ffff; --neon-purple: #9d00ff; --album: #00e5ff;
+  position: relative; display: flex; flex-direction: column; padding: 18px 22px 10px; overflow: hidden; color: #fff; }
+.cdn .cn { position: absolute; width: 22px; height: 22px; z-index: 2; }
+.cdn .c-tl { top: 6px; left: 6px; border-top: 3px solid var(--neon-cyan); border-left: 3px solid var(--neon-cyan); filter: drop-shadow(0 0 6px var(--neon-cyan)); }
+.cdn .c-tr { top: 6px; right: 6px; border-top: 3px solid var(--neon-pink); border-right: 3px solid var(--neon-pink); filter: drop-shadow(0 0 6px var(--neon-pink)); }
+.cdn .c-bl { bottom: 6px; left: 6px; border-bottom: 3px solid var(--neon-pink); border-left: 3px solid var(--neon-pink); filter: drop-shadow(0 0 6px var(--neon-pink)); }
+.cdn .c-br { bottom: 6px; right: 6px; border-bottom: 3px solid var(--neon-cyan); border-right: 3px solid var(--neon-cyan); filter: drop-shadow(0 0 6px var(--neon-cyan)); }
+.cdn-head { display: grid; gap: 1px; padding: 4px 6px 6px; }
+.cdn-title { font: 600 15px 'Inter', var(--sys); }
+.cdn-artist { font: 400 12.5px 'Inter', var(--sys); color: rgba(255, 255, 255, 0.6); }
+.cdn-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 210px 1fr; align-items: center; gap: 12px; }
+.cdn-vis { position: relative; width: 200px; aspect-ratio: 1; }
+.cdn-ring { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cdn-arc { position: absolute; inset: 14%; width: 72%; height: 72%; transform: rotate(-90deg); }
+.cdn-arc circle { fill: none; stroke-width: 7; }
+.cdn-arc .arc-bg { stroke: rgba(255, 255, 255, 0.12); }
+.cdn-arc .arc-fg { stroke: var(--album); stroke-linecap: round; filter: drop-shadow(0 0 6px var(--album)); transition: stroke-dashoffset 250ms linear, stroke 600ms; }
+.cdn-art { position: absolute; inset: 22%; width: 56%; height: 56%; border-radius: 50%; object-fit: cover; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55); }
+.cdn-ctl { position: absolute; inset: 22%; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 50%; opacity: 0; transition: opacity 200ms; }
+.cdn-vis:hover .cdn-ctl, .cdn-ctl:focus-within, .cdn:not(.playing) .cdn-ctl { opacity: 1; }
+.cdn-ctl button { width: 36px; height: 36px; border: 0; border-radius: 50%; color: #fff; font-size: 13px; background: rgba(0, 0, 0, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: transform 160ms var(--spring); }
+.cdn-ctl .cdn-play { width: 44px; height: 44px; font-size: 15px; }
+.cdn-ctl button:active { transform: scale(0.94); }
+.cdn-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.cdn-lines li { cursor: pointer; opacity: 0.45; transition: opacity 300ms, transform 300ms; }
+.cdn-lines li.active { opacity: 1; transform: translateX(4px); }
+.cdn-lines li em { display: block; font-style: normal; font: 400 11.5px 'Inter', var(--sys); color: rgba(255, 255, 255, 0.55); margin-top: 2px; text-shadow: none; text-transform: none; letter-spacing: 0; }
+.cdn-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 4px 2px; font: 400 11.5px 'Inter', var(--sys); }
+.cdn-foot a { color: rgba(255, 255, 255, 0.7); }
+.cdn-styles { display: inline-flex; gap: 4px; }
+.cdn-styles button { border: 0; border-radius: 6px; padding: 5px 9px; min-height: 28px; font: 600 11px 'Inter', var(--sys); color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.06); }
+.cdn-styles button.on { color: #fff; background: rgba(255, 255, 255, 0.18); }
+
+/* style: cyberpunk billboard */
+.cdn.cy-cyberpunk { background:
+    linear-gradient(rgba(0, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(160deg, rgba(10, 14, 35, 0.97), rgba(22, 8, 42, 0.96));
+  background-size: 22px 22px, 22px 22px, 100% 100%; box-shadow: inset 0 0 0 2px rgba(0, 255, 255, 0.55), inset 0 0 22px rgba(0, 255, 255, 0.14); }
+.cy-cyberpunk .cdn-lines .lt { font: 700 17px/1.25 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-pink);
+  text-shadow: 0 0 5px var(--neon-pink), 0 0 12px var(--neon-pink), 0 0 30px var(--neon-purple); }
+.cy-cyberpunk .cdn-lines li.active .lt { color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan), 0 0 12px var(--neon-cyan), 0 0 30px var(--neon-cyan), 0 0 50px var(--neon-pink); animation: cdnflicker 0.15s infinite alternate; }
+@keyframes cdnflicker { 50% { opacity: 0.94; } }
+
+/* style: ethereal glass */
+.cdn.cy-ethereal { background: radial-gradient(120% 120% at 20% 10%, rgba(255, 170, 200, 0.5), transparent 60%), radial-gradient(120% 120% at 90% 90%, rgba(90, 200, 230, 0.45), transparent 60%), linear-gradient(160deg, #37506b, #2a2340); }
+.cy-ethereal .cn { display: none; }
+.cy-ethereal .cdn-lines .lt { font: italic 400 21px/1.25 'Playfair Display', serif; color: rgba(255, 255, 255, 0.95); filter: blur(0.5px); text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3); }
+.cy-ethereal .cdn-lines li.active .lt { filter: none; color: #fff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.5); }
+
+/* style: retro terminal */
+.cdn.cy-retro { background: radial-gradient(120% 100% at 50% 50%, #031a06, #000 85%); }
+.cy-retro .cn { border-color: #00ff00 !important; filter: drop-shadow(0 0 6px #00ff00); }
+.cy-retro .cdn-lines .lt { font: 400 17px 'Courier Prime', 'Courier New', monospace; color: #00ff00; text-shadow: 0 0 5px #00ff00, 0 0 10px rgba(0, 255, 0, 0.5); }
+.cy-retro .cdn-lines .lt::before { content: '> '; opacity: 0.6; }
+.cy-retro .cdn-lines li.active .lt::after { content: '█'; margin-left: 2px; animation: cdnblink 0.5s steps(1) infinite; }
+@keyframes cdnblink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cy-cyberpunk .cdn-lines li.active .lt, .cy-retro .cdn-lines li.active .lt::after { animation: none; } }

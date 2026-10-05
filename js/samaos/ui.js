@@ -16,9 +16,10 @@ const ICONS = {
   monitor: '<svg viewBox="0 0 24 24"><path d="M5 19V13M10 19V6M15 19V10M20 19V15" /></svg>',
   display: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M4 12h16M12 4v16" /></svg>',
   sims: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6" /><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(-25 12 12)" /><circle cx="19.4" cy="8.6" r="1.2" /></svg>',
+  cadence: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="3" /><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2" /></svg>',
   resume: '<svg viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11z M13.5 3.5v4h4 M9 12h6 M9 15.5h6" /></svg>',
 };
-const NAMES = { resume: 'Resume', sims: 'Instruments', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
+const NAMES = { resume: 'Resume', cadence: 'Cadence', sims: 'Instruments', terminal: 'Terminal', editor: 'Editor', files: 'Files', monitor: 'Monitor', display: 'Display' };
 
 export function boot(root) {
   const fs = makeFS(), kernel = makeKernel(fs);
@@ -45,10 +46,10 @@ export function boot(root) {
     else if (app === 'terminal') existing = opts.fromDock ? wins.find(w => w.app === 'terminal') : null;
     else existing = wins.find(w => w.app === app);
     if (existing) { if (opts.path && existing.load) existing.load(opts.path); focus(existing); unminimize(existing); return existing; }
-    const size = { terminal: [620, 420], editor: [700, 520], files: [520, 420], monitor: [620, 440], display: [440, 520], resume: [470, 620], sims: [940, 620] }[app];
+    const size = { terminal: [620, 420], editor: [700, 520], files: [520, 420], monitor: [620, 440], display: [440, 520], resume: [470, 620], sims: [940, 620], cadence: [640, 380] }[app];
     const W = Math.min(size[0], innerWidth - 24), H = Math.min(size[1], innerHeight - 140);
     // each app has a home on the desk; extra terminals and editors cascade from it
-    const home = { terminal: [0.05, 0.1], editor: [0.28, 0.14], files: [0.08, 0.3], monitor: [0.5, 0.22], display: [0.62, 0.3], resume: [0.97, 0.05], sims: [0.14, 0.06] }[app];
+    const home = { terminal: [0.05, 0.1], editor: [0.28, 0.14], files: [0.08, 0.3], monitor: [0.5, 0.22], display: [0.62, 0.3], resume: [0.97, 0.05], sims: [0.14, 0.06], cadence: [0.3, 0.1] }[app];
     const same = wins.filter(o => o.app === app).length;
     const x = Math.max(12, Math.min(innerWidth - W - 12, home[0] * innerWidth - (home[0] > 0.5 ? W : 0) + same * 30));
     const y = Math.max(44, Math.min(innerHeight - H - 100, 34 + home[1] * innerHeight + same * 28));
@@ -259,6 +260,90 @@ export function boot(root) {
   os.apps.sims = {
     mount(w) {
       w.body.innerHTML = `<div class="sims"><iframe src="../sims/?v=2" title="Instruments: nine interactive simulations" loading="lazy"></iframe><div class="s-foot"><span>Nine simulations in orbit. Throw one, or click it to open it.</span><a class="btn quiet" href="../sims/" target="_blank" rel="noopener">Open in a new tab</a></div></div>`;
+    },
+  };
+
+  // ---------------------------------------------------------------- Cadence (on repeat)
+  // My app Cadence, in a window: the billboard frame, album art inside a progress ring
+  // and an audio-reactive visualizer, the three lyric styles. Where Cadence scrolls
+  // lyrics, this scrolls my on-repeat queue. Audio is Apple's official 30-second previews.
+  const ON_REPEAT = [1442825350, 1438243880, 1738257931];   // Hey There Delilah · Babydoll · Earrings
+  os.apps.cadence = {
+    mount(w) {
+      w.body.innerHTML = `<div class="cdn cy-cyberpunk">
+        <i class="cn c-tl"></i><i class="cn c-tr"></i><i class="cn c-bl"></i><i class="cn c-br"></i>
+        <header class="cdn-head"><b class="cdn-title">On repeat</b><span class="cdn-artist">loading…</span></header>
+        <div class="cdn-body">
+          <div class="cdn-vis">
+            <canvas class="cdn-ring" width="440" height="440"></canvas>
+            <svg class="cdn-arc" viewBox="0 0 148 148"><circle class="arc-bg" cx="74" cy="74" r="68" /><circle class="arc-fg" cx="74" cy="74" r="68" /></svg>
+            <img class="cdn-art" alt="" crossorigin="anonymous" />
+            <div class="cdn-ctl"><button class="cdn-prev" aria-label="Previous song">⏮</button><button class="cdn-play" aria-label="Play">▶</button><button class="cdn-next" aria-label="Next song">⏭</button></div>
+          </div>
+          <ol class="cdn-lines" aria-label="On repeat"></ol>
+        </div>
+        <footer class="cdn-foot"><span class="cdn-styles" role="group" aria-label="Style"><button data-s="cyberpunk" class="on">Cyberpunk</button><button data-s="ethereal">Ethereal</button><button data-s="retro">Retro</button></span>
+          <a href="https://mowke.github.io/cadence/" target="_blank" rel="noopener">get Cadence ↗</a></footer>
+      </div>`;
+      const q = s => w.body.querySelector(s), root = q('.cdn');
+      const ring = q('.cdn-ring'), g = ring.getContext('2d'), art = q('.cdn-art'), playBtn = q('.cdn-play'), lines = q('.cdn-lines'), arc = q('.arc-fg');
+      const audio = new Audio(); audio.crossOrigin = 'anonymous'; audio.preload = 'auto';
+      let tracks = [], cur = 0, ac = null, an = null, freq = null, tint = [0, 229, 255];
+      const C = 2 * Math.PI * 68; arc.style.strokeDasharray = C; arc.style.strokeDashoffset = C;
+      // album-adaptive colour, like Cadence: average the art's vivid pixels
+      art.addEventListener('load', () => {
+        try {
+          const c = document.createElement('canvas'); c.width = c.height = 24; const x = c.getContext('2d'); x.drawImage(art, 0, 0, 24, 24);
+          const d = x.getImageData(0, 0, 24, 24).data; let r = 0, gg = 0, b = 0, n = 0;
+          for (let i = 0; i < d.length; i += 4) { const mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]); if (mx - mn > 40 && mx > 60) { r += d[i]; gg += d[i + 1]; b += d[i + 2]; n++; } }
+          if (n) { tint = [r / n | 0, gg / n | 0, b / n | 0]; root.style.setProperty('--album', `rgb(${tint.join(',')})`); }
+        } catch {}
+      });
+      function show(i) {
+        cur = (i + tracks.length) % tracks.length; const t = tracks[cur];
+        q('.cdn-title').textContent = t.trackName; q('.cdn-artist').textContent = t.artistName;
+        art.src = t.artworkUrl100.replace('100x100bb', '600x600bb');
+        lines.querySelectorAll('li').forEach((li, k) => { li.classList.toggle('active', k === cur); li.classList.toggle('past', k < cur); });
+        audio.src = t.previewUrl; arc.style.strokeDashoffset = C;
+      }
+      function play() {
+        if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); an = ac.createAnalyser(); an.fftSize = 256; freq = new Uint8Array(an.frequencyBinCount); ac.createMediaElementSource(audio).connect(an); an.connect(ac.destination); } catch {} }
+        ac && ac.resume(); audio.play().catch(() => {});
+      }
+      audio.addEventListener('play', () => { playBtn.textContent = '⏸'; playBtn.setAttribute('aria-label', 'Pause'); root.classList.add('playing'); });
+      audio.addEventListener('pause', () => { playBtn.textContent = '▶'; playBtn.setAttribute('aria-label', 'Play'); root.classList.remove('playing'); });
+      audio.addEventListener('ended', () => { show(cur + 1); play(); });
+      audio.addEventListener('timeupdate', () => { arc.style.strokeDashoffset = C * (1 - audio.currentTime / (audio.duration || 30)); });
+      playBtn.addEventListener('click', () => audio.paused ? play() : audio.pause());
+      q('.cdn-prev').addEventListener('click', () => { show(cur - 1); play(); });
+      q('.cdn-next').addEventListener('click', () => { show(cur + 1); play(); });
+      lines.addEventListener('click', e => { const li = e.target.closest('li'); if (li) { show(+li.dataset.i); play(); } });
+      root.querySelectorAll('.cdn-styles button').forEach(b => b.addEventListener('click', () => {
+        root.className = root.className.replace(/cy-\w+/, 'cy-' + b.dataset.s);
+        root.querySelectorAll('.cdn-styles button').forEach(x => x.classList.toggle('on', x === b));
+      }));
+      fetch(`https://itunes.apple.com/lookup?id=${ON_REPEAT.join(',')}&entity=song`).then(r => r.json()).then(j => {
+        const byId = Object.fromEntries(j.results.filter(x => x.previewUrl).map(x => [x.trackId, x]));
+        tracks = ON_REPEAT.map(id => byId[id]).filter(Boolean);
+        lines.innerHTML = tracks.map((t, i) => `<li data-i="${i}" tabindex="0"><span class="lt">${esc(t.trackName)}</span><em>${esc(t.artistName)}</em></li>`).join('');
+        lines.querySelectorAll('li').forEach(li => li.addEventListener('keydown', e => { if (e.key === 'Enter') li.click(); }));
+        if (tracks.length) show(0);
+      }).catch(() => { q('.cdn-artist').textContent = "Couldn't reach Apple Music. Check your connection and reopen Cadence."; });
+      // Cadence's solid ring: bars around the art, driven by the music; a soft idle pulse when paused
+      let ph = 0;
+      w.frame = () => {
+        const W = ring.width, cx = W / 2, R = W * 0.4, N = 72;
+        g.clearRect(0, 0, W, W); ph += 0.02;
+        const live = an && !audio.paused; if (live) an.getByteFrequencyData(freq);
+        g.lineCap = 'round';
+        for (let k = 0; k < N; k++) {
+          const v = live ? freq[Math.floor((k < N / 2 ? k : N - k) / (N / 2) * freq.length * 0.6)] / 255 : 0.06 + 0.04 * Math.sin(ph * 2 + k * 0.35);
+          const a = k / N * Math.PI * 2 - Math.PI / 2, len = 4 + v * W * 0.09;
+          g.strokeStyle = `rgba(${tint.join(',')}, ${0.35 + v * 0.65})`; g.lineWidth = 4;
+          g.beginPath(); g.moveTo(cx + Math.cos(a) * R, cx + Math.sin(a) * R); g.lineTo(cx + Math.cos(a) * (R + len), cx + Math.sin(a) * (R + len)); g.stroke();
+        }
+      };
+      w.onClose = () => { audio.pause(); audio.src = ''; ac && ac.close(); };
     },
   };
 
