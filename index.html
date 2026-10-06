@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Happy+Monkey&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/site.css?v=58" />
+<link rel="stylesheet" href="css/site.css?v=61" />
 <script>try{if(!sessionStorage.getItem("introSeen")||location.search.includes("intro"))document.documentElement.classList.add("intro-on")}catch(e){}</script>
 </head>
 <body>
@@ -24,6 +24,15 @@
   </span>
 </nav>
 
+<div class="mn" id="mn">
+  <button class="mn-btn" id="mn-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mn-list"><i></i><i></i><i></i></button>
+  <ul class="mn-list" id="mn-list" hidden>
+    <li><button type="button" data-p="changelog">Changelog</button></li>
+    <li><button type="button" data-p="advice">Advice</button></li>
+    <li><button type="button" data-p="important">Important</button></li>
+    <li><button type="button" data-p="outlets">Intellectual outlets</button></li>
+  </ul>
+</div>
 <!-- ───────────────────────────── home ───────────────────────────── -->
 <header id="top" class="hero">
   <div class="hero-text">
@@ -111,10 +120,20 @@
     <div class="sq-board" aria-label="Sidequest recs"></div>
   </div>
 </div>
+<div class="sq mp" id="mp" hidden role="dialog" aria-modal="true" aria-labelledby="mp-h">
+  <div class="sq-panel">
+    <button class="sq-close" type="button" aria-label="Close">✕</button>
+    <section data-p="changelog" hidden><h2>Changelog</h2><p class="mp-soon">Coming soon.</p></section>
+    <section data-p="advice" hidden><h2>Advice</h2><p class="mp-soon">Coming soon.</p></section>
+    <section data-p="important" hidden><h2>Important</h2><p class="mp-soon">Coming soon.</p></section>
+    <section data-p="outlets" hidden><h2>Intellectual outlets</h2><p class="mp-soon">Coming soon.</p></section>
+  </div>
+</div>
 <script src="js/intro.js?v=13"></script>
 <script src="js/woodstock.js?v=14"></script>
 <script src="js/capsule.js?v=1"></script>
 <script src="js/sidequests.js?v=5"></script>
+<script src="js/menu.js?v=1"></script>
 <script type="module" src="js/site.js?v=7"></script>
 </body>
 </html>
