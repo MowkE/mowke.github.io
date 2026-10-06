@@ -474,3 +474,13 @@ html.intro-on .mn { opacity: 0; }
 .mp .sq-panel { width: min(760px, 100%); }
 @media (max-width: 600px) { .mn { top: 70px; right: 12px; } .mn-btn { width: 42px; height: 42px; } .mn-list { top: 50px; } }
 @media (prefers-reduced-motion: reduce) { .mn-list, .mn-btn i { transition: opacity 160ms ease; } }
+
+/* door cards: the title link stretches over the whole card; win links sit above it */
+.door { cursor: pointer; }
+.door b { position: static; }
+.door-link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+.door-link:focus-visible { outline: none; }
+.door:has(.door-link:focus-visible) { outline: 2px solid var(--olive); outline-offset: 3px; }
+.door .wl { position: relative; z-index: 2; color: var(--ink); text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.door .wl:hover { text-decoration-thickness: 2.5px; }
+.door:hover .wl { color: #fff; text-decoration-color: rgba(255, 255, 255, 0.7); }
