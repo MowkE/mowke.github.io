@@ -484,3 +484,8 @@ html.intro-on .mn { opacity: 0; }
 .door .wl { position: relative; z-index: 2; color: var(--ink); text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 .door .wl:hover { text-decoration-thickness: 2.5px; }
 .door:hover .wl { color: #fff; text-decoration-color: rgba(255, 255, 255, 0.7); }
+.mp-q { margin: 6px 0 22px; max-width: 64ch; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.mp-q b { font-weight: 650; }
+.mp-k { margin: 18px 0 4px; font-size: 12px; letter-spacing: 0.06em; color: #6b6a63; }
+.mp-v { margin: 0; font-size: 16px; line-height: 1.55; color: #45443f; }
+.mp-end { margin: 24px 0 0; font-size: 16px; line-height: 1.55; color: var(--ink); }
