@@ -489,3 +489,5 @@ html.intro-on .mn { opacity: 0; }
 .mp-k { margin: 18px 0 4px; font-size: 12px; letter-spacing: 0.06em; color: #6b6a63; }
 .mp-v { margin: 0; font-size: 16px; line-height: 1.55; color: #45443f; }
 .mp-end { margin: 24px 0 0; font-size: 16px; line-height: 1.55; color: var(--ink); }
+.mp-ol { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; font-size: 16px; line-height: 1.5; color: #45443f; }
+.mp-ol li::marker { font: 500 13px var(--mono); color: var(--ink-3); }
