@@ -517,3 +517,4 @@ html.intro-on .mn { opacity: 0; }
 .wd-row .pill { cursor: pointer; font: 500 14px var(--mono); }
 .wd-count { font-size: 12px; color: var(--ink-3); }
 @media (prefers-reduced-motion: reduce) { .wd-card.in { animation: none; } }
+.wd-row { justify-content: flex-end; }
