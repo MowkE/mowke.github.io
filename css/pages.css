@@ -375,3 +375,9 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
   .hw-room .dwg-title { grid-template-columns: repeat(2, 1fr); width: auto; margin-left: 0; }
   .dwg-title > div:nth-child(4) { border-left: 0; }
 }
+
+/* 44px touch targets without changing the look */
+.hw-room .subnav button { min-height: 44px; }
+.hw-room .end input[type=range] { height: 44px; margin: -14px 0; cursor: pointer; }
+.hw-room .jlinks a { display: inline-flex; align-items: center; min-height: 44px; margin: -14px 0; }
+.hw-room .keys b { font-variant-numeric: tabular-nums; }
