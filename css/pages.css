@@ -316,3 +316,62 @@ body.driving .rec-cue, .dive.open ~ .rec-cue { opacity: 0; pointer-events: none;
 .side-h { border-top: 0; padding-top: 0; margin-top: 40px; }
 .job li.li-note { font-size: 13px; color: #8c8a82; }
 .job li.li-note::marker { color: #b9b6ac; }
+
+/* ════════ hardware room: type and layout ════════
+   Original colours (paper, team orange, teal). Controls use the system
+   font in sentence case, mono only for real data, and the resume is laid
+   out as an engineering drawing sheet with a title block. */
+.hw-room { --hw-edge: #8f3518; --sheet: #fbfaf6; --sys: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif; }
+.hw-room .title .k { font: 600 12px var(--sys); letter-spacing: 0.08em; text-transform: uppercase; color: var(--hw); }
+.hw-room .stage-n { letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+
+/* controls: system type, sentence case */
+.hw-room .end .lbl { font: 600 11px var(--sys); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.hw-room .end .go { font: 600 14px var(--sys); letter-spacing: 0; text-transform: none; }
+.hw-room .subnav button { font: 500 14px var(--sys); }
+.hw-room .rec-cue { font: 600 14px var(--sys); }
+
+/* the resume: a drawing sheet */
+.hw-room .rec-in { position: relative; font-family: var(--sys); }
+.hw-room .rec-in::before { content: ''; position: absolute; inset: 22px; border: 1.5px solid rgba(23, 23, 26, 0.7); border-radius: 6px; pointer-events: none;
+  /* zone ticks along the top and left edges, as on a real drawing frame */
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(100% / 6 - 1px), rgba(23, 23, 26, 0.5) calc(100% / 6 - 1px) calc(100% / 6)) top / 100% 10px no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 calc(100% / 8 - 1px), rgba(23, 23, 26, 0.5) calc(100% / 8 - 1px) calc(100% / 8)) left / 10px 100% no-repeat; }
+.dwg-zones { position: absolute; top: 6px; left: 22px; right: 22px; display: none; pointer-events: none; }
+.hw-room .dwg-zones { display: grid; grid-template-columns: repeat(6, 1fr); }
+.dwg-zones span { text-align: center; font: 500 10.5px var(--mono); color: var(--ink-3); }
+.hw-room .rec-k { font: 600 12px var(--sys); letter-spacing: 0.08em; text-transform: uppercase; }
+.hw-room .rec-pdf { font: 600 14px var(--sys); }
+
+/* awards: a parts list */
+.hw-room .awards .pubs-list { gap: 0; }
+.hw-room .awards .pubs-list li { grid-template-columns: 96px 1fr; gap: 20px; padding: 13px 0; border-top: 1px solid var(--rrule); font-size: 16.5px; }
+.hw-room .awards .pubs-list .pk { font: 500 13px var(--mono); color: var(--hw); padding-top: 3px; font-variant-numeric: tabular-nums; }
+
+/* jobs: title left, date right, like a row in a bill of materials */
+.hw-room .job { grid-template-columns: 1fr auto; grid-template-areas: 'body when'; gap: 6px 28px; }
+.hw-room .job > div { grid-area: body; }
+.hw-room .job .when { grid-area: when; text-align: right; color: var(--ink-3); white-space: nowrap; margin-top: 5px; }
+.hw-room .job h3 { font-family: var(--sys); font-size: 20px; font-weight: 650; letter-spacing: -0.015em; }
+.hw-room .jlinks a { font: 600 13.5px var(--sys); }
+
+/* title block, bottom right of the sheet */
+.dwg-title { display: none; }
+.hw-room .dwg-title { display: grid; grid-template-columns: repeat(4, auto); margin: 44px 0 0 auto; width: max-content; max-width: 100%; border: 1.5px solid rgba(23, 23, 26, 0.7); border-radius: 4px; font-size: 12.5px; }
+.dwg-title > div { padding: 7px 14px 8px; border-left: 1px solid rgba(23, 23, 26, 0.25); border-top: 1px solid rgba(23, 23, 26, 0.25); }
+.dwg-title > div:nth-child(2) { border-left: 0; }
+.dwg-title .t-wide { grid-column: 1 / -1; border: 0; }
+.dwg-title dt { font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.dwg-title dd { margin: 2px 0 0; color: var(--ink); }
+.dwg-title .t-wide dd { font: 800 18px var(--display); font-stretch: 115%; }
+
+@media (max-width: 700px) {
+  .hw-room .rec-in::before { inset: 10px; }
+  .hw-room .dwg-zones { left: 10px; right: 10px; top: -6px; }
+  .hw-room .job { grid-template-columns: 1fr; grid-template-areas: 'when' 'body'; }
+  .hw-room .job .when { text-align: left; margin: 0; }
+  .hw-room .awards .pubs-list li { grid-template-columns: 1fr; gap: 2px; }
+  .hw-room .dwg-title { grid-template-columns: repeat(2, 1fr); width: auto; margin-left: 0; }
+  .dwg-title > div:nth-child(4) { border-left: 0; }
+}
