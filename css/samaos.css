@@ -233,7 +233,8 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 /* accomplishments callout at the top of the resume */
 .r-acc { margin: 16px 0 4px; padding: 14px 16px; border-radius: 14px; background: rgba(10, 132, 255, 0.12); box-shadow: inset 0 0 0 0.5px rgba(10, 132, 255, 0.45); }
 .r-acc-h { margin: 0 0 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6cb4ff; }
-.r-acc p:last-child { margin: 0; font-size: 15px; line-height: 1.5; }
+.r-acc p { margin: 0; font-size: 15px; line-height: 1.5; }
+.r-acc-list { margin: 6px 0 0; padding-left: 17px; display: grid; gap: 5px; font-size: 15px; line-height: 1.5; }
 .r-acc b { color: #fff; }
 .r-acc .r-acc-sub { margin-top: 8px !important; }
 
