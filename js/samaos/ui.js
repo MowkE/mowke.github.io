@@ -359,7 +359,7 @@ export function boot(root) {
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
           <div class="r-actions"><a class="btn primary" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Open the full resume</a><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a><button class="btn quiet r-full" aria-pressed="false">View full screen</button></div></header>
-        <section class="r-acc"><p class="r-acc-h">Accomplishments</p><p>Not many accomplishments in CS lol. But we did get the <b>a16z Alpha Speedrun interview</b> for Propel and the <b>YC 10% email</b> for Substep.</p><p class="r-acc-sub">Not rly an accomplishment lol, but I went to <b>YC Startup School</b>.</p></section>
+        <section class="r-acc"><p class="r-acc-h">Accomplishments</p><p>Not many accomplishments in CS lol. But we <b>won DubHacks 2026 with Octaby</b>, an assistive haptic wristband, got the <b>a16z Alpha Speedrun interview</b> for Propel and the <b>YC 10% email</b> for Substep.</p><p class="r-acc-sub">Not rly an accomplishment lol, but I went to <b>YC Startup School</b>.</p></section>
         <p class="r-sec">Products</p>
         ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
           'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
