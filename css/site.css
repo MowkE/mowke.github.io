@@ -322,9 +322,9 @@ h1#name .ch { font-variation-settings: normal; }
 .door { justify-content: flex-start; align-content: start; } .door b { margin-top: 6px; }
 .door { grid-template-rows: auto auto 1fr auto; }
 .door .door-cta { margin: 16px 0 0; align-self: end; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink-3); transition: color 260ms ease; }
-.door .door-cta span { display: inline-block; transition: transform 300ms var(--spring); }
+.door .door-cta span { display: inline-block; font-size: inherit; color: inherit; transition: transform 300ms var(--spring), color 260ms ease; }
 .door:hover .door-cta { color: #fff; }
-.door:hover .door-cta span { transform: translateX(5px); }
+.door:hover .door-cta span { transform: translateX(5px); color: inherit; }
 
 /* a hand-drawn nudge toward the three rooms */
 .hero { position: relative; }
