@@ -8,7 +8,7 @@ export const projects = [
   { name: 'DIFFUSE', field: 'Emergence', title: 'A thousand accidents. One law.', description: 'Random walkers find a diffusion law. A chemical gradient gives cells an address. Two reacting chemicals discover spots, stripes, and living patterns.', detail: 'Random walks · morphogens · Turing patterns', color: '#79a9eb', symbol: '07', label: 'The pattern garden' },
   { name: 'META', field: 'Metamaterials', title: 'A material made of its shape.', description: 'Pull a lattice and watch it grow wider. Change its cells to change its stiffness, then send a wave through and find which frequencies cannot pass.', detail: 'Negative Poisson ratios · stiffness · phononic gaps', color: '#7ed3df', symbol: '08', label: 'The mechanical specimen' },
   { name: 'VALENCE', field: 'Quantum chemistry', title: 'The electron is a wave.', description: 'See hydrogen orbitals drawn from their wavefunctions. Mix states, let molecular shapes settle, and take chemistry through one more dimension.', detail: 'Hydrogen orbitals · molecular geometry · 4D chemistry', color: '#e5d48e', symbol: '09', label: 'The wavefunction' },
-].map(project => ({ ...project, url: `https://mowke.github.io/${project.name}/` }));
+].map(project => ({ ...project, url: `https://samahith.me/${project.name}/` }));
 
 export function exhibitPosition(index) {
   const angle = Math.PI * 0.76 + index * Math.PI * 2 / projects.length;

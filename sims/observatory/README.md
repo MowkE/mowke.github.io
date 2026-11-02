@@ -1,6 +1,6 @@
 # The Ninth Observatory
 
-An optional spatial entrance to Samahith Thellakal’s nine science instruments. Open `observatory/` from the portfolio’s navigation or invitation panel. The original atlas and all individual project repositories are unchanged.
+An optional spatial entrance to Samahith Thellakal’s nine science instruments. Open `sims/observatory/` from the portfolio’s navigation or invitation panel. The original atlas and all individual project repositories are unchanged.
 
 ## Creative brief
 
@@ -8,7 +8,7 @@ Create an explorable Three.js world that turns nine projects into physical exhib
 
 ## Visit
 
-Serve the portfolio root with any static HTTP server. There is no build step. The existing local address is `http://localhost:8104/observatory/`.
+Serve the portfolio root with any static HTTP server. There is no build step. The existing local address is `http://localhost:8104/sims/observatory/`.
 
 - **Begin the visit** opens the first exhibit. The arrows or **1–9** select any instrument.
 - **Overview** returns to the rotunda. Drag to orbit. Scroll or pinch to zoom.
