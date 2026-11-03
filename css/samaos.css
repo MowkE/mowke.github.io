@@ -269,8 +269,11 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .cdn-lines li { cursor: pointer; opacity: 0.45; transition: opacity 300ms, transform 300ms; }
 .cdn-lines li.active { opacity: 1; transform: translateX(4px); }
 .cdn-lines li em { display: block; font-style: normal; font: 400 11.5px 'Inter', var(--sys); color: rgba(255, 255, 255, 0.55); margin-top: 2px; text-shadow: none; text-transform: none; letter-spacing: 0; }
-.cdn-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 4px 2px; font: 400 11.5px 'Inter', var(--sys); }
+.cdn-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; padding: 6px 4px 2px; font: 400 11.5px 'Inter', var(--sys); }
 .cdn-foot a { color: rgba(255, 255, 255, 0.7); }
+.cdn-right { display: inline-flex; align-items: center; gap: 12px; margin-left: auto; }
+.cdn-flex { color: rgba(255, 255, 255, 0.6); white-space: nowrap; }
+.cdn-flex b { color: #fff; font-weight: 600; }
 .cdn-styles { display: inline-flex; gap: 4px; }
 .cdn-styles button { border: 0; border-radius: 6px; padding: 5px 9px; min-height: 28px; font: 600 11px 'Inter', var(--sys); color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.06); }
 .cdn-styles button.on { color: #fff; background: rgba(255, 255, 255, 0.18); }

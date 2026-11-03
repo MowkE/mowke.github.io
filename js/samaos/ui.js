@@ -49,7 +49,7 @@ export function boot(root) {
     const size = { terminal: [620, 420], editor: [700, 520], files: [520, 420], monitor: [620, 440], display: [440, 520], resume: [470, 620], sims: [940, 620], cadence: [640, 380] }[app];
     const W = Math.min(size[0], innerWidth - 24), H = Math.min(size[1], innerHeight - 140);
     // each app has a home on the desk; extra terminals and editors cascade from it
-    const home = { terminal: [0.05, 0.1], editor: [0.28, 0.14], files: [0.08, 0.3], monitor: [0.5, 0.22], display: [0.62, 0.3], resume: [0.97, 0.05], sims: [0.14, 0.06], cadence: [0.3, 0.1] }[app];
+    const home = { terminal: [0.05, 0.1], editor: [0.28, 0.14], files: [0.08, 0.3], monitor: [0.5, 0.22], display: [0.62, 0.3], resume: [0.97, 0.05], sims: [0.14, 0.06], cadence: [0.33, 0.2] }[app];
     const same = wins.filter(o => o.app === app).length;
     const x = Math.max(12, Math.min(innerWidth - W - 12, home[0] * innerWidth - (home[0] > 0.5 ? W : 0) + same * 30));
     const y = Math.max(44, Math.min(innerHeight - H - 100, 34 + home[1] * innerHeight + same * 28));
@@ -286,7 +286,7 @@ export function boot(root) {
           <ol class="cdn-lines" aria-label="On repeat"></ol>
         </div>
         <footer class="cdn-foot"><span class="cdn-styles" role="group" aria-label="Style"><button data-s="cyberpunk" class="on">Cyberpunk</button><button data-s="ethereal">Ethereal</button><button data-s="retro">Retro</button></span>
-          <a href="https://mowke.github.io/cadence/" target="_blank" rel="noopener">get Cadence ↗</a></footer>
+          <span class="cdn-right"><span class="cdn-flex"><b>1.2k users</b> in ~6 weeks</span><a href="https://mowke.github.io/cadence/" target="_blank" rel="noopener">get Cadence ↗</a></span></footer>
       </div>`;
       const q = s => w.body.querySelector(s), root = q('.cdn');
       const ring = q('.cdn-ring'), g = ring.getContext('2d'), art = q('.cdn-art'), playBtn = q('.cdn-play'), lines = q('.cdn-lines'), arc = q('.arc-fg');
@@ -396,7 +396,7 @@ export function boot(root) {
           'A persistent overlay with lyrics, visual themes and shared listening that stays on top of whatever else you\'re doing.',
           'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
           'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.',
-          '<b>Started 2 weeks ago and already at 784 downloads.</b>'],
+          '<b>1.2k users in ~6 weeks.</b>'],
           [['mowke.github.io/cadence (cool website :D)', 'https://mowke.github.io/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
         ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', '2026', [
           'Asks whether limiting who gets decision-making roles lowers participation in an artificial society even when resources are plentiful, inspired by the Universe 25 experiment.',
@@ -489,6 +489,7 @@ export function boot(root) {
     bootEl.classList.add('gone'); root.classList.add('up');
     open('terminal');
     open('resume');
+    open('cadence');
     // point people at the resume: a notification that slides in, then gets out of the way
     const note = document.createElement('div');
     note.className = 'notify'; note.setAttribute('role', 'status');
