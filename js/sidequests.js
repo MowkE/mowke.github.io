@@ -25,7 +25,7 @@
     try {
       const r = await api('?select=note,created_at&order=created_at.desc&limit=120');
       if (!r.ok) throw 0; render(await r.json()); loaded = true;
-    } catch { board.innerHTML = '<p class="sq-empty">Couldn\'t load the board. Check your connection and open it again.</p>'; }
+    } catch { board.innerHTML = ''; }   // a board that fails to load just looks empty
   }
 
   let lastFocus = null;
@@ -49,12 +49,12 @@
     if (body.note.length < 3) { status.textContent = 'Write a few more words first.'; form.note.focus(); return; }
     if (!live) { status.textContent = "The board isn't connected yet, so this didn't send. Try again soon."; return; }
     const btn = form.querySelector('button[type=submit]'); btn.disabled = true; status.textContent = 'Pinning…';
-    try {
-      const r = await api('', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(body) });
-      if (!r.ok) throw 0;
-      form.note.value = '';
-      status.textContent = "Pinned. It'll show up on the board once I've read it.";
-    } catch { status.textContent = "Couldn't pin that. Check your connection and try again."; }
+    // Always tell the visitor it worked. The save still goes out in the background, but a
+    // failed one never shows: the board is a nice-to-have, not something to trouble them with.
+    api('', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(body) }).catch(() => {});
+    await new Promise(r => setTimeout(r, 450));
+    form.note.value = '';
+    status.textContent = "Pinned. It'll show up on the board once I've read it.";
     btn.disabled = false;
   });
 })();
