@@ -257,10 +257,10 @@ html.intro-on .hero-text, html.intro-on .doors, html.intro-on .nav, html.intro-o
 .woodstock.on { opacity: 1; }
 .term-hint { margin-left: auto; margin-right: 12px; font-size: 11px; opacity: 0; transition: opacity 250ms ease; color: rgba(243, 241, 234, 0.6); }
 .term:hover .term-hint { opacity: 1; }
-.now { margin: -8px 0 14px; max-width: 46ch; font-size: 16px; line-height: 1.55; color: #45443f; text-wrap: pretty; }
+.now { margin: -8px 0 22px; max-width: 46ch; font-size: 16px; line-height: 1.55; color: #45443f; text-wrap: pretty; }
 .now .k { font-size: 13px; letter-spacing: 0.04em; color: var(--olive); }
 .now b { font-weight: 650; color: var(--ink); }
-.desc { margin: -6px 0 22px; max-width: 46ch; font-size: 16px; line-height: 1.55; color: #45443f; }
+.desc { margin: -6px 0 14px; max-width: 46ch; font-size: 16px; line-height: 1.55; color: #45443f; }
 .pill.resume { background: var(--olive); }
 .pill.resume:hover { background: var(--ink); }
 
