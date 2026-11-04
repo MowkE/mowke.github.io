@@ -47,12 +47,13 @@ export function boot(root) {
     else existing = wins.find(w => w.app === app);
     if (existing) { if (opts.path && existing.load) existing.load(opts.path); focus(existing); unminimize(existing); return existing; }
     const size = { terminal: [620, 420], editor: [700, 520], files: [520, 420], monitor: [620, 440], display: [440, 520], resume: [470, 620], sims: [940, 620], cadence: [640, 380] }[app];
-    const W = Math.min(size[0], innerWidth - 24), H = Math.min(size[1], innerHeight - 140);
+    const W = Math.min(opts.width || size[0], innerWidth - 24), H = Math.min(size[1], innerHeight - 140);
     // each app has a home on the desk; extra terminals and editors cascade from it
     const home = { terminal: [0.05, 0.1], editor: [0.28, 0.14], files: [0.08, 0.3], monitor: [0.5, 0.22], display: [0.62, 0.3], resume: [0.97, 0.05], sims: [0.14, 0.06], cadence: [0.33, 0.2] }[app];
     const same = wins.filter(o => o.app === app).length;
-    const x = Math.max(12, Math.min(innerWidth - W - 12, home[0] * innerWidth - (home[0] > 0.5 ? W : 0) + same * 30));
-    const y = Math.max(44, Math.min(innerHeight - H - 100, 34 + home[1] * innerHeight + same * 28));
+    // opts.at pins a window somewhere in particular, still kept on the desk
+    const x = Math.max(12, Math.min(innerWidth - W - 12, opts.at ? opts.at[0] : home[0] * innerWidth - (home[0] > 0.5 ? W : 0) + same * 30));
+    const y = Math.max(44, Math.min(innerHeight - H - 100, opts.at ? opts.at[1] : 34 + home[1] * innerHeight + same * 28));
     const el = h(`<section class="win" role="dialog" aria-label="${NAMES[app]}" style="left:${x}px;top:${y}px;width:${W}px;height:${H}px">
       <header class="bar"><button class="light close" aria-label="Close ${NAMES[app]}"><i></i></button><button class="light min" aria-label="Minimize ${NAMES[app]}"><i></i></button><span class="title">${NAMES[app]}</span></header>
       <div class="body"></div><span class="grip" aria-hidden="true"></span></section>`);
@@ -488,8 +489,13 @@ export function boot(root) {
   afterGate(() => setTimeout(() => {
     bootEl.classList.add('gone'); root.classList.add('up');
     open('terminal');
-    open('resume');
-    open('cadence');
+    // Cadence never covers the resume. On a wide desk it sits just left of it, slimmed to fit;
+    // when there is no room beside it (narrow desks, phones) Cadence opens first and the resume lands on top.
+    const rw = Math.min(470, innerWidth - 24), gap = 14;
+    const edge = Math.max(12, Math.min(innerWidth - rw - 12, 0.97 * innerWidth - rw));
+    const room = Math.min(640, edge - gap - 12);
+    if (innerWidth < 700 || room < 460) { open('cadence'); open('resume'); }
+    else { open('resume'); open('cadence', { width: room, at: [edge - gap - room, 34 + 0.22 * innerHeight] }); }
     // point people at the resume: a notification that slides in, then gets out of the way
     const note = document.createElement('div');
     note.className = 'notify'; note.setAttribute('role', 'status');
