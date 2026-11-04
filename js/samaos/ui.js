@@ -369,7 +369,7 @@ export function boot(root) {
           'Built most of the demo (everything except the inbox and agent browser) and helped build the Company Brain, which keeps the source and provenance of every piece of knowledge it ingests.',
           'React and Vite front end, Node/Hono server, project knowledge stored as Markdown, YAML and CSV. Grew out of Substep.',
           '<b>Got an a16z Alpha Speedrun interview.</b>'], [['samahith.me/propel', 'https://samahith.me/propel/']], 'MVP',
-          `<div class="r-demos">${demo('bILMYOQRC60', 'Propel demo 1')}${demo('j19DnUUM4wg', 'Propel demo 2')}</div>`)}
+          `<div class="r-demos">${demo('bILMYOQRC60', 'Propel demo 1')}${demo('j19DnUUM4wg', 'Propel demo 2')}</div><p class="r-demo-note"><b>New features not in demo:</b> Grok bot and Hermes agent dashboard, Slack Importer, and Propel MCP.</p>`)}
         ${job('Substep', 'Cofounder · execution coach', '2026', [
           'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
           'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',

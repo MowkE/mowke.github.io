@@ -200,6 +200,9 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .r-play svg { width: 16px; height: 16px; margin-left: 2px; fill: currentColor; }
 .r-demo-t { position: absolute; left: 8px; bottom: 6px; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7); }
 .r-demos iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; background: #000; }
+.r-demo-note { margin: 10px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--fg2); }
+.r-demo-note b { font-weight: 600; color: rgba(242, 242, 245, 0.88); }
+.win.full .r-demo-note { font-size: 14px; }
 @media (max-width: 480px) { .r-demos { grid-template-columns: 1fr; } }
 .r-links a { color: #6cb4ff; text-decoration: none; font-weight: 500; }
 .r-links a:hover { text-decoration: underline; }

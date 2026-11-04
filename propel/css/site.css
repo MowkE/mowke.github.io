@@ -189,8 +189,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .video-play:hover .video-badge { transform: scale(1.06); }
 .video-play:active .video-badge { transform: scale(0.97); }
 .video-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--fg); }
-.video-meta { margin: 12px 0 0; text-align: right; font-size: 13px; }
-.video-meta a { color: var(--fg-2); }
+.video-meta { margin: 12px 0 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 13px; line-height: 1.5; color: var(--fg-3); text-wrap: pretty; }
+.video-note b { font-weight: 500; color: var(--fg-2); }
+.video-meta a { color: var(--fg-2); white-space: nowrap; }
 
 /* ── Downloads ── */
 .sect { padding: 80px 24px 0; }
@@ -261,6 +262,7 @@ main { padding-bottom: 112px; }
   .w-code { font-size: 11.5px; }
 }
 @media (max-width: 480px) {
+  .video-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
   .links a:not(:last-of-type) { display: none; }
   .w-rail { display: none; }
   .w-body { grid-template-columns: 1fr; }
