@@ -287,7 +287,7 @@ export function boot(root) {
           <ol class="cdn-lines" aria-label="On repeat"></ol>
         </div>
         <footer class="cdn-foot"><span class="cdn-styles" role="group" aria-label="Style"><button data-s="cyberpunk" class="on">Cyberpunk</button><button data-s="ethereal">Ethereal</button><button data-s="retro">Retro</button></span>
-          <span class="cdn-right"><span class="cdn-flex"><b>1.2k users</b> in ~6 weeks</span><a href="https://mowke.github.io/cadence/" target="_blank" rel="noopener">get Cadence ↗</a></span></footer>
+          <span class="cdn-right"><span class="cdn-flex"><b>1.2k users</b> in ~6 weeks</span><a href="https://samahith.me/cadence/" target="_blank" rel="noopener">get Cadence ↗</a></span></footer>
       </div>`;
       const q = s => w.body.querySelector(s), root = q('.cdn');
       const ring = q('.cdn-ring'), g = ring.getContext('2d'), art = q('.cdn-art'), playBtn = q('.cdn-play'), lines = q('.cdn-lines'), arc = q('.arc-fg');
@@ -401,7 +401,7 @@ export function boot(root) {
           'Electron and Node, with Spotify sign-in and track matching, a local player, themes, and an auto-updater.',
           'v3.6.1 fixed the Windows overlay stealing a game\'s mouse input. Releases ship for macOS (Intel and Apple Silicon), Windows and Linux.',
           '<b>1.2k users in ~6 weeks.</b>'],
-          [['mowke.github.io/cadence (cool website :D)', 'https://mowke.github.io/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
+          [['samahith.me/cadence (cool website :D)', 'https://samahith.me/cadence/'], ['Cadence v3.6.1', 'https://github.com/MowkE/cadence/releases/tag/v3.6.1']], 'Released')}
         ${job('AI Verse / Universe 25', 'Project lead · artificial-society research', '2026', [
           'Asks whether limiting who gets decision-making roles lowers participation in an artificial society even when resources are plentiful, inspired by the Universe 25 experiment.',
           'A completed rule-based 2×2 study: 8 agents, 40 rounds, 800 paired-seed runs with control policies and a frozen internal preregistration.',
