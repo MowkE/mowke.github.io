@@ -191,6 +191,16 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .r-job ul { margin: 0; padding-left: 17px; display: grid; gap: 5px; }
 .r-job li { line-height: 1.5; color: rgba(242, 242, 245, 0.88); }
 .r-links { margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.r-demos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 2px; }
+.r-demo { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: #000; cursor: pointer; box-shadow: inset 0 0 0 0.5px var(--line); transition: transform 110ms cubic-bezier(0.32, 0.72, 0, 1); }
+.r-demo img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0.82; transition: opacity 160ms ease, transform 320ms cubic-bezier(0.32, 0.72, 0, 1); }
+.r-demo:hover img { opacity: 1; transform: scale(1.03); }
+.r-demo:active { transform: scale(0.98); }
+.r-play { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; display: grid; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, 0.92); color: #000; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); }
+.r-play svg { width: 16px; height: 16px; margin-left: 2px; fill: currentColor; }
+.r-demo-t { position: absolute; left: 8px; bottom: 6px; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7); }
+.r-demos iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; background: #000; }
+@media (max-width: 480px) { .r-demos { grid-template-columns: 1fr; } }
 .r-links a { color: #6cb4ff; text-decoration: none; font-weight: 500; }
 .r-links a:hover { text-decoration: underline; }
 .r-foot { margin: 14px 0 0; color: var(--fg3); font-size: 12px; }

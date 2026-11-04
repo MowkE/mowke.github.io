@@ -356,17 +356,20 @@ export function boot(root) {
   // ---------------------------------------------------------------- Resume
   os.apps.resume = {
     mount(w) {
-      const job = (name, role, when, pts, links = [], status = '') => `<article class="r-job"><header><b>${name}${status ? ` <i class="r-st">${status}</i>` : ''}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}</article>`;
+      const job = (name, role, when, pts, links = [], status = '', extra = '') => `<article class="r-job"><header><b>${name}${status ? ` <i class="r-st">${status}</i>` : ''}</b><span>${when}</span></header>${role ? `<p class="r-role">${role}</p>` : ''}<ul>${pts.map(p => `<li>${p}</li>`).join('')}</ul>${links.length ? `<p class="r-links">${links.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</p>` : ''}${extra}</article>`;
+      // A demo video is a still until it is pressed, so YouTube only loads for people who watch.
+      const demo = (id, t) => `<button class="r-demo" type="button" data-yt="${id}" aria-label="Play ${t}"><img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg" alt="" loading="lazy" decoding="async" width="1280" height="720" /><span class="r-play" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5.5 3.5v9l7-4.5z"/></svg></span><span class="r-demo-t">${t}</span></button>`;
       w.body.innerHTML = `<div class="resume">
         <header class="r-head"><h2>Samahith</h2><p>Electrical &amp; Computer Engineering · University of Washington</p>
           <div class="r-actions"><a class="btn quiet" href="https://www.linkedin.com/in/samahith-thellakal-50a3a5290/" target="_blank" rel="noopener">LinkedIn</a><a class="btn quiet" href="https://github.com/MowkE" target="_blank" rel="noopener">GitHub</a><button class="btn quiet r-full" aria-pressed="false">View full screen</button></div></header>
         <section class="r-acc"><p class="r-acc-h">Accomplishments</p><p>Not many accomplishments in CS lol. But:</p><ul class="r-acc-list"><li><b>Won DubHacks 2026 with Octaby</b>, an assistive haptic wristband</li><li><b>a16z Alpha Speedrun interview</b> for Propel</li><li><b>YC 10% email</b> for Substep</li></ul><p class="r-acc-sub">Not rly an accomplishment lol, but I went to <b>YC Startup School</b>.</p></section>
         <p class="r-sec">Products</p>
-        ${job('Propel', 'Cofounder · marketing and sales workspace for small companies', '2026', [
+        ${job('Propel', 'Cofounder · marketing and finance workspace for small technical teams', '2026', [
           'Connects a company\'s knowledge, campaign assets and tools so it can go from an objective to concrete marketing and sales work: goal-based missions, outbound sales, event promotion, media production.',
           'Built most of the demo (everything except the inbox and agent browser) and helped build the Company Brain, which keeps the source and provenance of every piece of knowledge it ingests.',
           'React and Vite front end, Node/Hono server, project knowledge stored as Markdown, YAML and CSV. Grew out of Substep.',
-          '<b>Got an a16z Alpha Speedrun interview.</b>'], [], 'MVP')}
+          '<b>Got an a16z Alpha Speedrun interview.</b>'], [['samahith.me/propel', 'https://samahith.me/propel/']], 'MVP',
+          `<div class="r-demos">${demo('bILMYOQRC60', 'Propel demo 1')}${demo('j19DnUUM4wg', 'Propel demo 2')}</div>`)}
         ${job('Substep', 'Cofounder · execution coach', '2026', [
           'Turns a broad goal into one small next action, guides you through it in the right app, and checks your progress before moving on.',
           'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
@@ -430,6 +433,16 @@ export function boot(root) {
         <p class="r-foot">Y Combinator Startup School 2026</p>
       </div>`;
       // full screen: the window fills everything under the menu bar; Esc or the same button puts it back
+      // Propel demos: press a still, get the player.
+      w.body.addEventListener('click', e => {
+        const b = e.target.closest('.r-demo'); if (!b) return;
+        const f = document.createElement('iframe');
+        f.src = `https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0`;
+        f.title = b.getAttribute('aria-label').replace(/^Play /, '');
+        f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        f.allowFullscreen = true;
+        b.replaceWith(f); f.focus();
+      });
       const fullBtn = w.body.querySelector('.r-full');
       const setFull = on => {
         w.el.classList.toggle('full', on); fullBtn.setAttribute('aria-pressed', on);
