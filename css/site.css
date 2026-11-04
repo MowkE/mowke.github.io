@@ -504,6 +504,12 @@ html.intro-on .mn { opacity: 0; }
 .mp-end { margin: 24px 0 0; font-size: 16px; line-height: 1.55; color: var(--ink); }
 .mp-ol { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; font-size: 16px; line-height: 1.5; color: #45443f; }
 .mp-ol li::marker { font: 500 13px var(--mono); color: var(--ink-3); }
+.mp-act { margin: 26px 0 0; }
+.mp .mp-btn { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 11px; background: var(--ink); color: var(--paper); font: 500 13px var(--mono); text-decoration: none; transition: background 120ms ease, transform 110ms var(--spring); }
+.mp .mp-btn span { display: inline-block; font-size: inherit; color: inherit; transition: transform 160ms var(--spring); }
+.mp .mp-btn:hover { background: var(--olive); text-decoration: none; }
+.mp .mp-btn:hover span { transform: translateX(4px); }
+.mp .mp-btn:active { transform: scale(0.97); }
 .cl { list-style: none; margin: 8px 0 0; padding: 0 0 0 22px; position: relative; display: grid; gap: 18px; }
 .cl::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; border-left: 2px solid rgba(90, 97, 58, 0.35); }
 .cl li { position: relative; display: flex; align-items: baseline; gap: 14px; }
