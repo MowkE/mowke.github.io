@@ -219,11 +219,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .dl.is-soon { color: var(--fg-2); }
 .dl.is-soon .ico { opacity: 0; }
 
-/* ── Footer ── */
-.foot { padding: 96px 24px 48px; }
-.foot-in { display: flex; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; font-size: 13px; color: var(--fg-3); }
-.foot-in p { margin: 0; }
-.foot a { color: var(--fg-2); }
+/* ── Page end ── */
+main { padding-bottom: 112px; }
 
 /* ── The coming-soon sheet: rises from the button that summoned it ── */
 .sheet {
