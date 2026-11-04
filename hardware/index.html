@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Happy+Monkey&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css?v=40" />
-<link rel="stylesheet" href="../css/pages.css?v=48" />
+<link rel="stylesheet" href="../css/pages.css?v=49" />
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -35,47 +35,10 @@
     <a href="../bio/" data-c="bio"><i></i>bio</a>
     <a href="../hardware/" data-c="hw" class="on"><i></i>hardware</a>
     <a href="../software/" data-c="sw"><i></i>software</a>
-    <a href="#record" class="nav-rec">resume ↓</a>
+    <a href="#stage" class="nav-rec"><span class="nr-l">simulation</span><span class="nr-s">sim</span> ↓</a>
   </span>
 </nav>
-<a class="rec-cue" id="rec-cue" href="#record">Scroll to build the robot · resume at the end <i>↓</i></a>
-
-<main class="stage">
-  <canvas id="robot" aria-label="HighTide, assembling"></canvas>
-  <div id="callouts"></div>
-
-  <div class="title">
-    <p class="lbl k">FRC Team 9470 · 2026 robot</p>
-    <h1>9470</h1>
-    <p>My team's 2026 robot, built from our Onshape CAD one subsystem at a time. Scroll to build it.</p>
-  </div>
-
-  <div class="stage-card">
-    <span class="mono stage-n" id="stage-n">00 / 04</span>
-    <b id="stage-name">Scroll to build</b>
-    <em id="stage-note">Four subsystems, in the order they bolt together.</em>
-    <div class="kids" id="kids"><i></i><i></i><i></i><i></i></div>
-  </div>
-
-  <section class="panel end" id="end">
-    <span class="lbl">Exploded view</span>
-    <input type="range" id="explode" min="0" max="1" step="0.01" value="0" aria-label="Exploded view" />
-    <a class="go" id="play" href="rebuilt/">Play a match of REBUILT</a>
-    <button class="go ghost" id="drive">Drive it here</button>
-    <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive, field oriented<br /><kbd>Q</kbd><kbd>E</kbd> rotate · <kbd>esc</kbd> park<br />collected <b id="score">0 / 14</b></div>
-  </section>
-
-  <div class="progress" aria-hidden="true"><i id="build-bar"></i></div>
-  <div class="subnav" id="subnav">
-    <button data-s="4">Full robot</button>
-    <button data-s="0">Drivetrain</button>
-    <button data-s="1">Intake</button>
-    <button data-s="2">Hopper</button>
-    <button data-s="3">Drum shooter</button>
-  </div>
-</main>
-
-<div class="hw-track" id="track"></div>
+<a class="rec-cue" id="rec-cue" href="#stage">Scroll down to the simulation <i>↓</i></a>
 
 <section class="record" id="record" aria-label="Resume">
   <div class="rec-in">
@@ -83,7 +46,7 @@
     <header class="rec-head">
       <p class="rec-k mono">Resume · hardware</p>
       <h2>Built it.</h2>
-      <p class="rec-lede">The robot above is my team's; here's what else I've designed, wired and shipped.</p>
+      <p class="rec-lede">The robot below is my team's; here's what else I've designed, wired and shipped.</p>
       <a class="rec-pdf" href="../assets/samahith-resume.pdf" target="_blank" rel="noopener">Download the full resume, PDF ↗</a>
     </header>
     <section class="pubs awards" aria-label="FRC awards">
@@ -169,6 +132,44 @@
   </div>
 </section>
 
+<main class="stage" id="stage">
+  <canvas id="robot" aria-label="HighTide, assembling"></canvas>
+  <div id="callouts"></div>
+
+  <div class="title">
+    <p class="lbl k">FRC Team 9470 · 2026 robot</p>
+    <h1>9470</h1>
+    <p>My team's 2026 robot, built from our Onshape CAD one subsystem at a time. Scroll to build it.</p>
+  </div>
+
+  <div class="stage-card">
+    <span class="mono stage-n" id="stage-n">00 / 04</span>
+    <b id="stage-name">Scroll to build</b>
+    <em id="stage-note">Four subsystems, in the order they bolt together.</em>
+    <div class="kids" id="kids"><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <section class="panel end" id="end">
+    <span class="lbl">Exploded view</span>
+    <input type="range" id="explode" min="0" max="1" step="0.01" value="0" aria-label="Exploded view" />
+    <a class="go" id="play" href="rebuilt/">Play a match of REBUILT</a>
+    <button class="go ghost" id="drive">Drive it here</button>
+    <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive, field oriented<br /><kbd>Q</kbd><kbd>E</kbd> rotate · <kbd>esc</kbd> park<br />collected <b id="score">0 / 14</b></div>
+  </section>
+
+  <div class="progress" aria-hidden="true"><i id="build-bar"></i></div>
+  <div class="subnav" id="subnav">
+    <button data-s="4">Full robot</button>
+    <button data-s="0">Drivetrain</button>
+    <button data-s="1">Intake</button>
+    <button data-s="2">Hopper</button>
+    <button data-s="3">Drum shooter</button>
+  </div>
+</main>
+
+<div class="hw-track" id="track"></div>
+
+
 <script type="module">
 import { initRobot, STAGES } from '../js/robot.js?v=5';
 const $ = id => document.getElementById(id);
@@ -190,11 +191,16 @@ const r = initRobot($('robot'), $('track'), {
 r.setActive(true);
 </script>
 <script>
-// the resume cue: jump on click, and step aside once the resume is on screen
+// the resume comes first; the robot (fixed behind it) builds as the track below it scrolls.
+// The cue (and the nav link) scroll to the end of the resume, and the cue steps aside once the robot has the screen.
 {
   const cue = document.getElementById('rec-cue'), rec = document.getElementById('record');
-  cue.addEventListener('click', e => { e.preventDefault(); rec.scrollIntoView({ behavior: 'smooth' }); });
-  new IntersectionObserver(([e]) => cue.classList.toggle('gone', e.isIntersecting), { threshold: 0.05 }).observe(rec);
+  const recEnd = () => rec.offsetTop + rec.offsetHeight;
+  const toSim = e => { e.preventDefault(); window.scrollTo({ top: recEnd(), behavior: 'smooth' }); };
+  cue.addEventListener('click', toSim);
+  const navRec = document.querySelector('.nav-rec'); if (navRec) navRec.addEventListener('click', toSim);
+  const update = () => cue.classList.toggle('gone', scrollY + innerHeight * 0.5 > recEnd());
+  addEventListener('scroll', update, { passive: true }); addEventListener('resize', update); update();
 }
 </script>
 </body>

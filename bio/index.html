@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../css/site.css?v=40" />
-<link rel="stylesheet" href="../css/pages.css?v=44" />
+<link rel="stylesheet" href="../css/pages.css?v=49" />
 <link rel="stylesheet" href="../css/dive.css?v=4" />
 <script type="importmap">
 { "imports": {
@@ -36,62 +36,10 @@
     <a href="../bio/" data-c="bio" class="on"><i></i>bio</a>
     <a href="../hardware/" data-c="hw"><i></i>hardware</a>
     <a href="../software/" data-c="sw"><i></i>software</a>
-    <a href="#record" class="nav-rec">resume ↓</a>
+    <a href="#stage" class="nav-rec"><span class="nr-l">simulation</span><span class="nr-s">sim</span> ↓</a>
   </span>
 </nav>
-<a class="rec-cue mono" id="rec-cue" href="#record">Scroll down for my resume <i>↓</i></a>
-
-<main class="stage" id="stage">
-  <canvas id="dish" aria-label="A dish of living cells"></canvas>
-
-  <div class="title">
-    <p class="lbl k">01 · bio</p>
-    <h1>The dish.</h1>
-    <p>Every cell here is running the cell cycle: it grows, copies its DNA, and splits in two. Watch the chromosomes line up and get pulled apart. Click any cell to follow it.</p>
-  </div>
-
-  <section class="panel flow" id="flow" aria-label="Flow cytometry">
-    <div class="fl-head"><span class="lbl">flow cytometry · live singlets</span><span class="fl-rec mono"><i></i><span id="fl-rate"></span></span></div>
-    <div class="fl-chain mono" id="fl-chain"></div>
-    <canvas data-p="hist" class="fl-hist" aria-label="DNA content histogram"></canvas>
-    <div class="fl-pair"><canvas data-p="edu" aria-label="EdU versus DNA"></canvas><canvas data-p="ph3" aria-label="pH3 versus DNA"></canvas></div>
-    <div class="fl-phases mono">
-      <div data-ph="G1"><span>G0/G1 <em>2N, growing</em></span><b></b><i class="ph-g1"></i></div>
-      <div data-ph="S"><span>S <em>EdU+, copying DNA</em></span><b></b><i class="ph-s"></i></div>
-      <div data-ph="G2"><span>G2 <em>4N, pH3−</em></span><b></b><i class="ph-g2"></i></div>
-      <div data-ph="M"><span>M <em>4N, pH3+</em></span><b></b><i class="ph-m"></i></div>
-    </div>
-    <div class="fl-foot mono"><span id="fl-fit"></span><span>DAPI · EdU · pH3 · viability</span></div>
-    <div class="fl-foot mono dim2"><span>in the dish: <b id="n">0</b> cells · <b id="div">0</b> divisions · gen <b id="gen">0</b></span></div>
-  </section>
-
-  <section class="panel inspect" id="inspect" aria-live="polite">
-    <span class="lbl">following cell</span>
-    <h3 id="i-id">#0</h3>
-    <span class="phase" id="i-phase">G1</span>
-    <div class="ring"><i id="i-bar"></i></div>
-    <dl>
-      <dt>generation</dt><dd id="i-gen">0</dd>
-      <dt>daughter of</dt><dd id="i-parent">founder</dd>
-      <dt>age</dt><dd id="i-age">0 s</dd>
-      <dt>next division</dt><dd id="i-next">0 s</dd>
-    </dl>
-    <button class="dive-go" id="i-dive">Dive into its DNA ↓</button>
-    <p class="i-edit mono" id="i-edit" hidden></p>
-    <button id="i-close">stop following (esc)</button>
-  </section>
-
-  <div class="panel scope">
-    <span class="lbl">microscope</span>
-    <div class="seg" id="modes">
-      <button data-m="live" class="on">live</button>
-      <button data-m="stained">stained</button>
-      <button data-m="fluor">fluorescent</button>
-    </div>
-  </div>
-
-  <p class="hint2">click a cell, then scroll to dive into its DNA · double-click to seed a cell</p>
-</main>
+<a class="rec-cue mono" id="rec-cue" href="#stage">Scroll down to the simulation <i>↓</i></a>
 
 <section class="record" id="record" aria-label="Resume">
   <div class="rec-in">
@@ -171,6 +119,58 @@
     </article>
   </div>
 </section>
+
+<main class="stage" id="stage">
+  <canvas id="dish" aria-label="A dish of living cells"></canvas>
+
+  <div class="title">
+    <p class="lbl k">01 · bio</p>
+    <h1>The dish.</h1>
+    <p>Every cell here is running the cell cycle: it grows, copies its DNA, and splits in two. Watch the chromosomes line up and get pulled apart. Click any cell to follow it.</p>
+  </div>
+
+  <section class="panel flow" id="flow" aria-label="Flow cytometry">
+    <div class="fl-head"><span class="lbl">flow cytometry · live singlets</span><span class="fl-rec mono"><i></i><span id="fl-rate"></span></span></div>
+    <div class="fl-chain mono" id="fl-chain"></div>
+    <canvas data-p="hist" class="fl-hist" aria-label="DNA content histogram"></canvas>
+    <div class="fl-pair"><canvas data-p="edu" aria-label="EdU versus DNA"></canvas><canvas data-p="ph3" aria-label="pH3 versus DNA"></canvas></div>
+    <div class="fl-phases mono">
+      <div data-ph="G1"><span>G0/G1 <em>2N, growing</em></span><b></b><i class="ph-g1"></i></div>
+      <div data-ph="S"><span>S <em>EdU+, copying DNA</em></span><b></b><i class="ph-s"></i></div>
+      <div data-ph="G2"><span>G2 <em>4N, pH3−</em></span><b></b><i class="ph-g2"></i></div>
+      <div data-ph="M"><span>M <em>4N, pH3+</em></span><b></b><i class="ph-m"></i></div>
+    </div>
+    <div class="fl-foot mono"><span id="fl-fit"></span><span>DAPI · EdU · pH3 · viability</span></div>
+    <div class="fl-foot mono dim2"><span>in the dish: <b id="n">0</b> cells · <b id="div">0</b> divisions · gen <b id="gen">0</b></span></div>
+  </section>
+
+  <section class="panel inspect" id="inspect" aria-live="polite">
+    <span class="lbl">following cell</span>
+    <h3 id="i-id">#0</h3>
+    <span class="phase" id="i-phase">G1</span>
+    <div class="ring"><i id="i-bar"></i></div>
+    <dl>
+      <dt>generation</dt><dd id="i-gen">0</dd>
+      <dt>daughter of</dt><dd id="i-parent">founder</dd>
+      <dt>age</dt><dd id="i-age">0 s</dd>
+      <dt>next division</dt><dd id="i-next">0 s</dd>
+    </dl>
+    <button class="dive-go" id="i-dive">Dive into its DNA ↓</button>
+    <p class="i-edit mono" id="i-edit" hidden></p>
+    <button id="i-close">stop following (esc)</button>
+  </section>
+
+  <div class="panel scope">
+    <span class="lbl">microscope</span>
+    <div class="seg" id="modes">
+      <button data-m="live" class="on">live</button>
+      <button data-m="stained">stained</button>
+      <button data-m="fluor">fluorescent</button>
+    </div>
+  </div>
+
+  <p class="hint2">click a cell, then scroll to dive into its DNA · double-click to seed a cell</p>
+</main>
 
 <section class="dive" id="dive" aria-label="Dive into the cell's DNA" aria-hidden="true">
   <canvas id="dive-gl"></canvas>
@@ -354,11 +354,16 @@ stage.addEventListener('wheel', e => { if (!dive.isOpen && dish.selected && e.de
 setInterval(() => showEdit(dish.selected), 500);
 </script>
 <script>
-// the resume cue: jump on click, and step aside once the resume is on screen
+// the resume comes first; the dish is fixed behind it and shows once the resume scrolls away.
+// The cue (and the nav link) scroll to the end of the resume, and the cue steps aside once the dish has the screen.
 {
   const cue = document.getElementById('rec-cue'), rec = document.getElementById('record');
-  cue.addEventListener('click', e => { e.preventDefault(); rec.scrollIntoView({ behavior: 'smooth' }); });
-  new IntersectionObserver(([e]) => cue.classList.toggle('gone', e.isIntersecting), { threshold: 0.05 }).observe(rec);
+  const recEnd = () => rec.offsetTop + rec.offsetHeight;
+  const toSim = e => { e.preventDefault(); window.scrollTo({ top: recEnd(), behavior: 'smooth' }); };
+  cue.addEventListener('click', toSim);
+  const navRec = document.querySelector('.nav-rec'); if (navRec) navRec.addEventListener('click', toSim);
+  const update = () => cue.classList.toggle('gone', scrollY + innerHeight * 0.5 > recEnd());
+  addEventListener('scroll', update, { passive: true }); addEventListener('resize', update); update();
 }
 </script>
 </body>

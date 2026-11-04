@@ -237,6 +237,14 @@ body.driving { overflow: hidden; }
 .record { padding: 0; }
 .rec-in { max-width: none; min-height: 100vh; border-radius: 28px 28px 0 0; padding: 96px max(24px, calc((100vw - 980px) / 2)) 14vh; box-shadow: 0 -30px 80px -20px rgba(0, 0, 0, 0.35); }
 @media (max-width: 700px) { .rec-in { border-radius: 22px 22px 0 0; padding: 84px 20px 12vh; } }
+/* bio: the resume is the first thing; the dish (fixed) shows through once it scrolls away */
+.bio-room .record { margin-top: 0; margin-bottom: 100vh; }
+.bio-room .rec-in { border-radius: 0 0 28px 28px; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.35); }
+.bio-room .nav, .hw-room .nav { z-index: 25; }        /* the resume (z 20) starts at the top now, so the nav and the cue sit above it */
+.bio-room .rec-cue, .hw-room .rec-cue { z-index: 22; }
+@media (max-width: 700px) { .bio-room .rec-in { border-radius: 0 0 22px 22px; } .bio-room .rec-in, .hw-room .rec-in { padding-top: 128px; } }   /* room for the cue above the eyebrow */
+.nav-rec .nr-s { display: none; }
+@media (max-width: 560px) { .nav-rec .nr-l { display: none; } .nav-rec .nr-s { display: inline; } }   /* five nav items on a phone: the short word */
 .job li b { font-weight: 650; }
 
 /* the resume cue under the nav */

@@ -496,6 +496,7 @@ export function boot(root) {
     const room = Math.min(640, edge - gap - 12);
     if (innerWidth < 700 || room < 460) { open('cadence'); open('resume'); }
     else { open('resume'); open('cadence', { width: room, at: [edge - gap - room, 34 + 0.22 * innerHeight] }); }
+    const rz = wins.find(w => w.app === 'resume'); if (rz) focus(rz);   // the resume is always the frontmost window
     // point people at the resume: a notification that slides in, then gets out of the way
     const note = document.createElement('div');
     note.className = 'notify'; note.setAttribute('role', 'status');
