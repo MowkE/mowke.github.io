@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BioSim usage dashboard</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --card: #ffffff; --ink: #14181f; --muted: #5b6472; --line: #e3e6eb;
+    --accent: #1f6feb; --accent-soft: #dbe8fd;
+    --district: #1f6feb; --regional: #0f8a6c; --state: #b4530a; --intl: #7a4fd0; --uni: #6b7280;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1218; --card: #181c24; --ink: #e9ecf1; --muted: #9aa3b2; --line: #2a303b;
+      --accent: #6aa5ff; --accent-soft: #1d2c47;
+      --district: #6aa5ff; --regional: #46c9a6; --state: #f0a35e; --intl: #b39bf2; --uni: #9aa3b2;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 56px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  .lead { font-size: 20px; font-weight: 700; line-height: 1.35; margin: 8px 0 8px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .sub a { color: var(--accent); }
+  .grid { display: grid; gap: 12px; }
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 12px; }
+  .two { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .kpi .v { font-size: 30px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .kpi .l { color: var(--muted); font-size: 13px; }
+  .kpi.hl { border-color: var(--accent); }
+  .kpi.hl .v { color: var(--accent); }
+  .bars { display: grid; grid-template-columns: max-content 1fr max-content; gap: 6px 10px; align-items: center; font-size: 14px; }
+  .bars .track { background: var(--accent-soft); border-radius: 4px; height: 12px; overflow: hidden; }
+  .bars .fill { background: var(--accent); height: 100%; border-radius: 4px; }
+  .bars .num { font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+  svg text { fill: var(--muted); font-size: 11px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px;
+    padding: 5px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--card); border-color: var(--ink); }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td.name { white-space: normal; min-width: 240px; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .note { color: var(--muted); font-size: 13px; }
+  .note li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>BioSim usage dashboard</h1>
+  <p class="lead">The site has been live for about 4 years. This dashboard covers only the past 10 months.</p>
+  <p class="sub" id="sub"></p>
+
+  <div class="grid kpis" id="kpis"></div>
+
+  <div class="card" style="margin-bottom:12px">
+    <h2>Connections per week, last 10 months</h2>
+    <div id="weekly"></div>
+  </div>
+
+  <div class="grid two">
+    <div class="card"><h2>Top countries</h2><div class="bars" id="countries"></div></div>
+    <div class="card"><h2>Top U.S. states</h2><div class="bars" id="states"></div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <h2>Education networks that connected to BioSim</h2>
+    <p class="note" id="edusum" style="margin-top:-6px"></p>
+    <div class="chips" id="chips"></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Network</th><th>Type</th><th>State / country</th>
+        <th class="r">Connections</th><th>First seen</th><th>Last seen</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <h2>How these numbers were produced</h2>
+    <ul class="note" id="method"></ul>
+  </div>
+</main>
+
+<script>
+const D = {"generated": "2026-11-26", "first": "2026-02-25", "last": "2026-11-14", "connections": 10243, "countries": 110, "states": 46, "legacy": 1827, "k12": 61, "byType": {"district": 27, "regional": 23, "state": 11, "intl": 20, "uni": 25}, "eduTotal": 106, "eduConnections": 3403, "eduStates": 21, "topCountries": [{"name": "United States", "n": 7433}, {"name": "Mexico", "n": 748}, {"name": "India", "n": 317}, {"name": "Philippines", "n": 246}, {"name": "Czechia", "n": 182}, {"name": "Pakistan", "n": 154}, {"name": "United Kingdom", "n": 67}, {"name": "Canada", "n": 64}, {"name": "Brazil", "n": 61}, {"name": "Australia", "n": 56}, {"name": "Singapore", "n": 55}, {"name": "Kazakhstan", "n": 52}], "topStates": [{"name": "New York", "n": 1309}, {"name": "Texas", "n": 1081}, {"name": "Virginia", "n": 841}, {"name": "California", "n": 702}, {"name": "Indiana", "n": 569}, {"name": "Nebraska", "n": 513}, {"name": "Arizona", "n": 373}, {"name": "Ohio", "n": 307}, {"name": "Utah", "n": 227}, {"name": "Pennsylvania", "n": 205}, {"name": "Washington", "n": 146}, {"name": "Michigan", "n": 144}], "weekly": [{"week": "2026-02-23", "n": 358}, {"week": "2026-03-02", "n": 782}, {"week": "2026-03-09", "n": 639}, {"week": "2026-03-16", "n": 356}, {"week": "2026-03-23", "n": 398}, {"week": "2026-03-30", "n": 246}, {"week": "2026-04-06", "n": 85}, {"week": "2026-04-13", "n": 235}, {"week": "2026-04-20", "n": 0}, {"week": "2026-04-27", "n": 0}, {"week": "2026-05-04", "n": 0}, {"week": "2026-05-11", "n": 0}, {"week": "2026-05-18", "n": 0}, {"week": "2026-05-25", "n": 0}, {"week": "2026-06-01", "n": 0}, {"week": "2026-06-08", "n": 0}, {"week": "2026-06-15", "n": 0}, {"week": "2026-06-22", "n": 126}, {"week": "2026-06-29", "n": 200}, {"week": "2026-07-06", "n": 67}, {"week": "2026-07-13", "n": 81}, {"week": "2026-07-20", "n": 0}, {"week": "2026-07-27", "n": 0}, {"week": "2026-08-03", "n": 85}, {"week": "2026-08-10", "n": 253}, {"week": "2026-08-17", "n": 488}, {"week": "2026-08-24", "n": 404}, {"week": "2026-08-31", "n": 384}, {"week": "2026-09-07", "n": 538}, {"week": "2026-09-14", "n": 551}, {"week": "2026-09-21", "n": 479}, {"week": "2026-09-28", "n": 792}, {"week": "2026-10-05", "n": 479}, {"week": "2026-10-12", "n": 454}, {"week": "2026-10-19", "n": 523}, {"week": "2026-10-26", "n": 678}, {"week": "2026-11-02", "n": 378}, {"week": "2026-11-09", "n": 184}], "networks": [{"name": "OCM BOCES", "type": "regional", "n": 740, "where": "New York", "first": "2026-03-05", "last": "2026-11-13"}, {"name": "Network Nebraska", "type": "state", "n": 378, "where": "Nebraska", "first": "2026-02-25", "last": "2026-11-04"}, {"name": "New York City Board of Education", "type": "district", "n": 344, "where": "New York", "first": "2026-03-03", "last": "2026-11-09"}, {"name": "Katy Independent School District", "type": "district", "n": 316, "where": "Texas", "first": "2026-02-25", "last": "2026-10-30"}, {"name": "Utah Education Network", "type": "state", "n": 208, "where": "Utah", "first": "2026-03-02", "last": "2026-11-03"}, {"name": "Education Service Center Region XI", "type": "regional", "n": 128, "where": "Texas", "first": "2026-02-26", "last": "2026-11-10"}, {"name": "Licking Area Computer Association", "type": "regional", "n": 113, "where": "Ohio", "first": "2026-03-10", "last": "2026-11-02"}, {"name": "ACCESS (Ohio information technology center)", "type": "regional", "n": 111, "where": "Ohio", "first": "2026-10-22", "last": "2026-11-05"}, {"name": "MCNC (North Carolina Research and Education Network)", "type": "state", "n": 106, "where": "North Carolina", "first": "2026-03-02", "last": "2026-10-06"}, {"name": "Downingtown Area School District", "type": "district", "n": 94, "where": "Pennsylvania", "first": "2026-09-01", "last": "2026-11-04"}, {"name": "Contra Costa County Office of Education", "type": "regional", "n": 90, "where": "California", "first": "2026-02-25", "last": "2026-11-10"}, {"name": "Orange County Department of Education", "type": "regional", "n": 67, "where": "California", "first": "2026-02-25", "last": "2026-11-09"}, {"name": "Michigan Statewide Educational Network", "type": "state", "n": 64, "where": "Michigan", "first": "2026-09-16", "last": "2026-10-30"}, {"name": "CENIC (California education network)", "type": "state", "n": 61, "where": "California", "first": "2026-02-26", "last": "2026-11-03"}, {"name": "Illinois Century Network", "type": "state", "n": 58, "where": "Illinois", "first": "2026-08-21", "last": "2026-11-12"}, {"name": "Board of Regents of the University System of Georgia", "type": "uni", "n": 50, "where": "Georgia", "first": "2026-02-26", "last": "2026-10-28"}, {"name": "Seattle Public Schools", "type": "district", "n": 47, "where": "Washington", "first": "2026-02-27", "last": "2026-11-03"}, {"name": "San Joaquin County Office of Education", "type": "regional", "n": 40, "where": "California", "first": "2026-08-19", "last": "2026-11-09"}, {"name": "Virginia Beach City Public Schools", "type": "district", "n": 36, "where": "Virginia", "first": "2026-03-18", "last": "2026-11-13"}, {"name": "Merit Network Inc.", "type": "state", "n": 33, "where": "Michigan", "first": "2026-09-09", "last": "2026-11-09"}, {"name": "Miami Valley Educational Computer Association", "type": "regional", "n": 26, "where": "Ohio", "first": "2026-03-18", "last": "2026-04-01"}, {"name": "The University of Arizona", "type": "uni", "n": 26, "where": "Arizona", "first": "2026-08-24", "last": "2026-11-12"}, {"name": "Hempfield School District", "type": "district", "n": 25, "where": "Pennsylvania", "first": "2026-02-25", "last": "2026-04-17"}, {"name": "MOREnet", "type": "state", "n": 24, "where": "Missouri", "first": "2026-02-25", "last": "2026-11-10"}, {"name": "Northeast Ohio Network Educational Technology", "type": "regional", "n": 23, "where": "Ohio", "first": "2026-02-25", "last": "2026-08-26"}, {"name": "Connecticut Education Network", "type": "state", "n": 20, "where": "Connecticut", "first": "2026-03-30", "last": "2026-10-23"}, {"name": "Brazosport Independent School District", "type": "district", "n": 11, "where": "Texas", "first": "2026-03-05", "last": "2026-09-17"}, {"name": "Round Rock Independent School District", "type": "district", "n": 10, "where": "Texas", "first": "2026-03-04", "last": "2026-11-12"}, {"name": "T-TCRC.EDU.TW", "type": "intl", "n": 9, "where": "Taiwan", "first": "2026-09-03", "last": "2026-09-18"}, {"name": "ARNES provider", "type": "intl", "n": 8, "where": "Slovenia", "first": "2026-03-03", "last": "2026-03-10"}, {"name": "Alabama Supercomputer Authority", "type": "state", "n": 8, "where": "Alabama", "first": "2026-08-20", "last": "2026-09-30"}, {"name": "Universitaet Salzburg", "type": "uni", "n": 7, "where": "Austria", "first": "2026-03-26", "last": "2026-10-23"}, {"name": "Wayne County Regional Educational Service Agency", "type": "regional", "n": 6, "where": "Michigan", "first": "2026-02-26", "last": "2026-11-13"}, {"name": "Sonoma County Office of Education", "type": "regional", "n": 6, "where": "California", "first": "2026-08-13", "last": "2026-09-18"}, {"name": "Lincoln Intermediate Unit 12", "type": "regional", "n": 5, "where": "Pennsylvania", "first": "2026-03-05", "last": "2026-03-17"}, {"name": "University of North Texas", "type": "uni", "n": 5, "where": "Texas", "first": "2026-10-02", "last": "2026-10-13"}, {"name": "Collier County Public Schools", "type": "district", "n": 4, "where": "Florida", "first": "2026-02-25", "last": "2026-02-26"}, {"name": "Deer Valley Unified School District #97", "type": "district", "n": 4, "where": "Arizona", "first": "2026-08-05", "last": "2026-09-10"}, {"name": "Verein zur Foerderung eines Deutschen Forschungsnetzes e.V.", "type": "intl", "n": 4, "where": "Germany", "first": "2026-08-14", "last": "2026-09-11"}, {"name": "Polk County Public Schools", "type": "district", "n": 3, "where": "Florida", "first": "2026-02-26", "last": "2026-02-27"}, {"name": "TENET", "type": "intl", "n": 3, "where": "South Africa", "first": "2026-03-12", "last": "2026-09-16"}, {"name": "Carnegie Mellon University", "type": "uni", "n": 3, "where": "Pennsylvania", "first": "2026-08-31", "last": "2026-09-10"}, {"name": "Clear Creek ISD", "type": "district", "n": 3, "where": "Texas", "first": "2026-09-04", "last": "2026-09-08"}, {"name": "Blue Valley USD NO 229", "type": "district", "n": 2, "where": "Kansas", "first": "2026-02-25", "last": "2026-02-25"}, {"name": "Ministry of Education and Skills Development", "type": "intl", "n": 2, "where": "Bhutan", "first": "2026-03-04", "last": "2026-03-04"}, {"name": "Klein Independent School District", "type": "district", "n": 2, "where": "Texas", "first": "2026-03-05", "last": "2026-04-01"}, {"name": "Alameda County Office of Education", "type": "regional", "n": 2, "where": "California", "first": "2026-03-05", "last": "2026-03-05"}, {"name": "Deakin University", "type": "uni", "n": 2, "where": "Australia", "first": "2026-03-19", "last": "2026-03-31"}, {"name": "Universidad Nacional de Cordoba", "type": "uni", "n": 2, "where": "Argentina", "first": "2026-06-30", "last": "2026-06-30"}, {"name": "Rice University", "type": "uni", "n": 2, "where": "Texas", "first": "2026-09-03", "last": "2026-09-03"}, {"name": "KIFU (Governmental Info Tech Development Agency)", "type": "intl", "n": 2, "where": "Hungary", "first": "2026-09-14", "last": "2026-09-14"}, {"name": "Carrollton-Farmers Branch Independent School Dist.", "type": "district", "n": 2, "where": "Texas", "first": "2026-09-23", "last": "2026-09-30"}, {"name": "University of Washington", "type": "uni", "n": 2, "where": "Washington", "first": "2026-10-08", "last": "2026-10-31"}, {"name": "Cherry Creek School District #5", "type": "district", "n": 2, "where": "Colorado", "first": "2026-10-19", "last": "2026-10-19"}, {"name": "Ottawa Area ISD", "type": "regional", "n": 2, "where": "Michigan", "first": "2026-10-21", "last": "2026-10-21"}, {"name": "RENATER", "type": "intl", "n": 2, "where": "France", "first": "2026-11-01", "last": "2026-11-01"}, {"name": "Australian Academic and Research Network", "type": "intl", "n": 1, "where": "Australia", "first": "2026-03-03", "last": "2026-03-03"}, {"name": "Metropolitan Educational Council", "type": "regional", "n": 1, "where": "Ohio", "first": "2026-03-04", "last": "2026-03-04"}, {"name": "Fairbanks North Star Borough School District", "type": "district", "n": 1, "where": "Alaska", "first": "2026-03-05", "last": "2026-03-05"}, {"name": "Broward County Public Schools", "type": "district", "n": 1, "where": "Florida", "first": "2026-03-09", "last": "2026-03-09"}, {"name": "MERLIN", "type": "intl", "n": 1, "where": "Canada", "first": "2026-03-10", "last": "2026-03-10"}, {"name": "Puyallup School District", "type": "district", "n": 1, "where": "Washington", "first": "2026-03-10", "last": "2026-03-10"}, {"name": "SRM University", "type": "uni", "n": 1, "where": "India", "first": "2026-03-11", "last": "2026-03-11"}, {"name": "IDEA Public Schools", "type": "district", "n": 1, "where": "Texas", "first": "2026-03-11", "last": "2026-03-11"}, {"name": "Nebo School District", "type": "district", "n": 1, "where": "Utah", "first": "2026-03-18", "last": "2026-03-18"}, {"name": "Ventura County Office of Education", "type": "regional", "n": 1, "where": "California", "first": "2026-03-20", "last": "2026-03-20"}, {"name": "BELNET", "type": "intl", "n": 1, "where": "Belgium", "first": "2026-03-24", "last": "2026-03-24"}, {"name": "The School District of Palm Beach County", "type": "district", "n": 1, "where": "Florida", "first": "2026-03-26", "last": "2026-03-26"}, {"name": "Research and Education Network for Uganda", "type": "intl", "n": 1, "where": "Uganda", "first": "2026-03-27", "last": "2026-03-27"}, {"name": "Monterey COE", "type": "regional", "n": 1, "where": "California", "first": "2026-04-01", "last": "2026-04-01"}, {"name": "The University of Tokyo", "type": "uni", "n": 1, "where": "Japan", "first": "2026-04-06", "last": "2026-04-06"}, {"name": "Universidad autonoma de Bucaramanga", "type": "uni", "n": 1, "where": "Colombia", "first": "2026-06-24", "last": "2026-06-24"}, {"name": "University of Maryland Baltimore County", "type": "uni", "n": 1, "where": "Maryland", "first": "2026-07-06", "last": "2026-07-06"}, {"name": "Abilene Independent School District", "type": "district", "n": 1, "where": "Texas", "first": "2026-08-18", "last": "2026-08-18"}, {"name": "Gyeonggi Uijeongbu office of Education", "type": "intl", "n": 1, "where": "South Korea", "first": "2026-08-19", "last": "2026-08-19"}, {"name": "Education Service Center Region 10", "type": "regional", "n": 1, "where": "Texas", "first": "2026-09-02", "last": "2026-09-02"}, {"name": "National Knowledge Network", "type": "intl", "n": 1, "where": "India", "first": "2026-09-08", "last": "2026-09-08"}, {"name": "Mississippi State University", "type": "uni", "n": 1, "where": "Mississippi", "first": "2026-09-10", "last": "2026-09-10"}, {"name": "Zdruzenie pouzivatelov Slovenskej akademickej datovej siete", "type": "intl", "n": 1, "where": "Slovakia", "first": "2026-09-16", "last": "2026-09-16"}, {"name": "SURFnet II", "type": "intl", "n": 1, "where": "The Netherlands", "first": "2026-09-22", "last": "2026-09-22"}, {"name": "OneNet", "type": "state", "n": 1, "where": "Oklahoma", "first": "2026-09-23", "last": "2026-09-23"}, {"name": "Columbus Public Schools", "type": "district", "n": 1, "where": "Ohio", "first": "2026-09-24", "last": "2026-09-24"}, {"name": "Kenya Education Network", "type": "intl", "n": 1, "where": "Kenya", "first": "2026-09-24", "last": "2026-09-24"}, {"name": "University of British Columbia", "type": "uni", "n": 1, "where": "Canada", "first": "2026-09-25", "last": "2026-09-25"}, {"name": "Reseau d'Informations Scientifiques du Quebec (RISQ Inc.)", "type": "intl", "n": 1, "where": "Canada", "first": "2026-09-28", "last": "2026-09-28"}, {"name": "University of Southern California", "type": "uni", "n": 1, "where": "California", "first": "2026-09-29", "last": "2026-09-29"}, {"name": "Bowling Green State University", "type": "uni", "n": 1, "where": "Ohio", "first": "2026-09-30", "last": "2026-09-30"}, {"name": "Riverside County Office of Education", "type": "regional", "n": 1, "where": "California", "first": "2026-10-05", "last": "2026-10-05"}, {"name": "Auburn University", "type": "uni", "n": 1, "where": "Alabama", "first": "2026-10-12", "last": "2026-10-12"}, {"name": "South Dakota State University", "type": "uni", "n": 1, "where": "South Dakota", "first": "2026-10-12", "last": "2026-10-12"}, {"name": "Kenai Peninsula Borough School District", "type": "district", "n": 1, "where": "Alaska", "first": "2026-10-14", "last": "2026-10-14"}, {"name": "Universitaet Stuttgart", "type": "uni", "n": 1, "where": "Germany", "first": "2026-10-15", "last": "2026-10-15"}, {"name": "University of Alabama at Birmingham", "type": "uni", "n": 1, "where": "Alabama", "first": "2026-10-25", "last": "2026-10-25"}, {"name": "Fairfield University", "type": "uni", "n": 1, "where": "Connecticut", "first": "2026-10-26", "last": "2026-10-26"}, {"name": "JCyL Education", "type": "intl", "n": 1, "where": "Spain", "first": "2026-10-27", "last": "2026-10-27"}, {"name": "ORION", "type": "intl", "n": 1, "where": "Canada", "first": "2026-10-28", "last": "2026-10-28"}, {"name": "Stark Portage Area Computer Consortium", "type": "regional", "n": 1, "where": "Ohio", "first": "2026-10-28", "last": "2026-10-28"}, {"name": "SWITCH.1", "type": "intl", "n": 1, "where": "Switzerland", "first": "2026-10-29", "last": "2026-10-29"}, {"name": "West Chester University of Pennsylvania", "type": "uni", "n": 1, "where": "Pennsylvania", "first": "2026-10-30", "last": "2026-10-30"}, {"name": "University of Florida", "type": "uni", "n": 1, "where": "Florida", "first": "2026-10-30", "last": "2026-10-30"}, {"name": "Oakland Schools", "type": "regional", "n": 1, "where": "Michigan", "first": "2026-11-02", "last": "2026-11-02"}, {"name": "Region 18 Education Service Center", "type": "regional", "n": 1, "where": "Texas", "first": "2026-11-04", "last": "2026-11-04"}, {"name": "Long Beach Unified School District", "type": "district", "n": 1, "where": "California", "first": "2026-11-05", "last": "2026-11-05"}, {"name": "Sacred Heart University", "type": "uni", "n": 1, "where": "Connecticut", "first": "2026-11-07", "last": "2026-11-07"}, {"name": "BOCES Southern Westchester Lower Hudson Regional Information Center", "type": "regional", "n": 1, "where": "New York", "first": "2026-11-10", "last": "2026-11-10"}, {"name": "Anchorage School District", "type": "district", "n": 1, "where": "Alaska", "first": "2026-11-12", "last": "2026-11-12"}], "typeLabel": {"district": "School district", "regional": "Regional K-12 agency", "state": "Statewide education network", "intl": "International education network", "uni": "University"}};
+const fmt = n => n.toLocaleString("en-US");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const day = s => new Date(s + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+const $ = id => document.getElementById(id);
+
+$("sub").innerHTML = `Traffic to <a href="https://bio-sim.us">bio-sim.us</a>, ${day(D.first)} to ${day(D.last)}. `;
+
+const kpis = [
+  [D.k12, "U.S. K-12 education networks", true],
+  [D.byType.district, "Individual school districts named"],
+  [D.byType.regional + D.byType.state, "Regional and statewide K-12 networks"],
+  [D.byType.uni + D.byType.intl, "Universities and international education networks"],
+  [D.countries, "Countries"],
+  [D.states, "U.S. states (plus D.C.)"],
+  [D.connections, "Connections in the last 10 months"],
+];
+$("kpis").innerHTML = kpis.map(([v, l, hl]) =>
+  `<div class="card kpi${hl ? " hl" : ""}"><div class="v">${fmt(v)}</div><div class="l">${l}</div></div>`).join("");
+
+function bars(el, items) {
+  const max = Math.max(...items.map(i => i.n));
+  el.innerHTML = items.map(i =>
+    `<div>${esc(i.name)}</div><div class="track"><div class="fill" style="width:${(i.n / max * 100).toFixed(1)}%"></div></div><div class="num">${fmt(i.n)}</div>`).join("");
+}
+bars($("countries"), D.topCountries);
+bars($("states"), D.topStates);
+
+(function weekly() {
+  const W = 1000, H = 200, pl = 36, pb = 22, pt = 8, w = D.weekly;
+  const max = Math.max(...w.map(x => x.n));
+  const step = Math.pow(10, Math.floor(Math.log10(max)));
+  const top = Math.ceil(max / step) * step;
+  const bw = (W - pl) / w.length;
+  const y = n => pt + (H - pt - pb) * (1 - n / top);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Connections per week">`;
+  for (let i = 0; i <= 4; i++) {
+    const v = top * i / 4;
+    s += `<line x1="${pl}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/>` +
+         `<text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(Math.round(v))}</text>`;
+  }
+  let lastMonth = "";
+  w.forEach((x, i) => {
+    const h = H - pb - y(x.n);
+    s += `<rect x="${(pl + i * bw + 1).toFixed(1)}" y="${y(x.n).toFixed(1)}" width="${Math.max(bw - 2, 1).toFixed(1)}" height="${Math.max(h, 0).toFixed(1)}" rx="2" fill="var(--accent)"><title>Week of ${day(x.week)}: ${fmt(x.n)}</title></rect>`;
+    const m = x.week.slice(0, 7);
+    if (m !== lastMonth && i > 0) {
+      s += `<text x="${(pl + i * bw).toFixed(1)}" y="${H - 6}">${new Date(x.week + "T00:00:00").toLocaleDateString("en-US", { month: "short" })}</text>`;
+    }
+    lastMonth = m;
+  });
+  $("weekly").innerHTML = s + "</svg>";
+})();
+
+$("edusum").textContent = `${fmt(D.eduTotal)} education networks in total, accounting for ${fmt(D.eduConnections)} connections. ` +
+  `U.S. K-12 networks span ${D.eduStates} states.`;
+
+let filter = "all";
+const types = ["all", "district", "regional", "state", "intl", "uni"];
+function draw() {
+  $("chips").innerHTML = types.map(t => {
+    const n = t === "all" ? D.eduTotal : D.byType[t];
+    const label = t === "all" ? "All" : D.typeLabel[t];
+    return `<button class="chip" data-t="${t}" aria-pressed="${t === filter}">${label} (${n})</button>`;
+  }).join("");
+  $("rows").innerHTML = D.networks.filter(n => filter === "all" || n.type === filter).map(n =>
+    `<tr><td class="name">${esc(n.name)}</td>` +
+    `<td><span class="tag"><span class="dot" style="background:var(--${n.type})"></span>${D.typeLabel[n.type]}</span></td>` +
+    `<td>${esc(n.where)}</td><td class="r">${fmt(n.n)}</td>` +
+    `<td>${day(n.first)}</td><td>${day(n.last)}</td></tr>`).join("");
+}
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  filter = b.dataset.t; draw();
+});
+draw();
+
+$("method").innerHTML = [
+  `Each page load of bio-sim.us is logged with its network owner (ISP / organisation), city and country, looked up from the connecting address. This page aggregates ${fmt(D.connections)} such records.`,
+  `A network is listed as an education network only when the registered owner of the connecting address is itself a school district, a regional or statewide education agency, a national education network, or a university. Name variants of the same organisation are merged.`,
+  `Regional and statewide networks (for example a BOCES, a county office of education, or a state education network) provide internet service to many districts each, so the number of districts reached is higher than the number of networks listed. Individual districts behind those networks cannot be told apart from this data.`,
+  `Schools that connect through a commercial provider are not counted, so the education figures are a lower bound.`,
+  `Connecting addresses are not stored or shown anywhere on this page.`,
+  D.legacy ? `A further ${fmt(D.legacy)} visits were logged between July and November 2024 without location or network details. They are not included in any figure above.` : "",
+  `Generated ${day(D.generated)}.`,
+].filter(Boolean).map(t => `<li>${t}</li>`).join("");
+</script>
+</body>
+</html>
