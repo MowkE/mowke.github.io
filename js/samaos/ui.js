@@ -376,7 +376,10 @@ export function boot(root) {
           'The team later pivoted to Propel.',
           '<b>Received the YC 10% email.</b>'], [], 'Prototype')}
         ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', '2026', [
-          'Iterated on new UI with the startup team from user feedback, aimed at managing ADHD symptoms.'], [['monkeyless.app', 'https://www.monkeyless.app/']], 'Live')}
+          'iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
+          'MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
+          'Iterated on new UI with the startup team from user feedback, aimed at managing ADHD symptoms.',
+          '5,000+ organic downloads and 144k+ Instagram views.'], [['monkeyless.app', 'https://www.monkeyless.app/']], 'Live')}
         ${job('BioSim', 'Founder &amp; Lead Developer · 3D science simulation platform', 'Oct 2022 – now', [
           'A 3D simulation platform in the browser, built with Babylon.js and WebGL, rendering cells, organ systems and atoms, including neuron, electron-transport-chain and nephron models.',
           'An interactive 3D periodic table with spatial structures for all 118 elements, plus periodic trends, VSEPR and intermolecular forces for AP Chemistry.',
