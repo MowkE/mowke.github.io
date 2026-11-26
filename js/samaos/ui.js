@@ -375,7 +375,7 @@ export function boot(root) {
           'A Manifest V3 Chrome extension with a worker that owns credentials, an append-only event log, screen-grounded actions, and several ways to verify a step (URLs, the page itself, screenshots, APIs).',
           'The team later pivoted to Propel.',
           '<b>Received the YC 10% email.</b>'], [], 'Prototype')}
-        ${job('Monkeyless', 'Lead Developer &amp; Marketer · mindfulness screen-time app', '2026', [
+        ${job('Monkeyless', 'Dev &amp; marketing · mindfulness screen-time app', '2026', [
           'iOS and Android features that interrupt screen addiction with a mindful breathing block, using native system-level hooks and background permissions.',
           'MVP to the App Store in under 4 weeks with AI-augmented React Native development.',
           'Iterated on new UI with the startup team from user feedback, aimed at managing ADHD symptoms.',
